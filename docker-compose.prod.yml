@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: medcore-web:latest
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.medcore.com/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - medcore-network
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    image: medcore-api:latest
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=medcore_prod;Username=postgres;Password=${DB_PASSWORD}
+      - JwtSettings__Secret=${JWT_SECRET}
+      - JwtSettings__Issuer=medcore.com
+      - JwtSettings__Audience=medcore.com
+      - RedisSettings__ConnectionString=redis:6379
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - medcore-network
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=medcore_prod
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - medcore-network
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    volumes:
+      - redisdata:/data
+    networks:
+      - medcore-network
+
+volumes:
+  pgdata:
+  redisdata:
+
+networks:
+  medcore-network:
+    driver: bridge

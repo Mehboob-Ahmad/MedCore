@@ -1,0 +1,74 @@
+# MedCore — EditorConfig
+# https://editorconfig.org
+#
+# This file enforces consistent coding styles across all editors and IDEs.
+# It ensures uniform indentation, line endings, encoding, and whitespace
+# handling regardless of the developer's environment.
+
+root = true
+
+# ─────────────────────────────────────────────
+# Global defaults
+# ─────────────────────────────────────────────
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# ─────────────────────────────────────────────
+# C# / ASP.NET Core (backend)
+# ─────────────────────────────────────────────
+[*.{cs,csx}]
+indent_size = 4
+
+# ─────────────────────────────────────────────
+# Solution and project files
+# ─────────────────────────────────────────────
+[*.{sln,csproj,props,targets}]
+indent_size = 2
+
+# ─────────────────────────────────────────────
+# TypeScript / JavaScript (frontend + packages)
+# ─────────────────────────────────────────────
+[*.{ts,tsx,js,jsx,mjs,cjs}]
+indent_size = 2
+
+# ─────────────────────────────────────────────
+# JSON, YAML, and config files
+# ─────────────────────────────────────────────
+[*.{json,jsonc,yml,yaml,toml}]
+indent_size = 2
+
+# ─────────────────────────────────────────────
+# Markdown — preserve intentional trailing whitespace
+# ─────────────────────────────────────────────
+[*.md]
+trim_trailing_whitespace = false
+
+# ─────────────────────────────────────────────
+# Docker
+# ─────────────────────────────────────────────
+[Dockerfile*]
+indent_size = 4
+
+# ─────────────────────────────────────────────
+# Shell scripts
+# ─────────────────────────────────────────────
+[*.sh]
+indent_size = 4
+end_of_line = lf
+
+# ─────────────────────────────────────────────
+# SQL
+# ─────────────────────────────────────────────
+[*.sql]
+indent_size = 4
+
+# ─────────────────────────────────────────────
+# Makefiles require tabs
+# ─────────────────────────────────────────────
+[Makefile]
+indent_style = tab

@@ -1,0 +1,6 @@
+@MedCore.API_HostAddress = http://localhost:5188
+
+GET {{MedCore.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

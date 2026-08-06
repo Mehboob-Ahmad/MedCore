@@ -1,0 +1,17 @@
+using MedCore.Application.Features.Records.DTOs;
+using MediatR;
+using System;
+
+namespace MedCore.Application.Features.Records.Queries.GetPrescription;
+
+public class GetPrescriptionQuery : IRequest<PrescriptionDto>
+{
+    public Guid UserId { get; set; }
+    public Guid PrescriptionId { get; set; }
+
+    public GetPrescriptionQuery(Guid userId, Guid prescriptionId)
+    {
+        UserId = userId;
+        PrescriptionId = prescriptionId;
+    }
+}

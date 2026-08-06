@@ -1,0 +1,160 @@
+# ═══════════════════════════════════════════════
+# MedCore — .gitignore
+# ═══════════════════════════════════════════════
+# Covers: ASP.NET Core, Node.js, React, React Native,
+#         Next.js, Vite, Docker, PostgreSQL, Redis,
+#         IDEs, and OS-specific artifacts.
+
+# ─────────────────────────────────────────────
+# OS-specific
+# ─────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ─────────────────────────────────────────────
+# IDE / Editor
+# ─────────────────────────────────────────────
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# JetBrains (Rider, WebStorm)
+.idea/
+*.iml
+
+# VS Code — keep settings but ignore history/state
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# ─────────────────────────────────────────────
+# .NET / ASP.NET Core / C#
+# ─────────────────────────────────────────────
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.nupkg
+*.snupkg
+*.trx
+*.coverage
+*.coveragexml
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# ─────────────────────────────────────────────
+# Node.js / JavaScript / TypeScript
+# ─────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.output/
+.cache/
+.turbo/
+.vercel/
+
+# Next.js
+.next/
+out/
+
+# Vite
+*.local
+
+# ─────────────────────────────────────────────
+# React Native / Expo
+# ─────────────────────────────────────────────
+.expo/
+__generated__/
+ios/Pods/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# Metro bundler
+.metro-health-check*
+
+# ─────────────────────────────────────────────
+# Testing
+# ─────────────────────────────────────────────
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+
+# ─────────────────────────────────────────────
+# Environment / Secrets
+# ─────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.pfx
+appsettings.Development.json
+appsettings.Local.json
+
+# ─────────────────────────────────────────────
+# Docker
+# ─────────────────────────────────────────────
+docker-compose.override.yml
+
+# ─────────────────────────────────────────────
+# Database
+# ─────────────────────────────────────────────
+*.sql.bak
+*.dump
+*.bak
+database/backups/*.sql
+database/backups/*.gz
+
+# ─────────────────────────────────────────────
+# Logs
+# ─────────────────────────────────────────────
+logs/
+*.log
+
+# ─────────────────────────────────────────────
+# Misc
+# ─────────────────────────────────────────────
+*.swp
+*.swo
+*~
+.temp/
+tmp/

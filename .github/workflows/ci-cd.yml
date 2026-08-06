@@ -1,0 +1,57 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test-api:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+    - name: Restore dependencies
+      run: dotnet restore services/api/MedCore.API/MedCore.API.csproj
+    - name: Build
+      run: dotnet build services/api/MedCore.API/MedCore.API.csproj -c Release --no-restore
+    - name: Test
+      run: dotnet test tests/MedCore.Application.UnitTests/MedCore.Application.UnitTests.csproj -c Release --no-build
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+    - name: Install pnpm
+      run: npm install -g pnpm
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+    - name: Lint Web
+      run: pnpm --filter web lint
+    - name: Build Web
+      run: pnpm --filter web build
+
+  deploy-digital-ocean:
+    needs: [build-and-test-api, build-web]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Deploy to DigitalOcean Droplet
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.DO_HOST }}
+        username: ${{ secrets.DO_USERNAME }}
+        key: ${{ secrets.DO_SSH_KEY }}
+        script: |
+          cd /opt/medcore
+          git pull origin main
+          docker-compose -f docker-compose.prod.yml up -d --build
