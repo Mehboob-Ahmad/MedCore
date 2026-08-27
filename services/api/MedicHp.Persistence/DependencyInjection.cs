@@ -11,8 +11,11 @@ public static class DependencyInjection
     {
         services.AddScoped<AuditableEntityInterceptor>();
 
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseInMemoryDatabase("MedicHpDb"));
+            options.UseNpgsql(connectionString, b => b.MigrationsAssembly("MedicHp.Persistence")));
+
         services.AddScoped(typeof(MedicHp.Application.Common.IGenericRepository<>), typeof(MedicHp.Persistence.Repositories.GenericRepository<>));
         services.AddScoped<MedicHp.Application.Common.IUnitOfWork, MedicHp.Persistence.Repositories.UnitOfWork>();
 

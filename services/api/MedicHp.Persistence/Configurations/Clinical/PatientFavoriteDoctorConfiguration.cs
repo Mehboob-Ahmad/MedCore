@@ -20,7 +20,7 @@ public class PatientFavoriteDoctorConfiguration : IEntityTypeConfiguration<Patie
             .HasForeignKey(x => x.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
             
-        builder.HasIndex(x => new { x.PatientId, x.DoctorId }).IsUnique().HasFilter("[IsDeleted] = 0");
+        builder.HasIndex(x => new { x.PatientId, x.DoctorId }).IsUnique().HasFilter("\"IsDeleted\" = false");
             
         builder.HasQueryFilter(x => !x.IsDeleted);
     }

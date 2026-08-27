@@ -63,7 +63,7 @@ public class ConfirmPaymentCommandHandler : IRequestHandler<ConfirmPaymentComman
         // Since WhatsAppNotificationService fetches details on its own, we just pass the ID
         try
         {
-            await _whatsAppNotificationService.SendPaymentSuccessAsync(appointment.Id);
+            await _whatsAppNotificationService.SendPaymentSuccessAsync(appointment.Id, 0m);
         }
         catch (Exception)
         {

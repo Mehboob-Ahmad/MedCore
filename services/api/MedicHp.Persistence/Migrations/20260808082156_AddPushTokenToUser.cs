@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -412,7 +412,7 @@ namespace MedicHp.Persistence.Migrations
                 table: "PatientFavoriteDoctors",
                 columns: new[] { "PatientId", "DoctorId" },
                 unique: true,
-                filter: "[IsDeleted] = 0");
+                filter: "\"IsDeleted\" = false");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrescriptionTemplateItems_PrescriptionTemplateId",

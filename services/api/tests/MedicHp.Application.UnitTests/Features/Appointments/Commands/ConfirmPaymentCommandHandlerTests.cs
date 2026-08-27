@@ -67,7 +67,7 @@ public class ConfirmPaymentCommandHandlerTests
 
         _mockAppointmentRepository.Verify(x => x.UpdateAsync(appointment, It.IsAny<CancellationToken>()), Times.Once);
         _mockUnitOfWork.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        _mockWhatsAppService.Verify(x => x.SendPaymentSuccessAsync(appointmentId), Times.Once);
+        _mockWhatsAppService.Verify(x => x.SendPaymentSuccessAsync(appointmentId, 0m, It.IsAny<CancellationToken>()), Times.Once);
         _mockNotificationRepository.Verify(x => x.AddAsync(It.IsAny<MedicHp.Domain.Entities.Core.Notification>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 

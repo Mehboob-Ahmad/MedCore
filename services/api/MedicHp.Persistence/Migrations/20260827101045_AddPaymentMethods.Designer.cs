@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedicHp.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260808082156_AddPushTokenToUser")]
-    partial class AddPushTokenToUser
+    [Migration("20260827101045_AddPaymentMethods")]
+    partial class AddPaymentMethods
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -208,6 +208,9 @@ namespace MedicHp.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<DateTime?>("AppointmentReminderSentAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("BookingNote")
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
@@ -248,6 +251,22 @@ namespace MedicHp.Persistence.Migrations
 
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("PaymentConfirmedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("PaymentConfirmedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("PaymentOverdueNotifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("PaymentReminderSentAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ScheduledAt")
                         .HasColumnType("timestamp with time zone");
@@ -655,6 +674,33 @@ namespace MedicHp.Persistence.Migrations
                     b.ToTable("DoctorAvailabilitys", "clinical");
                 });
 
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorCertification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DoctorProfileId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("IssuingOrganization")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorProfileId");
+
+                    b.ToTable("DoctorCertifications");
+                });
+
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorFavoriteMedicine", b =>
                 {
                     b.Property<Guid>("Id")
@@ -680,6 +726,70 @@ namespace MedicHp.Persistence.Migrations
                     b.ToTable("DoctorFavoriteMedicines");
                 });
 
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorPaymentMethod", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("AccountNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("AccountTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DoctorProfileId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("IBAN")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PaymentMethodType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PaymentProvider")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorProfileId", "IsActive");
+
+                    b.ToTable("DoctorPaymentMethods", "clinical");
+                });
+
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorProfile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -687,7 +797,13 @@ namespace MedicHp.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<string>("Achievements")
+                        .HasColumnType("text");
+
                     b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Awards")
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")
@@ -722,8 +838,15 @@ namespace MedicHp.Persistence.Migrations
                     b.Property<string>("Languages")
                         .HasColumnType("text");
 
-                    b.Property<string>("LicenseNumber")
+                    b.Property<string>("ProfessionalType")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RegistrationNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RegulatoryBody")
                         .HasColumnType("text");
 
                     b.Property<int>("SlotDurationMinutes")
@@ -738,8 +861,23 @@ namespace MedicHp.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("VerificationDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VerificationDocumentUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("VerificationNotes")
+                        .HasColumnType("text");
+
                     b.Property<string>("VerificationStatus")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("WhatsAppEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("WhatsAppNumber")
                         .HasColumnType("text");
 
                     b.Property<int>("YearsOfExperience")
@@ -753,6 +891,33 @@ namespace MedicHp.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("DoctorProfiles", "clinical");
+                });
+
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorQualification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("CompletionYear")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Degree")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("DoctorProfileId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Institution")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorProfileId");
+
+                    b.ToTable("DoctorQualifications");
                 });
 
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorSpecialization", b =>
@@ -2335,6 +2500,88 @@ namespace MedicHp.Persistence.Migrations
                     b.ToTable("Conversations", "messaging");
                 });
 
+            modelBuilder.Entity("MedicHp.Domain.Entities.Messaging.WhatsAppMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Direction")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("DoctorProfileId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("ErrorCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("MessageType")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Metadata")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("RecipientPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StatusTimestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("WhatsAppMessageId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Direction");
+
+                    b.HasIndex("DoctorProfileId");
+
+                    b.HasIndex("PhoneNumber");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WhatsAppMessageId")
+                        .IsUnique();
+
+                    b.ToTable("WhatsAppMessages", "messaging");
+                });
+
             modelBuilder.Entity("MedicHp.Domain.Entities.Admin.ActivityLog", b =>
                 {
                     b.HasOne("MedicHp.Domain.Entities.Core.User", "User")
@@ -2468,6 +2715,17 @@ namespace MedicHp.Persistence.Migrations
                     b.Navigation("DoctorProfile");
                 });
 
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorCertification", b =>
+                {
+                    b.HasOne("MedicHp.Domain.Entities.Clinical.DoctorProfile", "DoctorProfile")
+                        .WithMany("Certifications")
+                        .HasForeignKey("DoctorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DoctorProfile");
+                });
+
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorFavoriteMedicine", b =>
                 {
                     b.HasOne("MedicHp.Domain.Entities.Clinical.DoctorProfile", "Doctor")
@@ -2477,6 +2735,17 @@ namespace MedicHp.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Doctor");
+                });
+
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorPaymentMethod", b =>
+                {
+                    b.HasOne("MedicHp.Domain.Entities.Clinical.DoctorProfile", "DoctorProfile")
+                        .WithMany("PaymentMethods")
+                        .HasForeignKey("DoctorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DoctorProfile");
                 });
 
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorProfile", b =>
@@ -2494,6 +2763,17 @@ namespace MedicHp.Persistence.Migrations
                     b.Navigation("City");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorQualification", b =>
+                {
+                    b.HasOne("MedicHp.Domain.Entities.Clinical.DoctorProfile", "DoctorProfile")
+                        .WithMany("Qualifications")
+                        .HasForeignKey("DoctorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DoctorProfile");
                 });
 
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorSpecialization", b =>
@@ -2838,6 +3118,23 @@ namespace MedicHp.Persistence.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("MedicHp.Domain.Entities.Messaging.WhatsAppMessage", b =>
+                {
+                    b.HasOne("MedicHp.Domain.Entities.Clinical.DoctorProfile", "DoctorProfile")
+                        .WithMany()
+                        .HasForeignKey("DoctorProfileId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("MedicHp.Domain.Entities.Core.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("DoctorProfile");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.Appointment", b =>
                 {
                     b.Navigation("Consultation");
@@ -2857,6 +3154,12 @@ namespace MedicHp.Persistence.Migrations
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.DoctorProfile", b =>
                 {
                     b.Navigation("Availabilities");
+
+                    b.Navigation("Certifications");
+
+                    b.Navigation("PaymentMethods");
+
+                    b.Navigation("Qualifications");
 
                     b.Navigation("Specializations");
 

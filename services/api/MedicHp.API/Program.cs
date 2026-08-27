@@ -4,10 +4,21 @@ using MedicHp.Infrastructure;
 using MedicHp.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Text;
 
+// Load .env file
+DotNetEnv.Env.TraversePath().Load();
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Ensure DATABASE_URL from .env overrides DefaultConnection
+var dbUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(dbUrl))
+{
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = dbUrl;
+}
 
 // Configure Serilog
 builder.Host.UseSerilog((context, configuration) =>
@@ -85,7 +96,11 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<MedicHp.Persistence.ApplicationDbContext>();
-    context.Database.EnsureCreated(); // Ensure DB is created for InMemory
+    
+    // Apply pending migrations automatically
+    await context.Database.MigrateAsync();
+    
+    // Seed data
     await MedicHp.Persistence.DatabaseSeeder.SeedAsync(context);
 }
 
