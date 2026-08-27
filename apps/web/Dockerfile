@@ -8,13 +8,16 @@ WORKDIR /app
 # Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 COPY apps/web/package.json ./apps/web/
+COPY packages/ui/package.json ./packages/ui/
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=deps /app/packages/ui/node_modules ./packages/ui/node_modules
 
 # Next.js telemetry is disabled
 ENV NEXT_TELEMETRY_DISABLED 1

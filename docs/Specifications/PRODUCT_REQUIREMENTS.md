@@ -1,4 +1,4 @@
-# 📝 Product Requirements Document (PRD) — MedCore
+# 📝 Product Requirements Document (PRD) — MedicHp
 
 > **Document Type:** Product Requirements (Authoritative)
 > **Version:** 2.0
@@ -25,7 +25,7 @@
 
 ## 1. Product Overview
 
-MedCore is an AI-powered Digital Healthcare Ecosystem that connects patients with independent doctors through a unified, secure digital platform. Phase 1 delivers the foundation: a complete patient-doctor interaction loop from discovery through prescription.
+MedicHp is an AI-powered Digital Healthcare Ecosystem that connects patients with independent doctors through a unified, secure digital platform. Phase 1 delivers the foundation: a complete patient-doctor interaction loop from discovery through prescription.
 
 ### 1.1 Product Positioning
 
@@ -43,7 +43,7 @@ Patients face friction in finding appropriate doctors for their health concerns,
 
 ### 1.3 Solution
 
-MedCore provides:
+MedicHp provides:
 
 1. **Intelligent doctor discovery** — Patients search by symptoms, health concerns, or medical specializations. The platform maps these inputs to the most relevant specialties and displays matching doctors.
 2. **Frictionless appointment booking** — Patients book available time slots directly, with automated confirmations and reminders.
@@ -388,7 +388,7 @@ These features are planned for future phases and must **not** be implemented, re
 
 ```mermaid
 flowchart TD
-    Start([User visits MedCore]) --> SelectRole{Select Role}
+    Start([User visits MedicHp]) --> SelectRole{Select Role}
     SelectRole -->|Patient| PatReg[Enter name, email, phone, password]
     SelectRole -->|Doctor| DocReg[Enter name, email, phone, password,\nspecialization, license info]
 
@@ -712,8 +712,8 @@ flowchart TD
 
 | Version | Date       | Author                   | Changes                                                              |
 |---------|------------|--------------------------|----------------------------------------------------------------------|
-| 1.0     | 2026-08-04 | MedCore Product Team     | Initial placeholder PRD                                              |
-| 2.0     | 2026-08-06 | MedCore Product Team     | Complete PRD: scope, requirements, user stories, flows, acceptance criteria, NFRs |
+| 1.0     | 2026-08-04 | MedicHp Product Team     | Initial placeholder PRD                                              |
+| 2.0     | 2026-08-06 | MedicHp Product Team     | Complete PRD: scope, requirements, user stories, flows, acceptance criteria, NFRs |
 
 ### Future Revisions
 

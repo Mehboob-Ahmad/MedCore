@@ -1,12 +1,12 @@
 # Prompt 01 — Monorepo Setup
 
-> AI prompt for setting up the MedCore monorepo structure, tooling, and shared packages.
+> AI prompt for setting up the MedicHp monorepo structure, tooling, and shared packages.
 
 ---
 
 ## Objective
 
-Set up the MedCore monorepo with proper project scaffolding, shared configurations, and development tooling.
+Set up the MedicHp monorepo with proper project scaffolding, shared configurations, and development tooling.
 
 ## Tasks
 

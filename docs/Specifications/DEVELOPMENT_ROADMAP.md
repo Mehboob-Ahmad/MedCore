@@ -1,4 +1,4 @@
-# 🚀 Development Roadmap — MedCore Digital Healthcare Ecosystem
+# 🚀 Development Roadmap — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** Engineering Roadmap
 > **Version:** 1.0

@@ -6,6 +6,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
+    connect-src 'self' ws://localhost:3000 wss://localhost:3000 http://localhost:5000;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -19,13 +20,22 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true, // Gzip compression
+  transpilePackages: ['@medichp/ui'],
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'app.medcore.com',
+        hostname: 'app.medichp.com',
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:5000/api/:path*',
+      },
+    ];
   },
   async headers() {
     return [

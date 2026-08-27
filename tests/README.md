@@ -1,6 +1,6 @@
 # 🧪 Tests
 
-This directory contains all test suites for the MedCore platform, organized by scope.
+This directory contains all test suites for the MedicHp platform, organized by scope.
 
 ## Architecture Rationale
 

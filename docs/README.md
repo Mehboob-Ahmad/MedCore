@@ -1,10 +1,10 @@
 # 📚 Documentation
 
-This directory contains all project documentation for the MedCore Digital Healthcare Ecosystem.
+This directory contains all project documentation for the MedicHp Digital Healthcare Ecosystem.
 
 ## Architecture Rationale
 
-Comprehensive documentation is a first-class citizen in MedCore. This directory ensures:
+Comprehensive documentation is a first-class citizen in MedicHp. This directory ensures:
 
 - **Single source of truth** — All decisions, specs, and guidelines live alongside the code
 - **Onboarding velocity** — New team members can self-serve without tribal knowledge
@@ -34,5 +34,5 @@ docs/
 | [Database Architecture](Specifications/DATABASE_ARCHITECTURE.md) | Schema and data model |
 | [API Specification](Specifications/API_SPECIFICATION.md) | REST API contracts |
 | [Security Guidelines](Specifications/SECURITY_GUIDELINES.md) | Security policies and practices |
-| [Roadmap](Sources/MedCore_Roadmap.md) | Feature timeline |
+| [Roadmap](Sources/MedicHp_Roadmap.md) | Feature timeline |
 | [Master Prompt](AI/MASTER_PROMPT.md) | AI development context |

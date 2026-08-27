@@ -1,6 +1,6 @@
-# 🤝 Contributing to MedCore
+# 🤝 Contributing to MedicHp
 
-Thank you for your interest in contributing to the MedCore Digital Healthcare Ecosystem. This document provides guidelines and conventions to ensure a smooth collaboration experience.
+Thank you for your interest in contributing to the MedicHp Digital Healthcare Ecosystem. This document provides guidelines and conventions to ensure a smooth collaboration experience.
 
 ---
 
@@ -160,4 +160,4 @@ Use the appropriate issue template when available.
 
 ## 📄 License
 
-By contributing to MedCore, you agree that your contributions will be licensed under the [MIT License](LICENSE).
+By contributing to MedicHp, you agree that your contributions will be licensed under the [MIT License](LICENSE).

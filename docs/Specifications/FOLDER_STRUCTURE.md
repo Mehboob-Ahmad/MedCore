@@ -1,4 +1,4 @@
-# 📂 Folder Structure — MedCore Digital Healthcare Ecosystem
+# 📂 Folder Structure — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** Architecture & Repository Map
 > **Version:** 1.0
@@ -20,14 +20,14 @@
 
 ## 1. Monorepo Overview
 
-MedCore utilizes a **Monorepo** architecture managed by **Turborepo** (or equivalent workspace tool). This allows us to share code, configurations, and typing between the frontend, mobile app, and backend while maintaining strict boundaries.
+MedicHp utilizes a **Monorepo** architecture managed by **Turborepo** (or equivalent workspace tool). This allows us to share code, configurations, and typing between the frontend, mobile app, and backend while maintaining strict boundaries.
 
 ---
 
 ## 2. Root Directory Structure
 
 ```text
-MedCore/
+MedicHp/
 │
 ├── apps/
 │   ├── web/                # Next.js (Marketing + Patient Portal)
@@ -71,28 +71,28 @@ The `services/api/` folder follows **Clean Architecture**.
 
 ```text
 services/api/
-├── MedCore.sln                       # Solution File
+├── MedicHp.sln                       # Solution File
 ├── src/
-│   ├── MedCore.Domain/               # Layer 1: Core
+│   ├── MedicHp.Domain/               # Layer 1: Core
 │   │   ├── Entities/                 # Patient, Doctor, Appointment
 │   │   ├── Enums/                    # Status enums
 │   │   └── Exceptions/               # Domain exceptions
-│   ├── MedCore.Application/          # Layer 2: Business Logic
+│   ├── MedicHp.Application/          # Layer 2: Business Logic
 │   │   ├── Interfaces/               # Repository & Service interfaces
 │   │   ├── DTOs/                     # Data Transfer Objects
 │   │   ├── Services/                 # Business logic implementation
 │   │   └── Validators/               # FluentValidation rules
-│   ├── MedCore.Infrastructure/       # Layer 3: External Concerns
+│   ├── MedicHp.Infrastructure/       # Layer 3: External Concerns
 │   │   ├── Data/                     # Entity Framework DbContext
 │   │   ├── Repositories/             # EF Core implementation of Interfaces
 │   │   └── Services/                 # Email, File Storage, Auth providers
-│   └── MedCore.API/                  # Layer 4: Presentation
+│   └── MedicHp.API/                  # Layer 4: Presentation
 │       ├── Controllers/              # REST Endpoints
 │       ├── Middlewares/              # Error handling, Logging
 │       └── Program.cs                # DI setup, pipeline configuration
 └── tests/
-    ├── MedCore.UnitTests/            # Isolated logic tests
-    └── MedCore.IntegrationTests/     # API & DB testing
+    ├── MedicHp.UnitTests/            # Isolated logic tests
+    └── MedicHp.IntegrationTests/     # API & DB testing
 ```
 
 **Import Rules (Backend):**

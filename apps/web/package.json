@@ -9,19 +9,24 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "16.3.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "@medichp/ui": "workspace:*",
+    "clsx": "latest",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwind-merge": "latest"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "latest",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "latest"
   },
   "packageManager": "pnpm@9.0.0"
 }

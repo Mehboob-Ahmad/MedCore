@@ -1,4 +1,4 @@
-# 🛡️ Security Guidelines — MedCore Digital Healthcare Ecosystem
+# 🛡️ Security Guidelines — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** Security Architecture & Guidelines
 > **Version:** 1.0
@@ -22,7 +22,7 @@
 
 ## 1. Core Security Principles
 
-MedCore handles Protected Health Information (PHI) and Personally Identifiable Information (PII). A breach is catastrophic.
+MedicHp handles Protected Health Information (PHI) and Personally Identifiable Information (PII). A breach is catastrophic.
 
 - **Zero Trust:** Do not trust the network, do not trust the client, do not trust the input. Verify everything.
 - **Defense in Depth:** Multiple layers of security (WAF -> Network ACL -> App Auth -> DB Row-Level Security).
@@ -78,7 +78,7 @@ MedCore handles Protected Health Information (PHI) and Personally Identifiable I
 - Apply aggressive rate limiting to sensitive endpoints (`/login`, `/register`, `/forgot-password`) to prevent brute-force and enumeration attacks.
 
 ### 4.5 CORS
-- Explicitly define allowed origins (e.g., `https://medcore.com`).
+- Explicitly define allowed origins (e.g., `https://medichp.com`).
 - Never use `*` for CORS in production.
 
 ---
@@ -102,7 +102,7 @@ MedCore handles Protected Health Information (PHI) and Personally Identifiable I
 
 ## 7. Healthcare Compliance (HIPAA/GDPR)
 
-While MedCore Phase 1 is a foundation, it is built to be compliant:
+While MedicHp Phase 1 is a foundation, it is built to be compliant:
 - **Right to Erasure (GDPR):** Handled via Soft Deletes (`IsDeleted`), with a future automated script for hard redaction of PII after regulatory retention periods.
 - **Data Access Auditing (HIPAA):** Covered by the `AuditLogs` and `ActivityLogs`.
 - **BAA Readiness:** Infrastructure is prepared to be hosted on HIPAA-eligible cloud segments.

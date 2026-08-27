@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/dashboard/'],
     },
-    sitemap: 'https://app.medcore.com/sitemap.xml',
+    sitemap: 'https://app.medichp.com/sitemap.xml',
   };
 }

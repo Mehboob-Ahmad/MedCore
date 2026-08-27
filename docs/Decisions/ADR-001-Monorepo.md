@@ -2,13 +2,13 @@
 
 > **Status:** Accepted  
 > **Date:** 2026-08-04  
-> **Decision Makers:** MedCore Architecture Team
+> **Decision Makers:** MedicHp Architecture Team
 
 ---
 
 ## Context
 
-MedCore consists of multiple frontend applications (website, dashboard, mobile), a backend API, and shared packages. We need to decide between a monorepo and a polyrepo structure.
+MedicHp consists of multiple frontend applications (website, dashboard, mobile), a backend API, and shared packages. We need to decide between a monorepo and a polyrepo structure.
 
 ## Decision
 

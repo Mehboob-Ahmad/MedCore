@@ -1,6 +1,6 @@
 # 📎 References
 
-> External resources, articles, documentation, and standards referenced during MedCore development.
+> External resources, articles, documentation, and standards referenced during MedicHp development.
 
 ---
 

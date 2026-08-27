@@ -3,11 +3,11 @@ version: '3.8'
 services:
   db:
     image: postgres:16
-    container_name: medcore_postgres
+    container_name: medichp_postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medcore_secret}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medichp_secret}
       POSTGRES_DB: ${POSTGRES_DB:-medcore}
     ports:
       - '5432:5432'
@@ -16,10 +16,10 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: medcore_pgadmin
+    container_name: medichp_pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@medcore.com
+      PGADMIN_DEFAULT_EMAIL: admin@medichp.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - '5050:80'
@@ -28,7 +28,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: medcore_redis
+    container_name: medichp_redis
     restart: always
     ports:
       - '6379:6379'
@@ -38,12 +38,12 @@ services:
   api:
     build:
       context: .
-      dockerfile: infrastructure/docker/api.Dockerfile
-    container_name: medcore_api
+      dockerfile: services/api/Dockerfile
+    container_name: medichp_api
     restart: always
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=${POSTGRES_DB:-medcore};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-medcore_secret}
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=${POSTGRES_DB:-medcore};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-medichp_secret}
       - RedisConnection=redis:6379
     ports:
       - '5000:8080'

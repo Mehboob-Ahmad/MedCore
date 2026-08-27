@@ -1,8 +1,8 @@
-# MedCore Digital Healthcare Ecosystem
+# MedicHp Digital Healthcare Ecosystem
 
-![MedCore Architecture](https://via.placeholder.com/800x400?text=MedCore+Architecture)
+![MedicHp Architecture](https://via.placeholder.com/800x400?text=MedicHp+Architecture)
 
-MedCore is a production-ready, enterprise-grade Digital Healthcare Ecosystem built for scalability and long-term commercial use.
+MedicHp is a production-ready, enterprise-grade Digital Healthcare Ecosystem built for scalability and long-term commercial use.
 
 ## Architecture
 
@@ -61,7 +61,7 @@ pnpm turbo run dev --filter=web
 
 ### Running the Backend API
 ```bash
-cd services/api/MedCore.API
+cd services/api/MedicHp.API
 dotnet run
 ```
 
@@ -72,4 +72,4 @@ dotnet run
 3. Ensure all tests and linting pass via `pnpm lint` and `dotnet build` before opening a Pull Request.
 
 ---
-> *Generated in accordance with the MedCore architectural specification.*
+> *Generated in accordance with the MedicHp architectural specification.*

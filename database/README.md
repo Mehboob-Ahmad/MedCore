@@ -1,6 +1,6 @@
 # 🗄️ Database
 
-This directory contains all database-related assets for the MedCore platform.
+This directory contains all database-related assets for the MedicHp platform.
 
 ## Architecture Rationale
 

@@ -1,4 +1,4 @@
-# 📏 Business Rules — MedCore Platform
+# 📏 Business Rules — MedicHp Platform
 
 > **Document Type:** Business Rules (Authoritative)
 > **Version:** 2.0
@@ -32,7 +32,7 @@
 
 ## 1. Document Purpose
 
-This document defines the **authoritative business rules** that govern MedCore's platform behavior. Every rule listed here is a binding constraint that must be enforced in code. If a requirement in the codebase contradicts a rule in this document, this document takes precedence until a formal revision is made.
+This document defines the **authoritative business rules** that govern MedicHp's platform behavior. Every rule listed here is a binding constraint that must be enforced in code. If a requirement in the codebase contradicts a rule in this document, this document takes precedence until a formal revision is made.
 
 ### How to Read This Document
 
@@ -458,8 +458,8 @@ The following rules have values that Super Admin can modify through the platform
 
 | Version | Date       | Author                   | Changes                                                              |
 |---------|------------|--------------------------|----------------------------------------------------------------------|
-| 1.0     | 2026-08-04 | MedCore Architecture Team | Initial placeholder business rules                                  |
-| 2.0     | 2026-08-06 | MedCore Architecture Team | Complete business rules: 162 rules across 12 domains with classification, traceability, and configurable values |
+| 1.0     | 2026-08-04 | MedicHp Architecture Team | Initial placeholder business rules                                  |
+| 2.0     | 2026-08-06 | MedicHp Architecture Team | Complete business rules: 162 rules across 12 domains with classification, traceability, and configurable values |
 
 ### Key Changes in Version 2.0
 

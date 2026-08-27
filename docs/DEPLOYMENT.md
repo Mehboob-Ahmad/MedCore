@@ -1,6 +1,6 @@
-# MedCore Deployment Guide
+# MedicHp Deployment Guide
 
-This document outlines the procedures for deploying the MedCore Phase 1 application to a production environment on DigitalOcean.
+This document outlines the procedures for deploying the MedicHp Phase 1 application to a production environment on DigitalOcean.
 
 ## Architecture
 
@@ -15,15 +15,15 @@ All services are containerized using Docker and orchestrated using Docker Compos
 ## Prerequisites
 1. A DigitalOcean Droplet (Ubuntu 22.04 LTS recommended) with at least 4GB RAM and 2 vCPUs.
 2. Docker and Docker Compose installed on the Droplet.
-3. Domain names pointed to the Droplet's IP address (e.g., `app.medcore.com`, `api.medcore.com`).
+3. Domain names pointed to the Droplet's IP address (e.g., `app.medichp.com`, `api.medichp.com`).
 4. SSH access to the Droplet.
 
 ## Deployment Steps
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-org/MediCore.git /opt/medcore
-   cd /opt/medcore
+   git clone https://github.com/your-org/MediCore.git /opt/medichp
+   cd /opt/medichp
    ```
 
 2. **Configure Environment Variables**:
@@ -39,7 +39,7 @@ All services are containerized using Docker and orchestrated using Docker Compos
    ```
 
 4. **SSL / Reverse Proxy Configuration**:
-   It is recommended to place an Nginx reverse proxy or DigitalOcean Load Balancer in front of the services to handle SSL termination. Configure the proxy to forward traffic for `app.medcore.com` to port `3000` and `api.medcore.com` to port `5000`.
+   It is recommended to place an Nginx reverse proxy or DigitalOcean Load Balancer in front of the services to handle SSL termination. Configure the proxy to forward traffic for `app.medichp.com` to port `3000` and `api.medichp.com` to port `5000`.
 
 ## Backup and Recovery Strategy
 
@@ -51,8 +51,8 @@ Automated logical backups should be configured using `pg_dump` via a cron job on
 #!/bin/bash
 BACKUP_DIR="/opt/backups/db"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-docker exec medicore_db_1 pg_dump -U postgres medcore_prod > $BACKUP_DIR/medcore_prod_$TIMESTAMP.sql
-gzip $BACKUP_DIR/medcore_prod_$TIMESTAMP.sql
+docker exec medicore_db_1 pg_dump -U postgres medichp_prod > $BACKUP_DIR/medichp_prod_$TIMESTAMP.sql
+gzip $BACKUP_DIR/medichp_prod_$TIMESTAMP.sql
 ```
 
 **Cron Configuration**:
@@ -62,7 +62,7 @@ Run daily at 2 AM:
 ### Restoration Procedure
 To restore from a backup:
 ```bash
-gunzip -c /opt/backups/db/medcore_prod_timestamp.sql.gz | docker exec -i medicore_db_1 psql -U postgres -d medcore_prod
+gunzip -c /opt/backups/db/medichp_prod_timestamp.sql.gz | docker exec -i medicore_db_1 psql -U postgres -d medichp_prod
 ```
 
 ### File Backups

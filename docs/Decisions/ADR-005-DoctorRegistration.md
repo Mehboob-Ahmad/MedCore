@@ -2,7 +2,7 @@
 
 **Status:** Proposed
 **Date:** 2026-08-04
-**Decision Makers:** MedCore Architecture Team
+**Decision Makers:** MedicHp Architecture Team
 
 ---
 

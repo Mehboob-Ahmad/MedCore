@@ -1,4 +1,4 @@
-# 🎨 UI/UX Guidelines — MedCore Digital Healthcare Ecosystem
+# 🎨 UI/UX Guidelines — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** Design System & UI/UX Guidelines
 > **Version:** 1.0
@@ -29,7 +29,7 @@
 
 ## 1. Design Philosophy
 
-MedCore's interface must inspire **Trust**, ensure **Clarity**, and prioritize **Speed**. The UI should feel similar in quality to best-in-class platforms (e.g., Stripe, Notion, Apple Health, Linear) while maintaining a distinct, clinical, and approachable healthcare identity.
+MedicHp's interface must inspire **Trust**, ensure **Clarity**, and prioritize **Speed**. The UI should feel similar in quality to best-in-class platforms (e.g., Stripe, Notion, Apple Health, Linear) while maintaining a distinct, clinical, and approachable healthcare identity.
 
 - **Minimalism:** Remove all non-essential elements. White space (negative space) is a primary design tool.
 - **Accessibility:** Must be usable by elderly patients, visually impaired users, and those with motor difficulties.
@@ -105,7 +105,7 @@ Dark mode uses deep slate and gray tones instead of pure black (`#000000`) to re
 
 ## 5. Grid System
 
-MedCore uses a standard 12-column grid system with fluid spacing.
+MedicHp uses a standard 12-column grid system with fluid spacing.
 
 ### Breakpoints
 
@@ -187,7 +187,7 @@ Used heavily in healthcare for statuses.
 
 ## 10. Forms & Validation
 
-Healthcare forms are notoriously long. MedCore solves this through:
+Healthcare forms are notoriously long. MedicHp solves this through:
 - **Progressive Disclosure:** Break long forms (like patient registration) into multi-step wizards.
 - **Input Fields:** Clearly labeled (labels *above* inputs). Helper text below inputs.
 - **Validation:** 
@@ -200,7 +200,7 @@ Healthcare forms are notoriously long. MedCore solves this through:
 
 ## 11. Accessibility (a11y)
 
-MedCore strictly adheres to **WCAG 2.1 AA** standards.
+MedicHp strictly adheres to **WCAG 2.1 AA** standards.
 
 - **Contrast:** Text-to-background contrast ratio must be at least `4.5:1` for normal text and `3:1` for large text.
 - **Keyboard Navigation:** All interactive elements must be focusable via `Tab`. Use a highly visible focus ring (blue outline).

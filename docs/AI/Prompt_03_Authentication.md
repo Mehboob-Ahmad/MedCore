@@ -1,6 +1,6 @@
 # Prompt 03 — Authentication System
 
-> AI prompt for implementing the MedCore authentication and authorization system.
+> AI prompt for implementing the MedicHp authentication and authorization system.
 
 ---
 

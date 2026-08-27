@@ -2,13 +2,13 @@
 
 **Status:** Proposed
 **Date:** 2026-08-04
-**Decision Makers:** MedCore Architecture Team
+**Decision Makers:** MedicHp Architecture Team
 
 ---
 
 ## Context
 
-Patient registration is the primary onboarding entry point for the MedCore platform. The process must balance a low-friction user experience with the collection of essential health information and identity verification required by healthcare regulations.
+Patient registration is the primary onboarding entry point for the MedicHp platform. The process must balance a low-friction user experience with the collection of essential health information and identity verification required by healthcare regulations.
 
 ## Decision
 

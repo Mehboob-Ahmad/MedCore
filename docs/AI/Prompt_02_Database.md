@@ -1,12 +1,12 @@
 # Prompt 02 — Database Design
 
-> AI prompt for designing and implementing the MedCore database schema.
+> AI prompt for designing and implementing the MedicHp database schema.
 
 ---
 
 ## Objective
 
-Design a normalized, scalable PostgreSQL database schema for the MedCore platform using Entity Framework Core.
+Design a normalized, scalable PostgreSQL database schema for the MedicHp platform using Entity Framework Core.
 
 ## Tasks
 

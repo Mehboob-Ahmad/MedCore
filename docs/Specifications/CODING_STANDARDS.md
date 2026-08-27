@@ -1,4 +1,4 @@
-# 💻 Coding Standards — MedCore Digital Healthcare Ecosystem
+# 💻 Coding Standards — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** Engineering Standards
 > **Version:** 1.0
@@ -22,7 +22,7 @@
 
 ## 1. Architecture Principles
 
-MedCore strictly follows these software engineering paradigms:
+MedicHp strictly follows these software engineering paradigms:
 
 - **Clean Architecture:** Separation of concerns into layers (Domain, Application, Infrastructure, Presentation/API). Inner layers never depend on outer layers.
 - **SOLID Principles:** Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion.

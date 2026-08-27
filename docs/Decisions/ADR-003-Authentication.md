@@ -2,13 +2,13 @@
 
 **Status:** Proposed
 **Date:** 2026-08-04
-**Decision Makers:** MedCore Architecture Team
+**Decision Makers:** MedicHp Architecture Team
 
 ---
 
 ## Context
 
-MedCore handles sensitive Protected Health Information (PHI) and must comply with healthcare data security standards. The authentication system must support multiple user roles (Super Admin, Doctor, Patient, Clinic Staff) across three client platforms (website, dashboard, mobile) while maintaining a seamless and secure user experience.
+MedicHp handles sensitive Protected Health Information (PHI) and must comply with healthcare data security standards. The authentication system must support multiple user roles (Super Admin, Doctor, Patient, Clinic Staff) across three client platforms (website, dashboard, mobile) while maintaining a seamless and secure user experience.
 
 ## Decision
 

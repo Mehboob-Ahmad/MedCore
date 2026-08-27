@@ -1,4 +1,4 @@
-# 🗃️ Database Architecture — MedCore Digital Healthcare Ecosystem
+# 🗃️ Database Architecture — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** Database Architecture (Authoritative)
 > **Version:** 2.0
@@ -31,7 +31,7 @@
 
 ### 1.1 Normalization
 
-MedCore's database is normalized to **Third Normal Form (3NF)** for all transactional tables. This eliminates data redundancy, prevents update anomalies, and ensures data integrity across the healthcare domain where accuracy is non-negotiable.
+MedicHp's database is normalized to **Third Normal Form (3NF)** for all transactional tables. This eliminates data redundancy, prevents update anomalies, and ensures data integrity across the healthcare domain where accuracy is non-negotiable.
 
 **Controlled denormalization** is permitted only in the following cases, and only with an accompanying ADR:
 
@@ -136,7 +136,7 @@ The schema is designed so that **Phase 2–4 features integrate additively** —
 
 ### 2.3 Audit Columns (Present on Every Table)
 
-Every table in the MedCore database includes these columns:
+Every table in the MedicHp database includes these columns:
 
 | Column       | Type                      | Nullable | Default              | Purpose                             |
 |--------------|---------------------------|----------|----------------------|-------------------------------------|
@@ -1584,8 +1584,8 @@ Phase 2 integrates with the existing schema **additively** — no existing table
 EF Core Code-First Migrations are the exclusive mechanism for schema changes.
 
 ```
-dotnet ef migrations add <MigrationName> --project MedCore.Infrastructure --startup-project MedCore.API
-dotnet ef database update --project MedCore.Infrastructure --startup-project MedCore.API
+dotnet ef migrations add <MigrationName> --project MedicHp.Infrastructure --startup-project MedicHp.API
+dotnet ef database update --project MedicHp.Infrastructure --startup-project MedicHp.API
 ```
 
 ### 9.2 Migration Naming Convention
@@ -1752,8 +1752,8 @@ Examples:
 
 | Version | Date       | Author                       | Changes                                                        |
 |---------|------------|------------------------------|----------------------------------------------------------------|
-| 1.0     | 2026-08-04 | MedCore Architecture Team    | Initial placeholder — core entities listed                     |
-| 2.0     | 2026-08-06 | MedCore Database Architecture Team | Complete database architecture: 33 Phase 1 tables, detailed specifications, ER diagrams, index strategy, migration strategy, security model, performance guidelines, and future expansion blueprint |
+| 1.0     | 2026-08-04 | MedicHp Architecture Team    | Initial placeholder — core entities listed                     |
+| 2.0     | 2026-08-06 | MedicHp Database Architecture Team | Complete database architecture: 33 Phase 1 tables, detailed specifications, ER diagrams, index strategy, migration strategy, security model, performance guidelines, and future expansion blueprint |
 
 ### Future Revisions
 

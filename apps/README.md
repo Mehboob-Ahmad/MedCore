@@ -1,6 +1,6 @@
 # 📱 Apps
 
-This directory contains all frontend applications that make up the MedCore platform.
+This directory contains all frontend applications that make up the MedicHp platform.
 
 ## Structure
 

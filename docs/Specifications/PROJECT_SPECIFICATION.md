@@ -1,4 +1,4 @@
-# 📋 Project Specification — MedCore Digital Healthcare Ecosystem
+# 📋 Project Specification — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** Technical Specification (Authoritative)
 > **Version:** 2.0
@@ -26,20 +26,20 @@
 
 ## 1. Executive Summary
 
-**MedCore** is an **AI-powered Digital Healthcare Ecosystem** — not merely a Hospital Management System. It is a comprehensive SaaS platform that reimagines how patients, doctors, clinics, and healthcare organizations interact in a connected, secure, and intelligent digital environment.
+**MedicHp** is an **AI-powered Digital Healthcare Ecosystem** — not merely a Hospital Management System. It is a comprehensive SaaS platform that reimagines how patients, doctors, clinics, and healthcare organizations interact in a connected, secure, and intelligent digital environment.
 
-MedCore is designed from the ground up as:
+MedicHp is designed from the ground up as:
 
 - **A commercial product** intended for long-term revenue generation and market deployment.
 - **A scalable SaaS platform** capable of serving independent practitioners, multi-location clinics, and enterprise hospital networks.
 - **An extensible ecosystem** where each module (appointments, prescriptions, telemedicine, AI diagnostics) can be adopted incrementally.
 - **A security-first platform** built with HIPAA and GDPR compliance awareness embedded in every architectural decision.
 
-> MedCore is **not** a university project, proof-of-concept, hackathon prototype, or single-developer experiment. Every line of code, every architectural decision, and every document is written with the expectation that the platform will handle real patient data in production.
+> MedicHp is **not** a university project, proof-of-concept, hackathon prototype, or single-developer experiment. Every line of code, every architectural decision, and every document is written with the expectation that the platform will handle real patient data in production.
 
-### What Makes MedCore an Ecosystem (Not Just an App)
+### What Makes MedicHp an Ecosystem (Not Just an App)
 
-| Traditional HMS              | MedCore Ecosystem                                          |
+| Traditional HMS              | MedicHp Ecosystem                                          |
 |------------------------------|------------------------------------------------------------|
 | Single hospital focus        | Multi-tenant: independent doctors, clinics, hospital networks |
 | Appointment booking only     | Full patient journey: search → book → consult → prescribe → follow up |
@@ -103,13 +103,13 @@ To become the leading AI-powered healthcare ecosystem in the region, serving as 
 
 ## 4. Long-Term Roadmap
 
-MedCore is developed in four strategic phases. Each phase delivers a self-contained set of value while laying the foundation for the next.
+MedicHp is developed in four strategic phases. Each phase delivers a self-contained set of value while laying the foundation for the next.
 
 ### 4.1 Roadmap Overview
 
 ```mermaid
 gantt
-    title MedCore Development Roadmap
+    title MedicHp Development Roadmap
     dateFormat YYYY-MM
     axisFormat %b %Y
 
@@ -164,7 +164,7 @@ gantt
 
 ### 4.4 Phase 3 — Enterprise Healthcare
 
-**Goal:** Transform MedCore into a full-featured enterprise healthcare platform with revenue capabilities.
+**Goal:** Transform MedicHp into a full-featured enterprise healthcare platform with revenue capabilities.
 
 | Module                    | Scope                                                                          |
 |---------------------------|--------------------------------------------------------------------------------|
@@ -193,7 +193,7 @@ gantt
 
 ## 5. Technology Stack
 
-Every technology in MedCore's stack was chosen deliberately. This section explains each choice and its rationale.
+Every technology in MedicHp's stack was chosen deliberately. This section explains each choice and its rationale.
 
 > **Reference:** [ADR-002: Technology Stack Selection](../Decisions/ADR-002-TechStack.md)
 
@@ -285,7 +285,7 @@ Every technology in MedCore's stack was chosen deliberately. This section explai
 
 ### 6.1 Why Monorepo
 
-MedCore uses a monorepo architecture to maximize code sharing, enable atomic cross-cutting changes, and maintain a unified developer experience across all applications.
+MedicHp uses a monorepo architecture to maximize code sharing, enable atomic cross-cutting changes, and maintain a unified developer experience across all applications.
 
 | Benefit                  | Explanation                                                                                   |
 |--------------------------|-----------------------------------------------------------------------------------------------|
@@ -298,7 +298,7 @@ MedCore uses a monorepo architecture to maximize code sharing, enable atomic cro
 ### 6.2 Repository Structure
 
 ```
-MedCore/
+MedicHp/
 │
 ├── apps/                        → Frontend applications
 │   ├── website/                 → Next.js — public website + patient portal
@@ -307,14 +307,14 @@ MedCore/
 │
 ├── backend/                     → ASP.NET Core 9 Web API
 │   ├── src/
-│   │   ├── MedCore.Domain/      → Core entities, value objects, interfaces
-│   │   ├── MedCore.Application/ → Use cases, DTOs, validators, services
-│   │   ├── MedCore.Infrastructure/ → EF Core, repositories, external services
-│   │   └── MedCore.API/         → Controllers, middleware, DI configuration
+│   │   ├── MedicHp.Domain/      → Core entities, value objects, interfaces
+│   │   ├── MedicHp.Application/ → Use cases, DTOs, validators, services
+│   │   ├── MedicHp.Infrastructure/ → EF Core, repositories, external services
+│   │   └── MedicHp.API/         → Controllers, middleware, DI configuration
 │   └── tests/
-│       ├── MedCore.Domain.Tests/
-│       ├── MedCore.Application.Tests/
-│       └── MedCore.API.Tests/
+│       ├── MedicHp.Domain.Tests/
+│       ├── MedicHp.Application.Tests/
+│       └── MedicHp.API.Tests/
 │
 ├── packages/                    → Shared TypeScript packages
 │   ├── ui/                      → Shared React component library (design system)
@@ -355,7 +355,7 @@ MedCore/
 
 ### 6.3 Shared Packages
 
-Shared packages in `packages/` are the backbone of MedCore's code reuse strategy. Every frontend application imports from these packages rather than creating local duplicates.
+Shared packages in `packages/` are the backbone of MedicHp's code reuse strategy. Every frontend application imports from these packages rather than creating local duplicates.
 
 | Package            | Purpose                                                            | Consumers                       |
 |--------------------|--------------------------------------------------------------------|---------------------------------|
@@ -370,7 +370,7 @@ Shared packages in `packages/` are the backbone of MedCore's code reuse strategy
 
 ### 6.4 Scalability of the Monorepo
 
-The monorepo structure supports MedCore's growth without requiring reorganization:
+The monorepo structure supports MedicHp's growth without requiring reorganization:
 
 - **New applications** (e.g., a pharmacy portal) are added as new directories under `apps/`.
 - **New shared capabilities** (e.g., a form builder) are added as new packages under `packages/`.
@@ -381,32 +381,32 @@ The monorepo structure supports MedCore's growth without requiring reorganizatio
 
 ## 7. Clean Architecture
 
-The MedCore backend follows **Clean Architecture** (also known as Onion Architecture or Hexagonal Architecture). This ensures the business logic is independent of frameworks, databases, and UI — making it testable, maintainable, and adaptable to change.
+The MedicHp backend follows **Clean Architecture** (also known as Onion Architecture or Hexagonal Architecture). This ensures the business logic is independent of frameworks, databases, and UI — making it testable, maintainable, and adaptable to change.
 
 ### 7.1 Layer Diagram
 
 ```mermaid
 graph TB
-    subgraph Outermost ["Presentation Layer (MedCore.API)"]
+    subgraph Outermost ["Presentation Layer (MedicHp.API)"]
         Controllers["Controllers"]
         Middleware["Middleware & Filters"]
         DI["DI Container Setup"]
     end
 
-    subgraph Infrastructure ["Infrastructure Layer (MedCore.Infrastructure)"]
+    subgraph Infrastructure ["Infrastructure Layer (MedicHp.Infrastructure)"]
         EFCore["EF Core DbContext"]
         Repos["Repository Implementations"]
         External["External Services (Email, Storage)"]
     end
 
-    subgraph Application ["Application Layer (MedCore.Application)"]
+    subgraph Application ["Application Layer (MedicHp.Application)"]
         Services["Application Services"]
         DTOs["DTOs & Mappers"]
         Validators["Validators"]
         Interfaces["Service Interfaces"]
     end
 
-    subgraph Core ["Domain Layer (MedCore.Domain)"]
+    subgraph Core ["Domain Layer (MedicHp.Domain)"]
         Entities["Entities & Value Objects"]
         DomainInterfaces["Repository Interfaces"]
         DomainEvents["Domain Events"]
@@ -426,7 +426,7 @@ graph TB
 
 ### 7.2 Layer Responsibilities
 
-#### Domain Layer (`MedCore.Domain`) — Innermost
+#### Domain Layer (`MedicHp.Domain`) — Innermost
 
 The domain layer is the heart of the application. It contains the core business entities and rules with **zero external dependencies**.
 
@@ -441,7 +441,7 @@ The domain layer is the heart of the application. It contains the core business 
 
 > **Critical Rule:** The Domain layer has **no references** to EF Core, ASP.NET Core, or any external package. It depends on nothing.
 
-#### Application Layer (`MedCore.Application`)
+#### Application Layer (`MedicHp.Application`)
 
 The application layer orchestrates domain objects to fulfill use cases. It contains the "what" of the system (business operations) without the "how" (database queries, HTTP calls).
 
@@ -453,18 +453,18 @@ The application layer orchestrates domain objects to fulfill use cases. It conta
 | Mappers               | Entity ↔ DTO transformation logic                                | `PatientMapper`                      |
 | Service Interfaces    | Contracts for application services                                | `IAppointmentService`                |
 
-#### Infrastructure Layer (`MedCore.Infrastructure`)
+#### Infrastructure Layer (`MedicHp.Infrastructure`)
 
 The infrastructure layer implements external concerns: database access, email sending, file storage, caching.
 
 | Component                | Description                                                   | Example                              |
 |--------------------------|---------------------------------------------------------------|--------------------------------------|
-| EF Core DbContext        | Database context and entity configurations                     | `MedCoreDbContext`                   |
+| EF Core DbContext        | Database context and entity configurations                     | `MedicHpDbContext`                   |
 | Repository Implementations | Concrete implementations of domain repository interfaces    | `PatientRepository`                  |
 | External Services        | Integrations with third-party services                        | `EmailService`, `StorageService`     |
 | Caching                  | Redis cache integration                                        | `RedisCacheService`                  |
 
-#### Presentation Layer (`MedCore.API`) — Outermost
+#### Presentation Layer (`MedicHp.API`) — Outermost
 
 The API layer is the entry point for HTTP requests. It is thin — controllers delegate immediately to application services.
 
@@ -477,7 +477,7 @@ The API layer is the entry point for HTTP requests. It is thin — controllers d
 
 ### 7.3 Dependency Injection (DI)
 
-All services in MedCore are registered in the ASP.NET Core DI container. Dependencies are injected via **constructor injection**.
+All services in MedicHp are registered in the ASP.NET Core DI container. Dependencies are injected via **constructor injection**.
 
 ```
 Controller → IApplicationService → IRepository → DbContext
@@ -493,9 +493,9 @@ Repositories abstract data access behind interfaces defined in the Domain layer 
 
 | Concept                | Location              | Example                                        |
 |------------------------|-----------------------|------------------------------------------------|
-| Interface definition   | `MedCore.Domain`      | `IPatientRepository { Task<Patient?> GetByIdAsync(Guid id); }` |
-| Implementation         | `MedCore.Infrastructure` | `PatientRepository : IPatientRepository` using EF Core |
-| Consumption            | `MedCore.Application` | `PatientService` receives `IPatientRepository` via DI |
+| Interface definition   | `MedicHp.Domain`      | `IPatientRepository { Task<Patient?> GetByIdAsync(Guid id); }` |
+| Implementation         | `MedicHp.Infrastructure` | `PatientRepository : IPatientRepository` using EF Core |
+| Consumption            | `MedicHp.Application` | `PatientService` receives `IPatientRepository` via DI |
 
 > **Rule:** Application services never access `DbContext` directly. All data access flows through repository interfaces.
 
@@ -535,11 +535,11 @@ Input validation occurs at the Application layer using FluentValidation or Data 
 
 ## 8. Coding Philosophy
 
-These principles govern every design and implementation decision in MedCore.
+These principles govern every design and implementation decision in MedicHp.
 
 ### 8.1 SOLID Principles
 
-| Principle                       | Application in MedCore                                                          |
+| Principle                       | Application in MedicHp                                                          |
 |---------------------------------|---------------------------------------------------------------------------------|
 | **S** — Single Responsibility   | Each class, service, and component has exactly one reason to change.            |
 | **O** — Open/Closed             | Extend behavior via new implementations, not by modifying existing code.        |
@@ -591,7 +591,7 @@ These principles govern every design and implementation decision in MedCore.
 
 ### 8.8 AI-Assisted Development
 
-MedCore embraces AI coding assistants as part of the development workflow:
+MedicHp embraces AI coding assistants as part of the development workflow:
 
 - Structured prompts in `docs/AI/` guide AI agents through specific implementation tasks.
 - The `docs/README_FOR_AI.md` serves as the mandatory pre-read for all AI tools.
@@ -602,7 +602,7 @@ MedCore embraces AI coding assistants as part of the development workflow:
 
 ## 9. Future Scalability Blueprint
 
-MedCore's architecture is designed so that the following capabilities can be added **without requiring a major redesign** of the existing codebase.
+MedicHp's architecture is designed so that the following capabilities can be added **without requiring a major redesign** of the existing codebase.
 
 ### 9.1 Scalability Matrix
 
@@ -720,8 +720,8 @@ graph LR
 
 | Version | Date       | Author                   | Changes                                                  |
 |---------|------------|--------------------------|----------------------------------------------------------|
-| 1.0     | 2026-08-04 | MedCore Architecture Team | Initial placeholder specification                        |
-| 2.0     | 2026-08-06 | MedCore Architecture Team | Complete specification: vision, roadmap, architecture, tech stack, scalability |
+| 1.0     | 2026-08-04 | MedicHp Architecture Team | Initial placeholder specification                        |
+| 2.0     | 2026-08-06 | MedicHp Architecture Team | Complete specification: vision, roadmap, architecture, tech stack, scalability |
 
 ### Future Revisions
 

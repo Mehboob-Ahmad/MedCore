@@ -1,4 +1,4 @@
-# 🌐 API Specification — MedCore Digital Healthcare Ecosystem
+# 🌐 API Specification — MedicHp Digital Healthcare Ecosystem
 
 > **Document Type:** API Specification (Authoritative)
 > **Version:** 2.0
@@ -6,7 +6,7 @@
 > **Status:** Active
 > **Audience:** Backend engineers, frontend developers, mobile developers, AI coding assistants
 > **Scope:** Phase 1 — Independent Doctors + Patients
-> **Base URL:** `https://api.medcore.com/api/v1`
+> **Base URL:** `https://api.medichp.com/api/v1`
 
 ---
 
@@ -82,7 +82,7 @@ This API specification serves as the **contract** between all consumers:
 ### 2.3 URL Structure
 
 ```
-https://api.medcore.com/api/v1/{resource}/{id?}/{sub-resource?}
+https://api.medichp.com/api/v1/{resource}/{id?}/{sub-resource?}
 ```
 
 | Convention                      | Example                                      |
@@ -187,7 +187,7 @@ X-RateLimit-Reset: 1691309760
 
 | Setting              | Value                                                    |
 |----------------------|----------------------------------------------------------|
-| Allowed Origins      | `https://medcore.com`, `https://admin.medcore.com`, `http://localhost:3000` (dev) |
+| Allowed Origins      | `https://medichp.com`, `https://admin.medichp.com`, `http://localhost:3000` (dev) |
 | Allowed Methods      | `GET, POST, PUT, PATCH, DELETE, OPTIONS`                 |
 | Allowed Headers      | `Authorization, Content-Type, X-Request-Id`              |
 | Exposed Headers      | `X-RateLimit-Limit, X-RateLimit-Remaining, X-Correlation-Id` |
@@ -243,7 +243,7 @@ Every API response uses this envelope structure:
 {
   "success": false,
   "error": {
-    "type": "https://medcore.com/errors/validation-error",
+    "type": "https://medichp.com/errors/validation-error",
     "title": "Validation Error",
     "status": 422,
     "detail": "One or more validation errors occurred.",
@@ -800,7 +800,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
     "lastName": "Khan",
     "email": "ahmed@example.com",
     "phoneNumber": "+923001234567",
-    "profilePhotoUrl": "https://cdn.medcore.com/photos/a1b2c3d4.jpg",
+    "profilePhotoUrl": "https://cdn.medichp.com/photos/a1b2c3d4.jpg",
     "dateOfBirth": "1998-05-15",
     "gender": "Male",
     "bloodType": "A+",
@@ -993,7 +993,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
     "lastName": "Malik",
     "email": "dr.ayesha@example.com",
     "phoneNumber": "+923009876543",
-    "profilePhotoUrl": "https://cdn.medcore.com/photos/doc.jpg",
+    "profilePhotoUrl": "https://cdn.medichp.com/photos/doc.jpg",
     "bio": "Board-certified dermatologist with 10 years of experience...",
     "specializations": [
       { "id": "spec-uuid", "name": "Dermatology", "isPrimary": true }
@@ -1168,7 +1168,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
 
 ### 7.6 Doctor-Initiated Patient Creation
 
-**Purpose:** Doctor adds a walk-in patient who doesn't have a MedCore account.
+**Purpose:** Doctor adds a walk-in patient who doesn't have a MedicHp account.
 
 | Attribute          | Value                                        |
 |--------------------|----------------------------------------------|
@@ -1806,7 +1806,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
         "id": "user-uuid",
         "name": "Dr. Ayesha Malik",
         "role": "Doctor",
-        "profilePhotoUrl": "https://cdn.medcore.com/photos/doc.jpg"
+        "profilePhotoUrl": "https://cdn.medichp.com/photos/doc.jpg"
       },
       "lastMessage": {
         "content": "Please share photos of the affected area.",
@@ -2041,7 +2041,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
       "doctorId": "doctor-user-uuid",
       "firstName": "Ayesha",
       "lastName": "Malik",
-      "profilePhotoUrl": "https://cdn.medcore.com/photos/doc.jpg",
+      "profilePhotoUrl": "https://cdn.medichp.com/photos/doc.jpg",
       "specializations": [
         { "id": "spec-uuid", "name": "Dermatology" }
       ],
@@ -2181,7 +2181,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
   "success": true,
   "data": {
     "fileId": "file-uuid",
-    "url": "https://cdn.medcore.com/files/file-uuid.jpg",
+    "url": "https://cdn.medichp.com/files/file-uuid.jpg",
     "contentType": "image/jpeg",
     "fileSizeBytes": 245000
   }
@@ -2353,7 +2353,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
 {
   "firstName": "Haris",
   "lastName": "Ahmed",
-  "email": "haris@medcore.com",
+  "email": "haris@medichp.com",
   "phoneNumber": "+923001234568",
   "password": "AdminP@ss1"
 }
@@ -2473,7 +2473,7 @@ GET /api/v1/search/doctors?q=headache&cityId=...&minFee=200
 ```mermaid
 sequenceDiagram
     participant P as Patient
-    participant API as MedCore API
+    participant API as MedicHp API
     participant DB as Database
     participant E as Email Service
 
@@ -2515,7 +2515,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant D as Doctor
-    participant API as MedCore API
+    participant API as MedicHp API
     participant DB as Database
     participant N as Notification Service
 
@@ -2549,7 +2549,7 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant C as Client
-    participant API as MedCore API
+    participant API as MedicHp API
 
     C->>API: POST /auth/login
     API-->>C: 200 {accessToken (15m), refreshToken}
@@ -2584,7 +2584,7 @@ sequenceDiagram
 |-------------------------|---------------------------------------------------------|
 | Versioning method       | URL path: `/api/v1/`, `/api/v2/`                        |
 | Current version         | `v1`                                                    |
-| Header support (future) | `Accept: application/vnd.medcore.v2+json`               |
+| Header support (future) | `Accept: application/vnd.medichp.v2+json`               |
 
 ### 17.2 Version Lifecycle
 
@@ -2601,7 +2601,7 @@ When an endpoint or version is deprecated, responses include:
 ```
 Deprecation: true
 Sunset: Sat, 06 Feb 2027 00:00:00 GMT
-Link: <https://api.medcore.com/api/v2/doctors>; rel="successor-version"
+Link: <https://api.medichp.com/api/v2/doctors>; rel="successor-version"
 ```
 
 ### 17.4 Breaking vs. Non-Breaking Changes
@@ -2623,8 +2623,8 @@ Link: <https://api.medcore.com/api/v2/doctors>; rel="successor-version"
 
 | Version | Date       | Author                    | Changes                                                      |
 |---------|------------|---------------------------|--------------------------------------------------------------|
-| 1.0     | 2026-08-04 | MedCore Architecture Team | Initial placeholder API structure                            |
-| 2.0     | 2026-08-06 | MedCore API Architecture Team | Complete Phase 1 API specification: 70+ endpoints, request/response contracts, validation rules, error handling, flow diagrams |
+| 1.0     | 2026-08-04 | MedicHp Architecture Team | Initial placeholder API structure                            |
+| 2.0     | 2026-08-06 | MedicHp API Architecture Team | Complete Phase 1 API specification: 70+ endpoints, request/response contracts, validation rules, error handling, flow diagrams |
 
 ### Complete Endpoint Index
 

@@ -1,6 +1,6 @@
 # 🔍 Competitor Analysis
 
-> Analysis of existing healthcare platforms to inform MedCore's feature set and differentiation strategy.
+> Analysis of existing healthcare platforms to inform MedicHp's feature set and differentiation strategy.
 
 ---
 

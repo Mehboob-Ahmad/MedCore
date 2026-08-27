@@ -1,8 +1,8 @@
-# 🤖 README FOR AI — MedCore Project Constitution
+# 🤖 README FOR AI — MedicHp Project Constitution
 
-> **⚠️ MANDATORY — Read this document in full before generating, modifying, or reviewing any code in the MedCore codebase.**
+> **⚠️ MANDATORY — Read this document in full before generating, modifying, or reviewing any code in the MedicHp codebase.**
 >
-> This is the authoritative guide for every AI coding assistant — including Google Antigravity, Gemini, Codex, Claude, Cursor, GitHub Copilot, and any future tool — working on the MedCore project. Treat it as the project's **constitution**. Violations of these rules will result in rejected code.
+> This is the authoritative guide for every AI coding assistant — including Google Antigravity, Gemini, Codex, Claude, Cursor, GitHub Copilot, and any future tool — working on the MedicHp project. Treat it as the project's **constitution**. Violations of these rules will result in rejected code.
 
 ---
 
@@ -33,22 +33,22 @@
 
 | Attribute        | Value                                                        |
 |------------------|--------------------------------------------------------------|
-| **Name**         | MedCore                                                      |
+| **Name**         | MedicHp                                                      |
 | **Type**         | Digital Healthcare Ecosystem (SaaS)                          |
 | **Architecture** | Monorepo with microservice-ready backend                     |
 | **License**      | MIT                                                          |
 | **Stage**        | Active development — Phase 1 (Foundation)                    |
 
-### What MedCore Is
+### What MedicHp Is
 
-MedCore is a **production-ready, scalable SaaS platform** that connects patients, doctors, clinics, and administrators through a unified, secure digital healthcare ecosystem. It is designed for:
+MedicHp is a **production-ready, scalable SaaS platform** that connects patients, doctors, clinics, and administrators through a unified, secure digital healthcare ecosystem. It is designed for:
 
 - **Long-term commercial deployment** — not a prototype, demo, or throwaway project.
 - **Regulatory compliance** — HIPAA-aware and GDPR-aware by design.
 - **Multi-tenant operation** — supporting multiple clinics and organizations.
 - **Multi-platform delivery** — web (Next.js), admin dashboard (React + Vite), and mobile (React Native + Expo).
 
-### What MedCore Is NOT
+### What MedicHp Is NOT
 
 - ❌ A university or academic project.
 - ❌ A quick proof-of-concept or hackathon app.
@@ -151,7 +151,7 @@ Before implementing **any** feature, every AI must read the following documents 
 ### 5.1 Monorepo Layout
 
 ```
-MedCore/
+MedicHp/
 │
 ├── apps/                    → Frontend applications
 │   ├── website/             → Next.js public website
@@ -541,7 +541,7 @@ Before submitting **any** piece of work, verify **every** item on this checklist
 
 ```typescript
 // ❌ BAD — Hardcoded URL
-const API_URL = "https://api.medcore.com/v1";
+const API_URL = "https://api.medichp.com/v1";
 
 // ✅ GOOD — Environment variable
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -570,7 +570,7 @@ useEffect(() => {
 }, []);
 
 // ✅ GOOD — Shared API client from packages/api-client
-import { patientApi } from "@medcore/api-client";
+import { patientApi } from "@medichp/api-client";
 
 useEffect(() => {
   patientApi.getAll().then(setPatients).catch(handleError);
@@ -616,7 +616,7 @@ retryCount = 0;
 
 ## 17. Phase-Aware Development
 
-MedCore is built in **phases**. Each phase has defined scope. AI agents must respect phase boundaries.
+MedicHp is built in **phases**. Each phase has defined scope. AI agents must respect phase boundaries.
 
 | Phase   | Scope                                            | Status           |
 |---------|--------------------------------------------------|------------------|
@@ -667,6 +667,6 @@ MedCore is built in **phases**. Each phase has defined scope. AI agents must res
 
 ---
 
-> **This document is a living artifact.** It will evolve as MedCore grows. Every change to this document must be deliberate, reviewed, and committed with a `docs(ai): ...` commit message.
+> **This document is a living artifact.** It will evolve as MedicHp grows. Every change to this document must be deliberate, reviewed, and committed with a `docs(ai): ...` commit message.
 >
 > *Last reviewed: August 2026 — Phase 1 (Foundation)*

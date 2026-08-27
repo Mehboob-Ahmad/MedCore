@@ -1,6 +1,6 @@
 # 💡 Future Ideas
 
-> A living document of potential features, innovations, and expansion opportunities for MedCore.
+> A living document of potential features, innovations, and expansion opportunities for MedicHp.
 
 ---
 
