@@ -64,6 +64,8 @@ artifacts/
 # NuGet
 **/[Pp]ackages/*
 !**/[Pp]ackages/build/
+!packages/
+!packages/**/*
 *.nuget.props
 *.nuget.targets
 
