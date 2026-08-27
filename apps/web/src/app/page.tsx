@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { Search, CalendarCheck, FileText, Activity } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 
-const FADE_UP_ANIMATION_VARIANTS = {
+const FADE_UP_ANIMATION_VARIANTS: Variants = {
   hidden: { opacity: 0, y: 30 },
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20 } },
 };
