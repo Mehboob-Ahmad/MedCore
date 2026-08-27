@@ -9,6 +9,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "prepare": "husky install"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "devDependencies": {
     "turbo": "latest",
     "prettier": "latest",
