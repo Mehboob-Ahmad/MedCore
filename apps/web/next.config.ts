@@ -16,7 +16,7 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'standalone',
+  output: process.env.VERCEL ? undefined : 'standalone',
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true, // Gzip compression
