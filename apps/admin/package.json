@@ -19,7 +19,7 @@
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",
     "oxlint": "latest",
-    "typescript": "latest",
+    "typescript": "^5.7.0",
     "vite": "latest"
   }
 }
