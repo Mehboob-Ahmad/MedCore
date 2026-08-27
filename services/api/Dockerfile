@@ -3,17 +3,17 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy solution and restore dependencies
-COPY ["services/api/MedicHp.API/MedicHp.API.csproj", "services/api/MedicHp.API/"]
-COPY ["services/api/MedicHp.Application/MedicHp.Application.csproj", "services/api/MedicHp.Application/"]
-COPY ["services/api/MedicHp.Domain/MedicHp.Domain.csproj", "services/api/MedicHp.Domain/"]
-COPY ["services/api/MedicHp.Infrastructure/MedicHp.Infrastructure.csproj", "services/api/MedicHp.Infrastructure/"]
-COPY ["services/api/MedicHp.Persistence/MedicHp.Persistence.csproj", "services/api/MedicHp.Persistence/"]
-COPY ["services/api/MedicHp.Shared/MedicHp.Shared.csproj", "services/api/MedicHp.Shared/"]
-RUN dotnet restore "services/api/MedicHp.API/MedicHp.API.csproj"
+COPY ["MedicHp.API/MedicHp.API.csproj", "MedicHp.API/"]
+COPY ["MedicHp.Application/MedicHp.Application.csproj", "MedicHp.Application/"]
+COPY ["MedicHp.Domain/MedicHp.Domain.csproj", "MedicHp.Domain/"]
+COPY ["MedicHp.Infrastructure/MedicHp.Infrastructure.csproj", "MedicHp.Infrastructure/"]
+COPY ["MedicHp.Persistence/MedicHp.Persistence.csproj", "MedicHp.Persistence/"]
+COPY ["MedicHp.Shared/MedicHp.Shared.csproj", "MedicHp.Shared/"]
+RUN dotnet restore "MedicHp.API/MedicHp.API.csproj"
 
 # Copy the rest of the source code and build
-COPY services/api/ ./services/api/
-WORKDIR "/src/services/api/MedicHp.API"
+COPY . .
+WORKDIR "/src/MedicHp.API"
 RUN dotnet build "MedicHp.API.csproj" -c Release -o /app/build
 
 # Publish the application
