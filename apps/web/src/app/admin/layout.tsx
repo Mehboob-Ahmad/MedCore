@@ -22,7 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <ShieldAlert className="w-5 h-5" />
             <span className="font-medium">System Logs</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-not-allowed opacity-50">
+          <Link href="/admin/settings" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
             <Settings className="w-5 h-5" />
             <span className="font-medium">Settings</span>
           </Link>
@@ -47,7 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Users className="w-6 h-6" />
             <span className="text-[10px] mt-1 font-medium">Users</span>
           </Link>
-          <Link href="#" className="flex flex-col items-center text-gray-400">
+          <Link href="/admin/settings" className="flex flex-col items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <Settings className="w-6 h-6" />
             <span className="text-[10px] mt-1 font-medium">Settings</span>
           </Link>

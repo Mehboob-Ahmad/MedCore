@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import { Stethoscope } from "lucide-react";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { NavbarAuthMenu } from "@/components/NavbarAuthMenu";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -37,12 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/specialties" className="hover:text-[var(--color-primary-600)] transition-colors">Specialties</Link>
                 <Link href="/about" className="hover:text-[var(--color-primary-600)] transition-colors">About Us</Link>
               </nav>
-              <div className="flex items-center gap-4">
-                <Link href="/login" className="text-sm font-medium hover:text-[var(--color-primary-600)]">Log in</Link>
-                <Link href="/register" className="text-sm font-medium bg-[var(--color-primary-600)] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity">
-                  Sign up
-                </Link>
-              </div>
+              <NavbarAuthMenu />
             </div>
           </header>
           <main className="flex-1 flex flex-col">{children}</main>
