@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://medihc-api.onrender.com';
+// Base URL configuration
+// For Android emulator testing, localhost won't work. Use your machine's local IP (e.g., 192.168.1.X)
+// Set this in apps/mobile/.env as EXPO_PUBLIC_API_URL=http://<YOUR_IP>:5188/api/v1
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5188/api/v1';
 
 const api = axios.create({
   baseURL: API_URL,
