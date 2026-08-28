@@ -246,6 +246,17 @@ public class AuthService : IAuthService
             });
         }
 
+        var existingPhone = await _userRepository
+            .FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber.Trim());
+
+        if (existingPhone != null)
+        {
+            throw new ValidationException(new[] 
+            { 
+                new ValidationFailure("PhoneNumber", "User with this phone number already exists.") 
+            });
+        }
+
         // 2. Create User
         var user = new User
         {

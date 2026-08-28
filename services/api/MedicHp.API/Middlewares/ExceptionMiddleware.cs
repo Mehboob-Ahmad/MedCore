@@ -58,6 +58,12 @@ public class ExceptionMiddleware
             message = authEx.Message; // Should be "Invalid credentials."
         }
 
+        if (exception is ValidationException validationException && validationException.Errors.Any())
+        {
+            var firstError = validationException.Errors.First();
+            message = firstError.Value.FirstOrDefault() ?? message;
+        }
+
         context.Response.StatusCode = (int)statusCode;
         var result = Result<object>.Failure(message, errorCode);
         var correlationId = context.TraceIdentifier;
@@ -65,16 +71,11 @@ public class ExceptionMiddleware
         var response = new 
         {
             success = result.IsSuccess,
-            message = result.ErrorMessage,
+            message = message,
             errorCode = result.ErrorCode,
             data = result.Value,
             correlationId = correlationId
         };
-
-        if (exception is ValidationException validationException)
-        {
-            // Future: Expand Result to carry validation errors if needed.
-        }
 
         var json = JsonSerializer.Serialize(response);
         await context.Response.WriteAsync(json);
