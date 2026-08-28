@@ -254,6 +254,7 @@ public class AuthService : IAuthService
             Email = request.Email?.Trim() ?? string.Empty,
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             EmailConfirmed = false, // Must verify their email
+            PhoneNumber = "",
             PhoneNumberConfirmed = false,
             IsActive = true
         };
