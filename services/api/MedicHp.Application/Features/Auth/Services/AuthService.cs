@@ -172,7 +172,7 @@ public class AuthService : IAuthService
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber,
             IsActive = true,
-            EmailConfirmed = false
+            EmailConfirmed = true // Auto-confirm during development until OTP UI is built
         };
 
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
@@ -214,7 +214,7 @@ public class AuthService : IAuthService
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber, // Might be empty now, will update in profile
             IsActive = true,
-            EmailConfirmed = false
+            EmailConfirmed = true // Auto-confirm during development until OTP UI is built
         };
 
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);

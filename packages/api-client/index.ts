@@ -26,6 +26,18 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Interceptor to handle responses and standardise error messages
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.data && error.response.data.message) {
+      // Backend returned a structured error message
+      return Promise.reject(new Error(error.response.data.message));
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth Service Endpoints
 export const AuthService = {
   login: async (data: any) => {
