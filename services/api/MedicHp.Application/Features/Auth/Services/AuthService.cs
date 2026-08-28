@@ -249,12 +249,12 @@ public class AuthService : IAuthService
         // 2. Create User
         var user = new User
         {
-            FirstName = "New",
-            LastName = "Admin",
+            FirstName = string.IsNullOrWhiteSpace(request.FirstName) ? "New" : request.FirstName.Trim(),
+            LastName = string.IsNullOrWhiteSpace(request.LastName) ? "Admin" : request.LastName.Trim(),
             Email = request.Email?.Trim() ?? string.Empty,
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             EmailConfirmed = false, // Must verify their email
-            PhoneNumber = $"INVITED_{Guid.NewGuid().ToString("N").Substring(0, 10)}",
+            PhoneNumber = request.PhoneNumber?.Trim() ?? string.Empty,
             PhoneNumberConfirmed = false,
             IsActive = true
         };

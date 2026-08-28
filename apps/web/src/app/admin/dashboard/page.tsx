@@ -9,7 +9,12 @@ import { Users, Activity, Mail, Loader2 } from "lucide-react";
 import { AdminService, AuthService } from "@medichp/api-client";
 
 export default function AdminDashboard() {
-  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteForm, setInviteForm] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: ""
+  });
   const [loading, setLoading] = useState(false);
   const [statsLoading, setStatsLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -37,13 +42,13 @@ export default function AdminDashboard() {
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inviteEmail) return;
+    if (!inviteForm.email) return;
     
     setLoading(true);
     try {
-      await AuthService.inviteAdmin({ email: inviteEmail });
-      alert(`Admin invitation sent to ${inviteEmail}`);
-      setInviteEmail("");
+      await AuthService.inviteAdmin(inviteForm);
+      alert(`Admin invitation sent to ${inviteForm.email}`);
+      setInviteForm({ email: "", firstName: "", lastName: "", phoneNumber: "" });
     } catch (error: any) {
       alert(error.response?.data?.message || "Failed to send invitation.");
     } finally {
@@ -121,18 +126,49 @@ export default function AdminDashboard() {
             </p>
             
             <form onSubmit={handleInvite} className="space-y-4">
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <Input 
-                  type="email" 
-                  placeholder="admin@example.com" 
-                  className="pl-10" 
-                  value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="relative">
+                  <Input 
+                    type="text" 
+                    placeholder="First Name" 
+                    value={inviteForm.firstName}
+                    onChange={(e) => setInviteForm({...inviteForm, firstName: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="relative">
+                  <Input 
+                    type="text" 
+                    placeholder="Last Name" 
+                    value={inviteForm.lastName}
+                    onChange={(e) => setInviteForm({...inviteForm, lastName: e.target.value})}
+                    required
+                  />
+                </div>
               </div>
-              <Button type="submit" disabled={loading || !inviteEmail} className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 dark:bg-slate-700">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input 
+                    type="email" 
+                    placeholder="admin@example.com" 
+                    className="pl-10" 
+                    value={inviteForm.email}
+                    onChange={(e) => setInviteForm({...inviteForm, email: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="relative">
+                  <Input 
+                    type="tel" 
+                    placeholder="Phone Number" 
+                    value={inviteForm.phoneNumber}
+                    onChange={(e) => setInviteForm({...inviteForm, phoneNumber: e.target.value})}
+                    required
+                  />
+                </div>
+              </div>
+              <Button type="submit" disabled={loading || !inviteForm.email} className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 dark:bg-slate-700">
                 {loading ? "Sending..." : "Send Invitation"}
               </Button>
             </form>

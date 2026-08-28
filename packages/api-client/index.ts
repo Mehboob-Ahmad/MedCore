@@ -44,7 +44,7 @@ export const AuthService = {
     const response = await apiClient.get('/auth/me');
     return response.data;
   },
-  inviteAdmin: async (data: { email: string }) => {
+  inviteAdmin: async (data: { email: string; firstName: string; lastName: string; phoneNumber: string }) => {
     const response = await apiClient.post('/auth/invite-admin', data);
     return response.data;
   },
