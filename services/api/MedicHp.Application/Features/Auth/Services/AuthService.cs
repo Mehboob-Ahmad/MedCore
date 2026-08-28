@@ -155,7 +155,14 @@ public class AuthService : IAuthService
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var existingUser = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (existingUser != null)
-            throw new InvalidOperationException("Email already exists.");
+            throw new ValidationException(new[] { new FluentValidation.Results.ValidationFailure("Email", "Email already exists.") });
+
+        if (!string.IsNullOrEmpty(request.PhoneNumber))
+        {
+            var existingPhone = await _userRepository.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+            if (existingPhone != null)
+                throw new ValidationException(new[] { new FluentValidation.Results.ValidationFailure("PhoneNumber", "Phone number already exists.") });
+        }
 
         var user = new User
         {
@@ -190,7 +197,14 @@ public class AuthService : IAuthService
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var existingUser = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (existingUser != null)
-            throw new InvalidOperationException("Email already exists.");
+            throw new ValidationException(new[] { new FluentValidation.Results.ValidationFailure("Email", "Email already exists.") });
+
+        if (!string.IsNullOrEmpty(request.PhoneNumber))
+        {
+            var existingPhone = await _userRepository.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+            if (existingPhone != null)
+                throw new ValidationException(new[] { new FluentValidation.Results.ValidationFailure("PhoneNumber", "Phone number already exists.") });
+        }
 
         var user = new User
         {
