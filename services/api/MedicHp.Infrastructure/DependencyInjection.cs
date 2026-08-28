@@ -13,7 +13,7 @@ public static class DependencyInjection
 
         services.AddScoped<MedicHp.Application.Features.Auth.Interfaces.ITokenService, MedicHp.Infrastructure.Services.Auth.TokenService>();
         services.AddScoped<MedicHp.Application.Features.Auth.Interfaces.ICurrentUserService, MedicHp.Infrastructure.Services.Auth.CurrentUserService>();
-        services.AddScoped<MedicHp.Application.Features.Auth.Interfaces.IEmailService, MedicHp.Infrastructure.Services.Auth.EmailService>();
+
 
         // HttpContextAccessor is needed by CurrentUserService
         services.AddHttpContextAccessor();
@@ -24,9 +24,13 @@ public static class DependencyInjection
         services.Configure<MedicHp.Infrastructure.Settings.WhatsAppSettings>(configuration.GetSection("WhatsApp"));
         services.Configure<MedicHp.Infrastructure.Settings.WhatsAppTemplateSettings>(configuration.GetSection("WhatsAppTemplates"));
         services.AddSingleton<IWhatsAppEventQueue, WhatsAppEventQueue>();
+        // Register HttpClient for EmailService
+        services.AddHttpClient<IEmailService, EmailService>();
         services.AddHttpClient<IWhatsAppService, WhatsAppService>();
         services.AddScoped<IWhatsAppNotificationService, WhatsAppNotificationService>();
         
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
         // Background Services
         services.AddHostedService<WhatsAppWebhookProcessor>();
         
