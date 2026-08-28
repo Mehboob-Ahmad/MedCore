@@ -57,7 +57,7 @@ export default function PatientDashboard() {
             <p className="text-amber-700 text-xs sm:text-sm">Complete your profile to book appointments and consult with doctors.</p>
           </div>
           <Link href="/patient/complete-profile">
-            <Button variant="default" className="bg-amber-500 hover:bg-amber-600 text-white whitespace-nowrap">
+            <Button variant="primary" className="bg-amber-500 hover:bg-amber-600 text-white whitespace-nowrap">
               Complete Profile
             </Button>
           </Link>
