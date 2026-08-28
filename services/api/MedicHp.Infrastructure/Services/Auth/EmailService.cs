@@ -52,6 +52,7 @@ public class EmailService : IEmailService
         catch (Exception ex)
         {
             _logger.LogError(ex, "[EmailService] Failed to send email to {To}", to);
+            throw; // Rethrow to surface exact SMTP error to diagnostic endpoint
         }
     }
 
