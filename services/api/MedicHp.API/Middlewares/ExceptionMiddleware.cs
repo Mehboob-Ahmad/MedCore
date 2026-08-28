@@ -51,6 +51,12 @@ public class ExceptionMiddleware
                 _ => HttpStatusCode.BadRequest
             };
         }
+        else if (exception is UnauthorizedAccessException authEx)
+        {
+            statusCode = HttpStatusCode.Unauthorized;
+            errorCode = "UNAUTHORIZED";
+            message = authEx.Message; // Should be "Invalid credentials."
+        }
 
         context.Response.StatusCode = (int)statusCode;
         var result = Result<object>.Failure(message, errorCode);

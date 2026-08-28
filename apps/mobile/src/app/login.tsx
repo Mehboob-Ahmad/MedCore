@@ -39,7 +39,7 @@ export default function Login() {
         router.replace('/');
       }
     } catch (error: any) {
-      const msg = error.response?.data?.message || error.message || 'Login failed';
+      const msg = error.response?.data?.ErrorMessage || error.response?.data?.message || error.message || 'Login failed';
       Alert.alert('Login Failed', msg);
     } finally {
       setLoading(false);

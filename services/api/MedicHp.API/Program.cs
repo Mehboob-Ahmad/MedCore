@@ -81,7 +81,13 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ProductionCors", policy => 
-        policy.SetIsOriginAllowed(origin => true) // Allow Vercel domains for testing
+        policy.WithOrigins(
+                "https://medichp.com", 
+                "https://www.medichp.com", 
+                "https://app.medichp.com", 
+                "https://admin.medichp.com", 
+                "https://med-core-web.vercel.app"
+              )
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials());
@@ -107,6 +113,8 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
+app.UseRouting();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
