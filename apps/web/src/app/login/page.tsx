@@ -1,13 +1,40 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Stethoscope, Mail, Lock } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent, CardFooter } from "@medichp/ui";
 import { Input } from "@medichp/ui";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      await login(formData);
+    } catch (err: any) {
+      setError(err.message || "Invalid credentials");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex-1 flex items-center justify-center p-4 bg-surface-50 dark:bg-slate-900 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-100/40 via-transparent to-transparent dark:from-sky-900/10">
       <motion.div 
@@ -29,12 +56,17 @@ export default function LoginPage() {
 
         <Card className="border-0 shadow-xl shadow-sky-900/5 dark:shadow-none dark:bg-slate-800/80">
           <CardContent className="pt-6">
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            {error && (
+              <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
+                {error}
+              </div>
+            )}
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="space-y-1">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="email" placeholder="john@example.com" className="pl-10" />
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" className="pl-10" required />
                 </div>
               </div>
               
@@ -45,22 +77,13 @@ export default function LoginPage() {
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="password" placeholder="••••••••" className="pl-10" />
+                  <Input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" className="pl-10" required />
                 </div>
               </div>
 
-              {/* For mock purposes, login redirects to patient dashboard */}
-              <Link href="/patient/dashboard">
-                <Button className="w-full mt-6" size="lg">
-                  Log In
-                </Button>
-              </Link>
-              
-              <div className="text-center mt-4">
-                <Link href="/doctor/dashboard" className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-gray-300 transition-colors">
-                  Log in as Doctor (Demo)
-                </Link>
-              </div>
+              <Button type="submit" className="w-full mt-6" size="lg" disabled={loading}>
+                {loading ? "Logging in..." : "Log In"}
+              </Button>
             </form>
           </CardContent>
           <CardFooter className="flex justify-center border-t border-gray-100 dark:border-slate-700/50 pt-6">

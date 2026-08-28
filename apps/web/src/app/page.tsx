@@ -32,11 +32,6 @@ export default function Home() {
           }}
           className="container mx-auto px-4 z-10 text-center max-w-4xl"
         >
-          <motion.div variants={FADE_UP_ANIMATION_VARIANTS} className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm text-sky-800 dark:border-sky-800/30 dark:bg-sky-900/30 dark:text-sky-300 mb-8">
-            <span className="flex h-2 w-2 rounded-full bg-sky-500 mr-2"></span>
-            MedicHp Phase 1 Now Live
-          </motion.div>
-          
           <motion.h1 
             variants={FADE_UP_ANIMATION_VARIANTS}
             className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 dark:text-white mb-6"
@@ -56,16 +51,9 @@ export default function Home() {
             variants={FADE_UP_ANIMATION_VARIANTS}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto"
           >
-            <div className="relative w-full sm:w-auto flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input 
-                placeholder="Search doctors, specialties, or symptoms..." 
-                className="pl-10 h-14 text-lg shadow-sm"
-              />
-            </div>
-            <Link href="/search">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-lg shadow-md shadow-blue-500/20">
-                Find a Doctor
+            <Link href="#join">
+              <Button size="lg" className="w-full sm:w-auto h-14 px-12 text-lg shadow-md shadow-blue-500/20">
+                Let's Get Started
               </Button>
             </Link>
           </motion.div>
@@ -129,7 +117,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="w-full py-24 bg-[var(--color-primary-600)] text-white relative overflow-hidden">
+      <section id="join" className="w-full py-24 bg-[var(--color-primary-600)] text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 p-32 opacity-10">
           <Activity className="w-96 h-96" />
         </div>

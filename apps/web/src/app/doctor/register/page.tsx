@@ -1,20 +1,71 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Stethoscope, User, Mail, Lock, Upload } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent, CardFooter } from "@medichp/ui";
 import { Input } from "@medichp/ui";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { AuthService } from "@medichp/api-client";
 
 export default function DoctorRegisterPage() {
-  const router = useRouter();
+  const { registerDoctor } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+  });
+  const [degreeFile, setDegreeFile] = useState<File | null>(null);
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Navigate to complete profile after registration
-    router.push("/doctor/complete-profile");
+    setLoading(true);
+    setError("");
+    
+    try {
+      let mbbsDegreeFileId = "00000000-0000-0000-0000-000000000000";
+      let licenseFileId = "00000000-0000-0000-0000-000000000000";
+
+      if (degreeFile) {
+        const degreeRes = await AuthService.uploadFile(degreeFile, "Degree");
+        if (degreeRes.success) mbbsDegreeFileId = degreeRes.fileId;
+      }
+      if (licenseFile) {
+        const licenseRes = await AuthService.uploadFile(licenseFile, "License");
+        if (licenseRes.success) licenseFileId = licenseRes.fileId;
+      }
+
+      const payload = {
+        ...formData,
+        confirmPassword: formData.password,
+        acceptTerms: true,
+        mbbsDegreeFileId,
+        licenseFileId
+      };
+
+      await registerDoctor(payload);
+    } catch (err: any) {
+      setError(err.message || "An error occurred during registration");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,12 +89,23 @@ export default function DoctorRegisterPage() {
 
         <Card className="border-0 shadow-xl shadow-blue-900/5 dark:shadow-none dark:bg-slate-800/80 border-t-4 border-t-[var(--color-secondary-500)]">
           <CardContent className="pt-6">
+            {error && (
+              <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
+                {error}
+              </div>
+            )}
             <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input placeholder="Dr. Jane Smith" className="pl-10" required />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Jane" className="pl-10" required />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
+                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Smith" required />
                 </div>
               </div>
               
@@ -51,7 +113,14 @@ export default function DoctorRegisterPage() {
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="email" placeholder="jane@clinic.com" className="pl-10" required />
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="jane@clinic.com" className="pl-10" required />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone number</label>
+                <div className="relative">
+                  <Input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="+1 987 654 3210" className="pl-3" required />
                 </div>
               </div>
               
@@ -59,7 +128,7 @@ export default function DoctorRegisterPage() {
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="password" placeholder="••••••••" className="pl-10" required />
+                  <Input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" className="pl-10" required />
                 </div>
               </div>
 
@@ -70,7 +139,7 @@ export default function DoctorRegisterPage() {
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload MBBS Degree</label>
                     <div className="relative flex items-center">
-                      <Input type="file" accept="image/*,.pdf" className="pl-10 py-1.5" required />
+                      <Input type="file" onChange={(e) => handleFileChange(e, setDegreeFile)} accept="image/*,.pdf" className="pl-10 py-1.5" required />
                       <Upload className="absolute left-3 h-4 w-4 text-gray-400" />
                     </div>
                     <p className="text-xs text-gray-500">Image or PDF format</p>
@@ -79,7 +148,7 @@ export default function DoctorRegisterPage() {
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Doctor's License</label>
                     <div className="relative flex items-center">
-                      <Input type="file" accept="image/*,.pdf" className="pl-10 py-1.5" required />
+                      <Input type="file" onChange={(e) => handleFileChange(e, setLicenseFile)} accept="image/*,.pdf" className="pl-10 py-1.5" required />
                       <Upload className="absolute left-3 h-4 w-4 text-gray-400" />
                     </div>
                     <p className="text-xs text-gray-500">Image or PDF format</p>
@@ -87,8 +156,8 @@ export default function DoctorRegisterPage() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-6 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600" size="lg">
-                Register & Continue
+              <Button type="submit" className="w-full mt-6 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600" size="lg" disabled={loading}>
+                {loading ? "Registering..." : "Register & Continue"}
               </Button>
             </form>
           </CardContent>

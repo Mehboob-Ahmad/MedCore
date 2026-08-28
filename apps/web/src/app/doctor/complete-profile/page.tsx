@@ -1,19 +1,50 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { UserCircle, BriefcaseMedical, Phone, Building2, Clock, DollarSign, FileBadge } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 import { useRouter } from "next/navigation";
+import { DoctorService } from "@medichp/api-client";
 
 export default function CompleteProfilePage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    phoneNumber: "",
+    licenseAuthority: "",
+    registrationNumber: "123456", // Default placeholder
+    clinicName: "",
+    address: "Not specified",
+    consultationFee: 100,
+    yearsOfExperience: 5, // Default placeholder
+    availabilityHours: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Navigate to dashboard after completion
-    router.push("/doctor/dashboard");
+    setLoading(true);
+    setError("");
+    try {
+      const payload = {
+        ...formData,
+        specializationIds: [],
+        consultationFee: Number(formData.consultationFee)
+      };
+      await DoctorService.completeProfile(payload);
+      router.push("/doctor/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Failed to complete profile");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,6 +66,11 @@ export default function CompleteProfilePage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-8">
+            {error && (
+              <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
+                {error}
+              </div>
+            )}
             <form className="space-y-6" onSubmit={handleSubmit}>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -42,7 +78,7 @@ export default function CompleteProfilePage() {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Specialization</label>
                   <div className="relative">
                     <BriefcaseMedical className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input placeholder="e.g. Cardiology" className="pl-10" required />
+                    <Input placeholder="e.g. Cardiology (Not connected to API)" className="pl-10" />
                   </div>
                 </div>
 
@@ -50,7 +86,7 @@ export default function CompleteProfilePage() {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Contact Number</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input type="tel" placeholder="+1 (555) 000-0000" className="pl-10" required />
+                    <Input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="+1 (555) 000-0000" className="pl-10" required />
                   </div>
                 </div>
 
@@ -58,7 +94,7 @@ export default function CompleteProfilePage() {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Licensing Authority</label>
                   <div className="relative">
                     <FileBadge className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input placeholder="e.g. Medical Council" className="pl-10" required />
+                    <Input name="licenseAuthority" value={formData.licenseAuthority} onChange={handleChange} placeholder="e.g. Medical Council" className="pl-10" required />
                   </div>
                 </div>
                 
@@ -66,7 +102,7 @@ export default function CompleteProfilePage() {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Clinic / Hospital Name</label>
                   <div className="relative">
                     <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input placeholder="City General Hospital" className="pl-10" required />
+                    <Input name="clinicName" value={formData.clinicName} onChange={handleChange} placeholder="City General Hospital" className="pl-10" required />
                   </div>
                 </div>
 
@@ -74,7 +110,7 @@ export default function CompleteProfilePage() {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Availability Hours</label>
                   <div className="relative">
                     <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input placeholder="Mon-Fri, 9:00 AM - 5:00 PM" className="pl-10" required />
+                    <Input name="availabilityHours" value={formData.availabilityHours} onChange={handleChange} placeholder="Mon-Fri, 9:00 AM - 5:00 PM" className="pl-10" required />
                   </div>
                 </div>
 
@@ -82,7 +118,7 @@ export default function CompleteProfilePage() {
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Consultation Fee ($)</label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input type="number" placeholder="100" className="pl-10" required />
+                    <Input type="number" name="consultationFee" value={formData.consultationFee} onChange={handleChange} placeholder="100" className="pl-10" required />
                   </div>
                 </div>
               </div>
@@ -91,8 +127,8 @@ export default function CompleteProfilePage() {
                 <Button type="button" variant="outline" className="mr-3" onClick={() => router.push('/doctor/dashboard')}>
                   Skip for now
                 </Button>
-                <Button type="submit" className="bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white px-8">
-                  Save Profile
+                <Button type="submit" className="bg-[var(--color-primary-600)] hover:bg-[var(--color-primary-700)] text-white px-8" disabled={loading}>
+                  {loading ? "Saving..." : "Save Profile"}
                 </Button>
               </div>
             </form>

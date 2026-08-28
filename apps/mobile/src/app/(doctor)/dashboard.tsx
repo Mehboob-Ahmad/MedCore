@@ -20,19 +20,8 @@ export default function DoctorDashboard() {
         setData(response.data);
       }
     } catch (error: any) {
-      // Temporary fallback for dev/testing if auth token is missing
-      Alert.alert('Notice', 'Using offline mock data (Failed to fetch API)');
-      setData({
-        totalPatients: 120,
-        todayAppointmentsCount: 4,
-        pendingReports: 2,
-        revenueThisMonth: 4500,
-        todayAppointments: [
-          { id: '1', patientName: 'John Doe', time: '10:00 AM', status: 'Scheduled' },
-          { id: '2', patientName: 'Jane Smith', time: '11:30 AM', status: 'In Progress' }
-        ],
-        recentConsultations: []
-      });
+      Alert.alert('Error', 'Failed to fetch dashboard data from live database');
+      setData({ todayAppointments: [] });
     } finally {
       setLoading(false);
     }

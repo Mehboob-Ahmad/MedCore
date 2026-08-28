@@ -21,39 +21,8 @@ export default function PatientDashboard() {
         setData(response.data);
       }
     } catch (error: any) {
-      Alert.alert('Notice', 'Using offline mock data (Failed to fetch API)');
-      setData({
-        patientSummary: {
-          firstName: 'Guest',
-          lastName: 'User',
-          profileCompletionPct: 80
-        },
-        quickStats: {
-          activePrescriptionsCount: 2,
-          unreadMessagesCount: 1,
-          lastConsultationDate: '2023-10-01'
-        },
-        upcomingAppointments: [
-          { 
-            appointmentId: '1', 
-            doctorName: 'Dr. Smith', 
-            specialty: 'Cardiology', 
-            scheduledDate: '2023-10-15T10:00:00Z', 
-            type: 'InPerson', 
-            status: 'Confirmed',
-            paymentStatus: 'Pending',
-            paymentMethods: [
-              {
-                paymentMethodType: 'BankTransfer',
-                paymentProvider: 'Meezan Bank',
-                accountTitle: 'Dr. John Smith',
-                accountNumber: '12345678901234',
-                maskedAccountNumber: '**********1234'
-              }
-            ]
-          }
-        ]
-      });
+      Alert.alert('Error', 'Failed to fetch dashboard data from live database');
+      setData({ upcomingAppointments: [] });
     } finally {
       setLoading(false);
     }
