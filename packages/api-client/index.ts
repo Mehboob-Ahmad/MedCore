@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // Base URL configuration - points to the .NET API
-// In production, this should come from an environment variable (e.g. process.env.NEXT_PUBLIC_API_URL)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5188/api/v1';
+// Forcing Render URL directly to bypass Vercel environment variable caching issues
+const API_BASE_URL = 'https://medichp.onrender.com/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
