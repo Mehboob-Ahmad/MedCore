@@ -81,7 +81,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ProductionCors", policy => 
-        policy.WithOrigins("https://app.medichp.com", "https://admin.medichp.com")
+        policy.SetIsOriginAllowed(origin => true) // Allow Vercel domains for testing
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials());
