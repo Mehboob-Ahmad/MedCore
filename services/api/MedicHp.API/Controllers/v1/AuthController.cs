@@ -17,12 +17,14 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMediator _mediator;
+    private readonly IEmailService _emailService;
 
-    public AuthController(IAuthService authService, ICurrentUserService currentUserService, IMediator mediator)
+    public AuthController(IAuthService authService, ICurrentUserService currentUserService, IMediator mediator, IEmailService emailService)
     {
         _authService = authService;
         _currentUserService = currentUserService;
         _mediator = mediator;
+        _emailService = emailService;
     }
 
     [HttpPost("push-token")]
@@ -122,6 +124,21 @@ public class AuthController : ControllerBase
     {
         await _authService.ResendVerificationEmailAsync(request);
         return Ok(new { success = true, message = "Verification code sent to your email." });
+    }
+
+    [HttpGet("test-email")]
+    [AllowAnonymous]
+    public async Task<IActionResult> TestEmail([FromQuery] string to)
+    {
+        try
+        {
+            await _emailService.SendWelcomeEmailAsync(to, "Test Diagnostic");
+            return Ok(new { success = true, message = "Email sent successfully from backend!" });
+        }
+        catch (System.Exception ex)
+        {
+            return BadRequest(new { success = false, error = ex.Message, stackTrace = ex.StackTrace, inner = ex.InnerException?.Message });
+        }
     }
 
     [HttpGet("me")]
