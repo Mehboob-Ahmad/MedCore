@@ -6,7 +6,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
-    connect-src 'self' ws://localhost:3000 wss://localhost:3000 http://localhost:5000 https://api.medichp.com;
+    connect-src 'self' ws://localhost:3000 wss://localhost:3000 http://localhost:5000 https://api.medichp.com https://medichp.onrender.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*',
+        destination: 'https://medichp.onrender.com/api/:path*',
       },
     ];
   },
