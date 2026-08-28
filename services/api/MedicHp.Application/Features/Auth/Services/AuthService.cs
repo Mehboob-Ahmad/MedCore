@@ -52,6 +52,40 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponseDto> LoginAsync(LoginDto request)
     {
+        var adminEmail = Environment.GetEnvironmentVariable("PRIMARY_ADMIN_EMAIL");
+        var adminPassword = Environment.GetEnvironmentVariable("PRIMARY_ADMIN_PASSWORD");
+
+        if (!string.IsNullOrEmpty(adminEmail) && 
+            !string.IsNullOrEmpty(adminPassword) && 
+            request.Email?.Trim().Equals(adminEmail, StringComparison.OrdinalIgnoreCase) == true && 
+            request.Password == adminPassword)
+        {
+            var adminUser = new User 
+            { 
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+                Email = adminEmail,
+                FirstName = "Primary",
+                LastName = "Admin",
+                IsActive = true,
+                EmailConfirmed = true,
+                UserRoles = new List<UserRole> 
+                { 
+                    new UserRole { Role = new Role { Name = "SystemAdmin", NormalizedName = "SYSTEMADMIN" } } 
+                }
+            };
+            
+            var adminAccessToken = await _tokenService.GenerateAccessTokenAsync(adminUser);
+            var adminRefreshTokenStr = _tokenService.GenerateRefreshToken();
+            
+            return new TokenResponseDto
+            {
+                AccessToken = adminAccessToken,
+                RefreshToken = adminRefreshTokenStr,
+                ExpiresIn = 900,
+                User = MapToDto(adminUser)
+            };
+        }
+
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var user = await _userRepository.FirstOrDefaultAsync(
             u => u.NormalizedEmail == normalizedEmail,
