@@ -57,8 +57,8 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponseDto> LoginAsync(LoginDto request)
     {
-        var adminEmail = Environment.GetEnvironmentVariable("PRIMARY_ADMIN_EMAIL");
-        var adminPassword = Environment.GetEnvironmentVariable("PRIMARY_ADMIN_PASSWORD");
+        var adminEmail = _configuration["PRIMARY_ADMIN_EMAIL"];
+        var adminPassword = _configuration["PRIMARY_ADMIN_PASSWORD"];
 
         if (!string.IsNullOrEmpty(adminEmail) && 
             !string.IsNullOrEmpty(adminPassword) && 
