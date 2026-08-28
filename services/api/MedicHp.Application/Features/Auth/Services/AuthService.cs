@@ -254,7 +254,7 @@ public class AuthService : IAuthService
             Email = request.Email?.Trim() ?? string.Empty,
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             EmailConfirmed = false, // Must verify their email
-            PhoneNumber = "",
+            PhoneNumber = $"INVITED_{Guid.NewGuid().ToString("N").Substring(0, 10)}",
             PhoneNumberConfirmed = false,
             IsActive = true
         };
