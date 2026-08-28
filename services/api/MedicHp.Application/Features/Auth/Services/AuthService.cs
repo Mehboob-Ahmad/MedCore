@@ -11,6 +11,8 @@ using MedicHp.Domain.Entities.Lookup;
 using MedicHp.Shared.Exceptions;
 using FluentValidation.Results;
 
+using Microsoft.Extensions.Configuration;
+
 namespace MedicHp.Application.Features.Auth.Services;
 
 public class AuthService : IAuthService
@@ -25,6 +27,7 @@ public class AuthService : IAuthService
     private readonly IEmailService _emailService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IConfiguration _configuration;
 
     public AuthService(
         IGenericRepository<User> userRepository,
@@ -36,7 +39,8 @@ public class AuthService : IAuthService
         ITokenService tokenService,
         IEmailService emailService,
         IUnitOfWork unitOfWork,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        IConfiguration configuration)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
@@ -48,6 +52,7 @@ public class AuthService : IAuthService
         _emailService = emailService;
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
+        _configuration = configuration;
     }
 
     public async Task<TokenResponseDto> LoginAsync(LoginDto request)
