@@ -9,7 +9,8 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
-  role: string;
+  roles?: string[];
+  role?: string;
 }
 
 interface AuthContextType {
@@ -57,13 +58,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
       setUser(res.data.user);
       
+      // Determine user role from the roles array (ASP.NET returns roles: ["RoleName"])
+      const userRoles = res.data.user.roles || res.data.user.Roles || [];
+      const primaryRole = userRoles.length > 0 ? userRoles[0] : res.data.user.role;
+      
       // Redirect based on role
-      if (res.data.user.role === "Doctor") {
+      if (primaryRole === "Doctor") {
         router.push("/doctor/dashboard");
-      } else if (res.data.user.role === "Patient") {
+      } else if (primaryRole === "Patient") {
         router.push("/patient/dashboard");
+      } else if (primaryRole === "SystemAdmin" || primaryRole === "Admin") {
+        router.push("/admin/dashboard");
       } else {
-        router.push("/dashboard");
+        router.push("/");
       }
     } else {
       throw new Error(res.message || "Login failed");
