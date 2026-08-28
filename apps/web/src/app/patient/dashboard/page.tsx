@@ -12,14 +12,22 @@ import { PatientService } from "@medichp/api-client";
 export default function PatientDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await PatientService.getDashboardStats();
-        if (res.success) {
-          setStats(res.data);
+        const [statsRes, profileRes] = await Promise.all([
+          PatientService.getDashboardStats(),
+          PatientService.getProfile()
+        ]);
+        
+        if (statsRes.success) {
+          setStats(statsRes.data);
+        }
+        if (profileRes.success) {
+          setProfile(profileRes.data);
         }
       } catch (error) {
         console.error("Failed to load dashboard stats", error);
@@ -38,8 +46,24 @@ export default function PatientDashboard() {
     );
   }
 
+  const isProfileIncomplete = profile && profile.profileCompletionPercentage < 100;
+
   return (
     <div className="space-y-6 pb-20 md:pb-0">
+      {isProfileIncomplete && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div>
+            <h3 className="text-amber-800 font-semibold text-sm sm:text-base">Your profile is incomplete</h3>
+            <p className="text-amber-700 text-xs sm:text-sm">Complete your profile to book appointments and consult with doctors.</p>
+          </div>
+          <Link href="/patient/complete-profile">
+            <Button variant="default" className="bg-amber-500 hover:bg-amber-600 text-white whitespace-nowrap">
+              Complete Profile
+            </Button>
+          </Link>
+        </motion.div>
+      )}
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Hello, {user?.firstName || "Patient"}</h1>

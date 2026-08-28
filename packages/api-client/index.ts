@@ -101,7 +101,11 @@ export const PatientService = {
     return response.data;
   },
   getProfile: async () => {
-    const response = await apiClient.get('/auth/me'); // Since auth/me returns the user profile
+    const response = await apiClient.get('/patients/profile');
+    return response.data;
+  },
+  updateProfile: async (data: any) => {
+    const response = await apiClient.patch('/patients/profile', data);
     return response.data;
   },
   // Future implementation for stats/messages if backend adds them explicitly
@@ -151,5 +155,10 @@ export const AdminService = {
   getStats: async () => {
     const response = await apiClient.get('/admin/stats');
     return response.data;
-  }
+  },
+  getSpecialties: async () => {
+    const response = await apiClient.get('/system/specialties');
+    return response.data;
+  },
 };
+
