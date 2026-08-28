@@ -11,6 +11,8 @@ using MedicHp.Domain.Entities.Lookup;
 using MedicHp.Shared.Exceptions;
 using FluentValidation.Results;
 
+using Microsoft.Extensions.Configuration;
+
 namespace MedicHp.Application.Features.Auth.Services;
 
 public class AuthService : IAuthService
@@ -25,6 +27,7 @@ public class AuthService : IAuthService
     private readonly IEmailService _emailService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IConfiguration _configuration;
 
     public AuthService(
         IGenericRepository<User> userRepository,
@@ -36,7 +39,8 @@ public class AuthService : IAuthService
         ITokenService tokenService,
         IEmailService emailService,
         IUnitOfWork unitOfWork,
-        ICurrentUserService currentUserService)
+        ICurrentUserService currentUserService,
+        IConfiguration configuration)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
@@ -48,10 +52,45 @@ public class AuthService : IAuthService
         _emailService = emailService;
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
+        _configuration = configuration;
     }
 
     public async Task<TokenResponseDto> LoginAsync(LoginDto request)
     {
+        var adminEmail = _configuration["PRIMARY_ADMIN_EMAIL"];
+        var adminPassword = _configuration["PRIMARY_ADMIN_PASSWORD"];
+
+        if (!string.IsNullOrEmpty(adminEmail) && 
+            !string.IsNullOrEmpty(adminPassword) && 
+            request.Email?.Trim().Equals(adminEmail, StringComparison.OrdinalIgnoreCase) == true && 
+            request.Password == adminPassword)
+        {
+            var adminUser = new User 
+            { 
+                Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+                Email = adminEmail,
+                FirstName = "Primary",
+                LastName = "Admin",
+                IsActive = true,
+                EmailConfirmed = true,
+                UserRoles = new List<UserRole> 
+                { 
+                    new UserRole { Role = new Role { Name = "SystemAdmin", NormalizedName = "SYSTEMADMIN" } } 
+                }
+            };
+            
+            var adminAccessToken = await _tokenService.GenerateAccessTokenAsync(adminUser);
+            var adminRefreshTokenStr = _tokenService.GenerateRefreshToken();
+            
+            return new TokenResponseDto
+            {
+                AccessToken = adminAccessToken,
+                RefreshToken = adminRefreshTokenStr,
+                ExpiresIn = 900,
+                User = MapToDto(adminUser)
+            };
+        }
+
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var user = await _userRepository.FirstOrDefaultAsync(
             u => u.NormalizedEmail == normalizedEmail,
