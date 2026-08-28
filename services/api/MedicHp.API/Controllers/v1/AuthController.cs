@@ -128,12 +128,18 @@ public class AuthController : ControllerBase
 
     [HttpGet("test-email")]
     [AllowAnonymous]
-    public async Task<IActionResult> TestEmail([FromQuery] string to)
+    public async Task<IActionResult> TestEmail([FromQuery] string to, [FromServices] Microsoft.Extensions.Configuration.IConfiguration configuration)
     {
         try
         {
+            var pwd = configuration["SMTP_PASSWORD"];
+            if (string.IsNullOrEmpty(pwd))
+            {
+                return BadRequest(new { success = false, error = "SMTP_PASSWORD is NULL or EMPTY in environment variables!" });
+            }
+
             await _emailService.SendWelcomeEmailAsync(to, "Test Diagnostic");
-            return Ok(new { success = true, message = "Email sent successfully from backend!" });
+            return Ok(new { success = true, message = $"Email sent successfully! Password length: {pwd.Length}" });
         }
         catch (System.Exception ex)
         {
