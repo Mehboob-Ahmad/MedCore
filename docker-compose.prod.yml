@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://api.medichp.com/api/v1
     image: medichp-web:latest
     restart: always
     environment:

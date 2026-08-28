@@ -6,7 +6,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
     font-src 'self';
-    connect-src 'self' ws://localhost:3000 wss://localhost:3000 http://localhost:5000;
+    connect-src 'self' ws://localhost:3000 wss://localhost:3000 http://localhost:5000 https://api.medichp.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';

@@ -22,6 +22,10 @@ COPY --from=deps /app/packages/ui/node_modules ./packages/ui/node_modules
 # Next.js telemetry is disabled
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Expose NEXT_PUBLIC_API_URL during build
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 # Run build
 RUN corepack enable pnpm && pnpm --filter web build
 
