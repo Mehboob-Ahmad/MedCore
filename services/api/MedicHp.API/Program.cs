@@ -81,13 +81,13 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ProductionCors", policy => 
-        policy.WithOrigins(
-                "https://medichp.com", 
-                "https://www.medichp.com", 
-                "https://app.medichp.com", 
-                "https://admin.medichp.com", 
-                "https://med-core-web.vercel.app"
-              )
+        policy.SetIsOriginAllowed(origin => 
+                  origin.EndsWith(".medichp.com") || 
+                  origin == "https://medichp.com" ||
+                  origin.EndsWith(".medichp.co") || 
+                  origin == "https://medichp.co" ||
+                  origin.EndsWith(".vercel.app") ||
+                  origin.StartsWith("http://localhost:"))
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials());
