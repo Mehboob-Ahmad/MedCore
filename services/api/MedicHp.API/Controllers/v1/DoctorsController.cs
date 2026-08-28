@@ -7,6 +7,8 @@ using MedicHp.Application.Features.Doctors.Queries.GetAvailableSlots;
 using MedicHp.Application.Features.Doctors.Queries.GetDoctorDashboard;
 using MedicHp.Application.Features.Doctors.Queries.GetDoctorProfile;
 using MedicHp.Application.Features.Doctors.Queries.SearchDoctors;
+using MedicHp.Application.Features.DoctorSearch.Queries.GetPublicDoctorProfile;
+using MedicHp.Application.Features.DoctorSearch.Queries.GetRelatedDoctors;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -92,6 +94,7 @@ public class DoctorsController : ControllerBase
         return Ok(new { success = true, data = result });
     }
 
+    [AllowAnonymous]
     [HttpGet("search")]
     public async Task<IActionResult> SearchDoctors([FromQuery] string? searchTerm, [FromQuery] string? specialty, [FromQuery] string? gender)
     {
@@ -106,6 +109,27 @@ public class DoctorsController : ControllerBase
         return Ok(new { success = true, data = result });
     }
 
+    [AllowAnonymous]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPublicProfile(Guid id)
+    {
+        var query = new GetPublicDoctorProfileQuery { DoctorId = id };
+        var result = await _mediator.Send(query);
+
+        return Ok(new { success = true, data = result });
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{id}/related")]
+    public async Task<IActionResult> GetRelatedDoctors(Guid id, [FromQuery] int limit = 4)
+    {
+        var query = new GetRelatedDoctorsQuery { DoctorId = id, Limit = limit };
+        var result = await _mediator.Send(query);
+
+        return Ok(new { success = true, data = result });
+    }
+
+    [AllowAnonymous]
     [HttpGet("{id}/slots")]
     public async Task<IActionResult> GetAvailableSlots(Guid id, [FromQuery] DateTime date)
     {
