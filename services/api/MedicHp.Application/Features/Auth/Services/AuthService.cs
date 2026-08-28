@@ -52,12 +52,13 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponseDto> LoginAsync(LoginDto request)
     {
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var user = await _userRepository.FirstOrDefaultAsync(
-            u => u.NormalizedEmail == request.Email.ToUpper(),
+            u => u.NormalizedEmail == normalizedEmail,
             include: q => q.Include(u => u.UserRoles).ThenInclude(ur => ur.Role));
 
         if (user == null)
-            throw new UnauthorizedAccessException("Invalid credentials.");
+            throw new UnauthorizedAccessException("Invalid email or password.");
 
         if (!user.IsActive)
             throw new UnauthorizedAccessException("Account suspended.");
@@ -79,7 +80,7 @@ public class AuthService : IAuthService
             }
             await _userRepository.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();
-            throw new UnauthorizedAccessException("Invalid credentials.");
+            throw new UnauthorizedAccessException("Invalid email or password.");
         }
 
         user.FailedLoginAttempts = 0;
@@ -112,7 +113,8 @@ public class AuthService : IAuthService
 
     public async Task<UserDto> RegisterPatientAsync(RegisterPatientDto request)
     {
-        var existingUser = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == request.Email.ToUpper());
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
+        var existingUser = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (existingUser != null)
             throw new InvalidOperationException("Email already exists.");
 
@@ -120,8 +122,8 @@ public class AuthService : IAuthService
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
-            Email = request.Email,
-            NormalizedEmail = request.Email.ToUpper(),
+            Email = request.Email?.Trim() ?? string.Empty,
+            NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber,
             IsActive = true,
             EmailConfirmed = false
@@ -146,7 +148,8 @@ public class AuthService : IAuthService
 
     public async Task<UserDto> RegisterDoctorAsync(RegisterDoctorDto request)
     {
-        var existingUser = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == request.Email.ToUpper());
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
+        var existingUser = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (existingUser != null)
             throw new InvalidOperationException("Email already exists.");
 
@@ -154,8 +157,8 @@ public class AuthService : IAuthService
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
-            Email = request.Email,
-            NormalizedEmail = request.Email.ToUpper(),
+            Email = request.Email?.Trim() ?? string.Empty,
+            NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber, // Might be empty now, will update in profile
             IsActive = true,
             EmailConfirmed = false
@@ -191,9 +194,10 @@ public class AuthService : IAuthService
 
     public async Task<UserDto> InviteAdminAsync(InviteAdminDto request)
     {
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         // 1. Check if user already exists
         var existingUser = await _userRepository
-            .FirstOrDefaultAsync(u => u.NormalizedEmail == request.Email.ToUpper());
+            .FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
 
         if (existingUser != null)
         {
@@ -208,8 +212,8 @@ public class AuthService : IAuthService
         {
             FirstName = "New",
             LastName = "Admin",
-            Email = request.Email,
-            NormalizedEmail = request.Email.ToUpper(),
+            Email = request.Email?.Trim() ?? string.Empty,
+            NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             EmailConfirmed = false, // Must verify their email
             PhoneNumberConfirmed = false,
             IsActive = true
@@ -305,7 +309,8 @@ public class AuthService : IAuthService
 
     public async Task ForgotPasswordAsync(ForgotPasswordDto request)
     {
-        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == request.Email.ToUpper());
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
+        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (user != null)
         {
             var resetToken = Guid.NewGuid().ToString("N");
@@ -316,7 +321,8 @@ public class AuthService : IAuthService
 
     public async Task ResetPasswordAsync(ResetPasswordDto request)
     {
-        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == request.Email.ToUpper());
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
+        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (user != null)
         {
             // Assume token verification is successful
@@ -342,7 +348,8 @@ public class AuthService : IAuthService
 
     public async Task VerifyEmailAsync(VerifyEmailDto request)
     {
-        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == request.Email.ToUpper());
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
+        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (user != null && !user.EmailConfirmed)
         {
             // Assume OTP "123456" is always valid for now
@@ -361,7 +368,8 @@ public class AuthService : IAuthService
 
     public async Task ResendVerificationEmailAsync(ResendVerificationDto request)
     {
-        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == request.Email.ToUpper());
+        var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
+        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (user != null && !user.EmailConfirmed)
         {
             await _emailService.SendVerificationEmailAsync(user.Email, "123456");

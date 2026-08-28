@@ -64,11 +64,11 @@ public class ExceptionMiddleware
 
         var response = new 
         {
-            result.IsSuccess,
-            result.ErrorMessage,
-            result.ErrorCode,
-            result.Value,
-            CorrelationId = correlationId
+            success = result.IsSuccess,
+            message = result.ErrorMessage,
+            errorCode = result.ErrorCode,
+            data = result.Value,
+            correlationId = correlationId
         };
 
         if (exception is ValidationException validationException)
