@@ -1,27 +1,54 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@medichp/ui";
 import { Button } from "@medichp/ui";
 import { Input } from "@medichp/ui";
-import { Users, Activity, Mail } from "lucide-react";
-import { useState } from "react";
+import { Users, Activity, Mail, Loader2 } from "lucide-react";
+import { AdminService, AuthService } from "@medichp/api-client";
 
 export default function AdminDashboard() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalDoctors: 0,
+    totalPatients: 0,
+    monthlyActive: 0,
+  });
 
-  const handleInvite = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await AdminService.getStats();
+        if (response.success) {
+          setStats(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch admin stats", error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inviteEmail) return;
     
     setLoading(true);
-    // Mock API call
-    setTimeout(() => {
-      setLoading(false);
-      setInviteEmail("");
+    try {
+      await AuthService.inviteAdmin({ email: inviteEmail });
       alert(`Admin invitation sent to ${inviteEmail}`);
-    }, 1000);
+      setInviteEmail("");
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Failed to send invitation.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,47 +63,53 @@ export default function AdminDashboard() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">Total Users</h3>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">14,231</div>
-              <p className="text-sm text-green-500 flex items-center gap-1"><Activity className="w-3 h-3" /> +12% this month</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-        
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">Monthly Active</h3>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">8,902</div>
-              <p className="text-sm text-green-500 flex items-center gap-1"><Activity className="w-3 h-3" /> +5% this month</p>
-            </CardContent>
-          </Card>
-        </motion.div>
+      {statsLoading ? (
+        <div className="flex justify-center items-center h-48">
+          <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">Total Users</h3>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.totalUsers}</div>
+                <p className="text-sm text-green-500 flex items-center gap-1"><Activity className="w-3 h-3" /> Live</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+          
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">Monthly Active</h3>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats.monthlyActive}</div>
+                <p className="text-sm text-green-500 flex items-center gap-1"><Activity className="w-3 h-3" /> Live</p>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <Card className="bg-[var(--color-primary-600)] text-white border-none shadow-lg shadow-sky-900/10">
-            <CardContent className="p-6">
-              <h3 className="font-medium text-sky-100 mb-1">Total Doctors</h3>
-              <div className="text-3xl font-bold mb-2">1,204</div>
-              <p className="text-sm text-sky-200">Registered practitioners</p>
-            </CardContent>
-          </Card>
-        </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <Card className="bg-[var(--color-primary-600)] text-white border-none shadow-lg shadow-sky-900/10">
+              <CardContent className="p-6">
+                <h3 className="font-medium text-sky-100 mb-1">Total Doctors</h3>
+                <div className="text-3xl font-bold mb-2">{stats.totalDoctors}</div>
+                <p className="text-sm text-sky-200">Registered practitioners</p>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-          <Card className="bg-[var(--color-secondary-500)] text-white border-none shadow-lg shadow-green-900/10">
-            <CardContent className="p-6">
-              <h3 className="font-medium text-green-100 mb-1">Total Patients</h3>
-              <div className="text-3xl font-bold mb-2">13,027</div>
-              <p className="text-sm text-green-200">Registered patients</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+            <Card className="bg-[var(--color-secondary-500)] text-white border-none shadow-lg shadow-green-900/10">
+              <CardContent className="p-6">
+                <h3 className="font-medium text-green-100 mb-1">Total Patients</h3>
+                <div className="text-3xl font-bold mb-2">{stats.totalPatients}</div>
+                <p className="text-sm text-green-200">Registered patients</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      )}
 
       <h2 className="text-xl font-bold text-gray-900 dark:text-white pt-4">System Administration</h2>
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Base URL configuration - points to the .NET API
 // In production, this should come from an environment variable (e.g. process.env.NEXT_PUBLIC_API_URL)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://medihc-api.onrender.com/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -42,6 +42,10 @@ export const AuthService = {
   },
   getProfile: async () => {
     const response = await apiClient.get('/auth/me');
+    return response.data;
+  },
+  inviteAdmin: async (data: { email: string }) => {
+    const response = await apiClient.post('/auth/invite-admin', data);
     return response.data;
   },
   logout: async () => {
@@ -124,5 +128,12 @@ export const DoctorService = {
   getMessages: async () => {
     // Placeholder until backend implements /chat/threads
     return { success: true, data: [] };
+  }
+};
+
+export const AdminService = {
+  getStats: async () => {
+    const response = await apiClient.get('/admin/stats');
+    return response.data;
   }
 };
