@@ -64,6 +64,14 @@ export const AuthService = {
     const response = await apiClient.post('/auth/change-password', data);
     return response.data;
   },
+  forgotPassword: async (data: { email: string }) => {
+    const response = await apiClient.post('/auth/forgot-password', data);
+    return response.data;
+  },
+  resetPassword: async (data: any) => {
+    const response = await apiClient.post('/auth/reset-password', data);
+    return response.data;
+  },
   logout: async () => {
     if (typeof window !== 'undefined') {
       const refreshToken = localStorage.getItem('medichp_refresh_token');

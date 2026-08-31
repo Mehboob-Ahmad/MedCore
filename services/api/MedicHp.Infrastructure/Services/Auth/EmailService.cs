@@ -78,8 +78,21 @@ public class EmailService : IEmailService
 
     public async Task SendPasswordResetEmailAsync(string to, string resetToken)
     {
-        _logger.LogInformation("[EmailService] Sending Password Reset Email to {To} with Token {Token}", to, resetToken);
-        await SendEmailAsync(to, "MedicHp - Password Reset", $"Your password reset token is: <b>{resetToken}</b>");
+        _logger.LogInformation("[EmailService] Sending Password Reset Email to {To}", to);
+        var frontendUrl = _configuration["FRONTEND_URL"] ?? "http://localhost:3000";
+        var resetLink = $"{frontendUrl}/reset-password?token={resetToken}&email={Uri.EscapeDataString(to)}";
+        
+        string body = $@"
+            <h3>MedicHp — Password Reset Request</h3>
+            <p>Hello,</p>
+            <p>A password reset was requested for your MedicHp account.</p>
+            <p>Click the link below to create a new password:</p>
+            <p><a href='{resetLink}'>Reset Password</a></p>
+            <p>This link will expire in 60 minutes.</p>
+            <p>If you did not request a password reset, you can safely ignore this email.</p>
+            <p>Regards,<br>MedicHp</p>
+        ";
+        await SendEmailAsync(to, "MedicHp - Password Reset Request", body);
     }
 
     public async Task SendWelcomeEmailAsync(string to, string name, string tempPassword)

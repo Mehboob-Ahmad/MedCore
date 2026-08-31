@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using MedicHp.Domain.Entities.Lookup;
 using MedicHp.Shared.Exceptions;
 using FluentValidation.Results;
+using System.Security.Cryptography;
+using System.Text;
 
 using Microsoft.Extensions.Configuration;
 
@@ -21,6 +23,7 @@ public class AuthService : IAuthService
     private readonly IGenericRepository<Role> _roleRepository;
     private readonly IGenericRepository<UserRole> _userRoleRepository;
     private readonly IGenericRepository<RefreshToken> _refreshTokenRepository;
+    private readonly IGenericRepository<PasswordResetToken> _passwordResetTokenRepository;
     private readonly IGenericRepository<Specialization> _specializationRepository;
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly ITokenService _tokenService;
@@ -34,6 +37,7 @@ public class AuthService : IAuthService
         IGenericRepository<Role> roleRepository,
         IGenericRepository<UserRole> userRoleRepository,
         IGenericRepository<RefreshToken> refreshTokenRepository,
+        IGenericRepository<PasswordResetToken> passwordResetTokenRepository,
         IGenericRepository<Specialization> specializationRepository,
         IPasswordHasher<User> passwordHasher,
         ITokenService tokenService,
@@ -46,6 +50,7 @@ public class AuthService : IAuthService
         _roleRepository = roleRepository;
         _userRoleRepository = userRoleRepository;
         _refreshTokenRepository = refreshTokenRepository;
+        _passwordResetTokenRepository = passwordResetTokenRepository;
         _specializationRepository = specializationRepository;
         _passwordHasher = passwordHasher;
         _tokenService = tokenService;
@@ -376,26 +381,77 @@ public class AuthService : IAuthService
     public async Task ForgotPasswordAsync(ForgotPasswordDto request)
     {
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
+        
+        // Prevent enumeration or resetting the Primary Admin account
+        var adminEmail = _configuration["PRIMARY_ADMIN_EMAIL"];
+        if (!string.IsNullOrEmpty(adminEmail) && request.Email?.Trim().Equals(adminEmail, StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return; // Primary Admin cannot reset password through this flow
+        }
+
         var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
         if (user != null)
         {
-            var resetToken = Guid.NewGuid().ToString("N");
-            await _emailService.SendPasswordResetEmailAsync(user.Email, resetToken);
-            // Ideally store the token in PasswordResetTokens table (omitted for brevity, assume valid if implemented)
+            // Invalidate any previously active tokens
+            var activeTokens = await _passwordResetTokenRepository.GetAsync(t => t.UserId == user.Id && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow);
+            foreach (var token in activeTokens)
+            {
+                token.IsUsed = true;
+                await _passwordResetTokenRepository.UpdateAsync(token);
+            }
+
+            var rawToken = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+            var hashedToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(rawToken)));
+
+            var resetToken = new PasswordResetToken
+            {
+                UserId = user.Id,
+                Token = hashedToken,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(60),
+                IsUsed = false
+            };
+
+            await _passwordResetTokenRepository.AddAsync(resetToken);
+            await _unitOfWork.SaveChangesAsync();
+
+            await _emailService.SendPasswordResetEmailAsync(user.Email, rawToken);
         }
     }
 
     public async Task ResetPasswordAsync(ResetPasswordDto request)
     {
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
-        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
-        if (user != null)
+        
+        var adminEmail = _configuration["PRIMARY_ADMIN_EMAIL"];
+        if (!string.IsNullOrEmpty(adminEmail) && request.Email?.Trim().Equals(adminEmail, StringComparison.OrdinalIgnoreCase) == true)
         {
-            // Assume token verification is successful
-            user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
-            await _userRepository.UpdateAsync(user);
-            await _unitOfWork.SaveChangesAsync();
+            throw new UnauthorizedAccessException("Primary Admin password cannot be reset.");
         }
+
+        var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("Invalid token or email.");
+        }
+
+        var hashedToken = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(request.Token)));
+        var activeToken = await _passwordResetTokenRepository.FirstOrDefaultAsync(
+            t => t.UserId == user.Id && t.Token == hashedToken && !t.IsUsed && t.ExpiresAt > DateTime.UtcNow);
+
+        if (activeToken == null)
+        {
+            throw new UnauthorizedAccessException("Invalid or expired reset token.");
+        }
+
+        user.PasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
+        user.LockoutEnd = null;
+        user.FailedLoginAttempts = 0;
+        
+        activeToken.IsUsed = true;
+
+        await _passwordResetTokenRepository.UpdateAsync(activeToken);
+        await _userRepository.UpdateAsync(user);
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task ChangePasswordAsync(Guid userId, ChangePasswordDto request)

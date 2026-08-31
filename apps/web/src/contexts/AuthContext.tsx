@@ -18,6 +18,8 @@ interface AuthContextType {
   loading: boolean;
   login: (credentials: any) => Promise<void>;
   logout: () => Promise<void>;
+  forgotPassword: (data: { email: string }) => Promise<void>;
+  resetPassword: (data: any) => Promise<void>;
   registerPatient: (data: any) => Promise<void>;
   registerDoctor: (data: any) => Promise<void>;
 }
@@ -112,8 +114,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/");
   };
 
+  const forgotPassword = async (data: { email: string }) => {
+    await AuthService.forgotPassword(data);
+  };
+
+  const resetPassword = async (data: any) => {
+    await AuthService.resetPassword(data);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, registerPatient, registerDoctor }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, forgotPassword, resetPassword, registerPatient, registerDoctor }}>
       {children}
     </AuthContext.Provider>
   );
