@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (credentials: any) => {
     const res = await AuthService.login(credentials);
     if (res.success && res.data) {
-      localStorage.setItem("medichp_token", res.data.token);
+      localStorage.setItem("medichp_token", res.data.accessToken);
       localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
       setUser(res.data.user);
       
@@ -85,8 +85,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw new Error(res.message || "Registration failed");
     }
     // Often you want them to log in manually afterwards, or you can auto-login if the API returns a token
-    if (res.data?.token) {
-      localStorage.setItem("medichp_token", res.data.token);
+    if (res.data?.accessToken) {
+      localStorage.setItem("medichp_token", res.data.accessToken);
       setUser(res.data.user);
       router.push("/patient/dashboard");
     } else {
@@ -99,8 +99,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.success) {
       throw new Error(res.message || "Registration failed");
     }
-    if (res.data?.token) {
-      localStorage.setItem("medichp_token", res.data.token);
+    if (res.data?.accessToken) {
+      localStorage.setItem("medichp_token", res.data.accessToken);
       setUser(res.data.user);
       router.push("/doctor/dashboard");
     } else {
