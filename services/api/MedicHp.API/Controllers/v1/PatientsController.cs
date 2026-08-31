@@ -230,6 +230,18 @@ public class PatientsController : ControllerBase
         return Ok(new { success = true });
     }
 
+    // Medical Reports
+    [HttpGet("reports")]
+    public async Task<IActionResult> GetMedicalReports()
+    {
+        var userId = _currentUserService.UserId;
+        if (userId == null) return Unauthorized();
+
+        var query = new MedicHp.Application.Features.Files.Queries.GetPatientFiles.GetPatientFilesQuery(userId.Value, "MedicalReport");
+        var result = await _mediator.Send(query);
+        return Ok(new { success = true, data = result });
+    }
+
     // Dashboard
 
     [HttpGet("dashboard")]

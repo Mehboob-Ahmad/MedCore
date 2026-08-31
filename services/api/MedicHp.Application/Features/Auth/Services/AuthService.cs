@@ -188,6 +188,12 @@ public class AuthService : IAuthService
             user.UserRoles.Add(new UserRole { RoleId = patientRole.Id });
         }
 
+        user.PatientProfile = new MedicHp.Domain.Entities.Clinical.PatientProfile
+        {
+            DataSharingConsent = true,
+            ProfileCompletionPct = 0
+        };
+
         await _userRepository.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
 

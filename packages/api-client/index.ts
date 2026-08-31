@@ -142,6 +142,10 @@ export const PatientService = {
   getMessages: async () => {
     // Placeholder until backend implements /chat/threads
     return { success: true, data: [] };
+  },
+  getReports: async () => {
+    const response = await apiClient.get('/patients/reports');
+    return response.data;
   }
 };
 

@@ -13,10 +13,14 @@ namespace MedicHp.Application.Features.Patients.Queries.GetPatientProfile;
 public class GetPatientProfileQueryHandler : IRequestHandler<GetPatientProfileQuery, PatientProfileDto>
 {
     private readonly IGenericRepository<PatientProfile> _patientProfileRepository;
+    private readonly IGenericRepository<MedicHp.Domain.Entities.Core.User> _userRepository;
 
-    public GetPatientProfileQueryHandler(IGenericRepository<PatientProfile> patientProfileRepository)
+    public GetPatientProfileQueryHandler(
+        IGenericRepository<PatientProfile> patientProfileRepository,
+        IGenericRepository<MedicHp.Domain.Entities.Core.User> userRepository)
     {
         _patientProfileRepository = patientProfileRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<PatientProfileDto> Handle(GetPatientProfileQuery request, CancellationToken cancellationToken)
@@ -35,7 +39,26 @@ public class GetPatientProfileQueryHandler : IRequestHandler<GetPatientProfileQu
             cancellationToken);
 
         if (profile == null)
-            throw new NotFoundException(nameof(PatientProfile), request.UserId);
+        {
+            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+            if (user == null) throw new UnauthorizedAccessException();
+            
+            return new PatientProfileDto
+            {
+                Id = Guid.Empty,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Gender = user.Gender,
+                EmergencyContacts = new List<EmergencyContactDto>(),
+                Allergies = new List<AllergyDto>(),
+                ChronicConditions = new List<ChronicConditionDto>(),
+                CurrentMedications = new List<MedicationDto>(),
+                Surgeries = new List<SurgeryDto>(),
+                Hospitalizations = new List<HospitalizationDto>()
+            };
+        }
 
         return new PatientProfileDto
         {

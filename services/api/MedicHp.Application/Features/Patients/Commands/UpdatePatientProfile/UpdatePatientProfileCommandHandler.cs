@@ -30,8 +30,12 @@ public class UpdatePatientProfileCommandHandler : IRequestHandler<UpdatePatientP
                 p => p.Hospitalizations), 
             cancellationToken);
 
+        bool isNew = false;
         if (profile == null)
-            throw new NotFoundException(nameof(PatientProfile), request.UserId);
+        {
+            profile = new PatientProfile { UserId = request.UserId };
+            isNew = true;
+        }
 
         if (request.DateOfBirth.HasValue)
             profile.DateOfBirth = DateOnly.FromDateTime(request.DateOfBirth.Value);
@@ -96,7 +100,11 @@ public class UpdatePatientProfileCommandHandler : IRequestHandler<UpdatePatientP
         // Calculate Profile Completion Percentage
         profile.ProfileCompletionPct = CalculateCompletionPercentage(profile);
 
-        await _patientProfileRepository.UpdateAsync(profile, cancellationToken);
+        if (isNew)
+            await _patientProfileRepository.AddAsync(profile, cancellationToken);
+        else
+            await _patientProfileRepository.UpdateAsync(profile, cancellationToken);
+            
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return true;

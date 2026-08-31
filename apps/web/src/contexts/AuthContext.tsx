@@ -109,7 +109,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    await AuthService.logout();
+    try {
+      await AuthService.logout();
+    } catch (e) {
+      console.error("Logout API failed", e);
+    }
+    localStorage.removeItem("medichp_token");
+    localStorage.removeItem("medichp_refresh_token");
     setUser(null);
     router.push("/");
   };

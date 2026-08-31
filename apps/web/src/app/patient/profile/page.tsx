@@ -6,8 +6,9 @@ import { Card, CardContent } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 import { Button } from "@medichp/ui";
 import { User, Mail, Phone, MapPin, Stethoscope, HeartPulse, Activity, CalendarPlus, X } from "lucide-react";
-import { PatientService } from "@medichp/api-client";
+import { PatientService, AuthService } from "@medichp/api-client";
 import { useAuth } from "@/contexts/AuthContext";
+import { FileText, UploadCloud, File as FileIcon } from "lucide-react";
 
 export default function PatientProfile() {
   const { user } = useAuth();
@@ -15,6 +16,8 @@ export default function PatientProfile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [reports, setReports] = useState<any[]>([]);
+  const [uploadingReport, setUploadingReport] = useState(false);
   
   const [formData, setFormData] = useState({
     firstName: "",
@@ -57,6 +60,10 @@ export default function PatientProfile() {
           surgeries: p.surgeries || [],
           hospitalizations: p.hospitalizations || []
         });
+      }
+      const reportsRes = await PatientService.getReports();
+      if (reportsRes.success) {
+        setReports(reportsRes.data);
       }
     } catch (err) {
       console.error("Failed to load profile:", err);
@@ -136,6 +143,26 @@ export default function PatientProfile() {
     });
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingReport(true);
+      const res = await AuthService.uploadFile(file, "MedicalReport");
+      if (res.success) {
+        // Refresh reports
+        const reportsRes = await PatientService.getReports();
+        if (reportsRes.success) setReports(reportsRes.data);
+        setMessage("Report uploaded successfully!");
+      }
+    } catch (err: any) {
+      setMessage(err.message || "Failed to upload report.");
+    } finally {
+      setUploadingReport(false);
+    }
+  };
+
   if (loading) {
     return <div className="p-8 text-center text-gray-500">Loading profile...</div>;
   }
@@ -177,6 +204,16 @@ export default function PatientProfile() {
           }`}
         >
           <div className="flex items-center gap-2"><Activity className="w-4 h-4" /> Surgeries & Hospitalizations</div>
+        </button>
+        <button
+          onClick={() => setActiveTab("reports")}
+          className={`px-4 py-2 font-medium text-sm rounded-t-lg transition-colors whitespace-nowrap ${
+            activeTab === "reports" 
+              ? "text-[var(--color-primary-600)] border-b-2 border-[var(--color-primary-600)]" 
+              : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+          }`}
+        >
+          <div className="flex items-center gap-2"><FileText className="w-4 h-4" /> Medical Reports</div>
         </button>
       </div>
 
@@ -393,6 +430,68 @@ export default function PatientProfile() {
                               <Input value={hosp.hospitalName || ""} onChange={e => updateHospitalization(index, "hospitalName", e.target.value)} placeholder="e.g. City Hospital" />
                             </div>
                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {activeTab === "reports" && (
+            <motion.div key="reports" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-[var(--color-primary-600)]" /> Uploaded Reports
+                    </h3>
+                    <div className="relative">
+                      <input 
+                        type="file" 
+                        accept=".pdf,image/png,image/jpeg"
+                        onChange={handleFileUpload} 
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        disabled={uploadingReport}
+                      />
+                      <Button type="button" variant="outline" size="sm" disabled={uploadingReport}>
+                        <UploadCloud className="w-4 h-4 mr-2" /> 
+                        {uploadingReport ? "Uploading..." : "Upload Report"}
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {reports.length === 0 ? (
+                    <div className="text-center py-12 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-gray-200 dark:border-slate-700">
+                      <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                      <p className="text-gray-500 text-sm">No medical reports uploaded yet.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {reports.map((report) => (
+                        <div key={report.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-100 dark:border-slate-800">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded bg-white dark:bg-slate-700 flex items-center justify-center border border-gray-100 dark:border-slate-600 text-gray-400">
+                              <FileIcon className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900 dark:text-white line-clamp-1">{report.fileName}</h4>
+                              <p className="text-xs text-gray-500 flex items-center gap-2">
+                                <span>{new Date(report.createdAt).toLocaleDateString()}</span>
+                                <span>•</span>
+                                <span>{(report.fileSizeBytes / 1024 / 1024).toFixed(2)} MB</span>
+                              </p>
+                            </div>
+                          </div>
+                          <a 
+                            href={`https://medichp.onrender.com${report.storagePath}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-sm font-medium text-[var(--color-primary-600)] hover:underline"
+                          >
+                            View
+                          </a>
                         </div>
                       ))}
                     </div>

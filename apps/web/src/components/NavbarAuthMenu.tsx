@@ -6,7 +6,7 @@ import { LogOut, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function NavbarAuthMenu() {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -17,6 +17,10 @@ export function NavbarAuthMenu() {
       console.error(e);
     }
   };
+
+  if (loading) {
+    return <div className="w-24 h-8 animate-pulse bg-slate-200 dark:bg-slate-700 rounded-md"></div>;
+  }
 
   if (user) {
     const userRoles = user.roles || (user as any).Roles || [];
