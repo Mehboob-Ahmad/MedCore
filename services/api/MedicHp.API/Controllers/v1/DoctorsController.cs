@@ -7,6 +7,7 @@ using MedicHp.Application.Features.Doctors.Queries.GetAvailableSlots;
 using MedicHp.Application.Features.Doctors.Queries.GetDoctorDashboard;
 using MedicHp.Application.Features.Doctors.Queries.GetDoctorProfile;
 using MedicHp.Application.Features.Doctors.Queries.SearchDoctors;
+using MedicHp.Application.Features.Doctors.Commands.AddPatient;
 using MedicHp.Application.Features.DoctorSearch.Queries.GetPublicDoctorProfile;
 using MedicHp.Application.Features.DoctorSearch.Queries.GetRelatedDoctors;
 using MediatR;
@@ -137,5 +138,16 @@ public class DoctorsController : ControllerBase
         var result = await _mediator.Send(query);
 
         return Ok(new { success = true, data = result });
+    }
+
+    [HttpPost("patients")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> AddPatient([FromBody] AddPatientCommand command)
+    {
+        var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+        command.DoctorId = userId;
+        
+        var result = await _mediator.Send(command);
+        return Created("", new { success = true, message = "Patient added successfully. An email has been sent to them.", data = result });
     }
 }

@@ -27,6 +27,12 @@ public class FilesController : ControllerBase
         if (file == null || file.Length == 0)
             return BadRequest(new { success = false, message = "No file uploaded." });
 
+        var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/gif", "application/pdf" };
+        if (!System.Linq.Enumerable.Contains(allowedContentTypes, file.ContentType.ToLower()))
+        {
+            return BadRequest(new { success = false, message = "Only PDF and image files are allowed." });
+        }
+
         var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
         if (!Directory.Exists(uploadsFolder))
             Directory.CreateDirectory(uploadsFolder);

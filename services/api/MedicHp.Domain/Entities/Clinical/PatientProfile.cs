@@ -23,4 +23,11 @@ public class PatientProfile : SoftDeleteEntity
     public ICollection<PatientAllergy> Allergies { get; set; } = new List<PatientAllergy>();
     public ICollection<PatientChronicCondition> ChronicConditions { get; set; } = new List<PatientChronicCondition>();
     public ICollection<PatientMedication> Medications { get; set; } = new List<PatientMedication>();
+    public ICollection<PatientSurgery> Surgeries { get; set; } = new List<PatientSurgery>();
+    public ICollection<PatientHospitalization> Hospitalizations { get; set; } = new List<PatientHospitalization>();
+
+    public string? FamilyMedicalHistory { get; set; }
+    public string? MedicalHistory { get; set; }
+    public string? ImmunizationHistory { get; set; }
+    public string? LifestyleInformation { get; set; }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MedicHp.Application.Common;
+using MedicHp.Application.Features.Auth.Interfaces;
 using MedicHp.Domain.Entities.Clinical;
 using MedicHp.Domain.Entities.Core;
 using MedicHp.Shared.Exceptions;
@@ -16,6 +17,8 @@ public class RescheduleAppointmentCommandHandler : IRequestHandler<RescheduleApp
     private readonly IGenericRepository<DoctorProfile> _doctorProfileRepository;
     private readonly IGenericRepository<AppointmentStatusHistory> _statusHistoryRepository;
     private readonly IGenericRepository<Notification> _notificationRepository;
+    private readonly IGenericRepository<User> _userRepository;
+    private readonly IEmailService _emailService;
     private readonly IUnitOfWork _unitOfWork;
 
     public RescheduleAppointmentCommandHandler(
@@ -23,12 +26,16 @@ public class RescheduleAppointmentCommandHandler : IRequestHandler<RescheduleApp
         IGenericRepository<DoctorProfile> doctorProfileRepository,
         IGenericRepository<AppointmentStatusHistory> statusHistoryRepository,
         IGenericRepository<Notification> notificationRepository,
+        IGenericRepository<User> userRepository,
+        IEmailService emailService,
         IUnitOfWork unitOfWork)
     {
         _appointmentRepository = appointmentRepository;
         _doctorProfileRepository = doctorProfileRepository;
         _statusHistoryRepository = statusHistoryRepository;
         _notificationRepository = notificationRepository;
+        _userRepository = userRepository;
+        _emailService = emailService;
         _unitOfWork = unitOfWork;
     }
 
@@ -125,6 +132,13 @@ public class RescheduleAppointmentCommandHandler : IRequestHandler<RescheduleApp
             SentAt = DateTime.UtcNow
         };
         await _notificationRepository.AddAsync(notification, cancellationToken);
+
+        // Send Email
+        var patientUser = await _userRepository.GetByIdAsync(appointment.PatientId, cancellationToken);
+        if (patientUser != null && !string.IsNullOrEmpty(patientUser.Email))
+        {
+            await _emailService.SendAppointmentRescheduledEmailAsync(patientUser.Email, newScheduledAt.ToString("MMM dd, yyyy HH:mm"));
+        }
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -23,7 +23,12 @@ public class UpdatePatientProfileCommandHandler : IRequestHandler<UpdatePatientP
 
     public async Task<bool> Handle(UpdatePatientProfileCommand request, CancellationToken cancellationToken)
     {
-        var profile = await _patientProfileRepository.FirstOrDefaultAsync(p => p.UserId == request.UserId, null, cancellationToken);
+        var profile = await _patientProfileRepository.FirstOrDefaultAsync(
+            p => p.UserId == request.UserId, 
+            q => Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include(
+                Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.Include(q, p => p.Surgeries), 
+                p => p.Hospitalizations), 
+            cancellationToken);
 
         if (profile == null)
             throw new NotFoundException(nameof(PatientProfile), request.UserId);
@@ -46,6 +51,48 @@ public class UpdatePatientProfileCommandHandler : IRequestHandler<UpdatePatientP
         if (request.DataSharingConsent.HasValue)
             profile.DataSharingConsent = request.DataSharingConsent.Value;
 
+        if (request.FamilyMedicalHistory != null)
+            profile.FamilyMedicalHistory = request.FamilyMedicalHistory;
+
+        if (request.MedicalHistory != null)
+            profile.MedicalHistory = request.MedicalHistory;
+
+        if (request.ImmunizationHistory != null)
+            profile.ImmunizationHistory = request.ImmunizationHistory;
+
+        if (request.LifestyleInformation != null)
+            profile.LifestyleInformation = request.LifestyleInformation;
+
+        if (request.Surgeries != null)
+        {
+            profile.Surgeries.Clear();
+            foreach(var s in request.Surgeries)
+            {
+                profile.Surgeries.Add(new PatientSurgery {
+                    SurgeryName = s.SurgeryName,
+                    SurgeryDate = s.SurgeryDate,
+                    SurgeonName = s.SurgeonName,
+                    HospitalName = s.HospitalName,
+                    Notes = s.Notes
+                });
+            }
+        }
+
+        if (request.Hospitalizations != null)
+        {
+            profile.Hospitalizations.Clear();
+            foreach(var h in request.Hospitalizations)
+            {
+                profile.Hospitalizations.Add(new PatientHospitalization {
+                    Reason = h.Reason,
+                    AdmissionDate = h.AdmissionDate,
+                    DischargeDate = h.DischargeDate,
+                    HospitalName = h.HospitalName,
+                    Notes = h.Notes
+                });
+            }
+        }
+
         // Calculate Profile Completion Percentage
         profile.ProfileCompletionPct = CalculateCompletionPercentage(profile);
 
@@ -57,7 +104,7 @@ public class UpdatePatientProfileCommandHandler : IRequestHandler<UpdatePatientP
 
     private int CalculateCompletionPercentage(PatientProfile profile)
     {
-        int totalFields = 6;
+        int totalFields = 10;
         int filledFields = 0;
 
         if (profile.DateOfBirth.HasValue) filledFields++;
@@ -65,7 +112,11 @@ public class UpdatePatientProfileCommandHandler : IRequestHandler<UpdatePatientP
         if (!string.IsNullOrWhiteSpace(profile.BloodType)) filledFields++;
         if (profile.CityId.HasValue) filledFields++;
         if (!string.IsNullOrWhiteSpace(profile.Address)) filledFields++;
-        if (profile.DataSharingConsent) filledFields++; // Just an example logic
+        if (profile.DataSharingConsent) filledFields++;
+        if (!string.IsNullOrWhiteSpace(profile.FamilyMedicalHistory)) filledFields++;
+        if (!string.IsNullOrWhiteSpace(profile.MedicalHistory)) filledFields++;
+        if (!string.IsNullOrWhiteSpace(profile.ImmunizationHistory)) filledFields++;
+        if (!string.IsNullOrWhiteSpace(profile.LifestyleInformation)) filledFields++;
 
         return (int)Math.Round((double)filledFields / totalFields * 100);
     }

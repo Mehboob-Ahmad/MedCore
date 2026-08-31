@@ -19,13 +19,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <LayoutDashboard className="w-5 h-5" />
             <span className="font-medium">Overview</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-not-allowed opacity-50">
-            <Users className="w-5 h-5" />
-            <span className="font-medium">User Directory</span>
-          </Link>
-          <Link href="#" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg cursor-not-allowed opacity-50">
-            <ShieldAlert className="w-5 h-5" />
-            <span className="font-medium">System Logs</span>
+          <Link href="/admin/invite" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+            <UserPlus className="w-5 h-5" />
+            <span className="font-medium">Invite Admin</span>
           </Link>
           <Link href="/admin/settings" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
             <Settings className="w-5 h-5" />
@@ -58,10 +54,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/dashboard" className="flex flex-col items-center text-red-600">
             <LayoutDashboard className="w-6 h-6" />
             <span className="text-[10px] mt-1 font-medium">Overview</span>
-          </Link>
-          <Link href="#" className="flex flex-col items-center text-gray-400">
-            <Users className="w-6 h-6" />
-            <span className="text-[10px] mt-1 font-medium">Users</span>
           </Link>
           <Link href="/admin/settings" className="flex flex-col items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <Settings className="w-6 h-6" />

@@ -14,6 +14,10 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
             <LayoutDashboard className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             <span className="font-medium">Dashboard</span>
           </Link>
+          <Link href="/doctor/patients" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+            <User className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <span className="font-medium">Patients</span>
+          </Link>
           <Link href="/doctor/schedule" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
             <Calendar className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             <span className="font-medium">Schedule</span>

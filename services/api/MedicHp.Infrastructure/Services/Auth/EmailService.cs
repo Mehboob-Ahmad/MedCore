@@ -106,4 +106,17 @@ public class EmailService : IEmailService
         ";
         await SendEmailAsync(to, "You are invited to MedicHp", body);
     }
+
+    public async Task SendAppointmentRescheduledEmailAsync(string to, string dateStr)
+    {
+        _logger.LogInformation("[EmailService] Sending Appointment Rescheduled Email to {To}", to);
+        string body = $@"
+            <h3>Appointment Rescheduled</h3>
+            <p>Hello,</p>
+            <p>Your appointment has been successfully rescheduled to: <b>{dateStr}</b></p>
+            <p>Your original payment (if applicable) is still valid for this new slot.</p>
+            <p>Regards,<br>MedicHp</p>
+        ";
+        await SendEmailAsync(to, "MedicHp - Appointment Rescheduled", body);
+    }
 }

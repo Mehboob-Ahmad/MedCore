@@ -21,7 +21,7 @@ export function GlobalHeader() {
           </span>
         </Link>
         <nav className="hidden md:flex gap-6 font-medium text-sm">
-          <Link href="/search" className="hover:text-[var(--color-primary-600)] transition-colors">Find a Doctor</Link>
+          <Link href="/patient/search" className="hover:text-[var(--color-primary-600)] transition-colors">Find a Doctor</Link>
         </nav>
         <NavbarAuthMenu />
       </div>

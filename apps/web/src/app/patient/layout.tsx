@@ -14,7 +14,7 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
             <LayoutDashboard className="w-5 h-5 text-[var(--color-primary-600)]" />
             <span className="font-medium">Dashboard</span>
           </Link>
-          <Link href="/search" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+          <Link href="/patient/search" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
             <Search className="w-5 h-5 text-[var(--color-secondary-500)]" />
             <span className="font-medium">Find Doctor</span>
           </Link>
@@ -47,7 +47,7 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
             <LayoutDashboard className="w-6 h-6" />
             <span className="text-[10px] mt-1 font-medium">Dashboard</span>
           </Link>
-          <Link href="/search" className="flex flex-col items-center text-gray-500 hover:text-[var(--color-secondary-500)]">
+          <Link href="/patient/search" className="flex flex-col items-center text-gray-500 hover:text-[var(--color-secondary-500)]">
             <Search className="w-6 h-6" />
             <span className="text-[10px] mt-1 font-medium">Find Doctor</span>
           </Link>

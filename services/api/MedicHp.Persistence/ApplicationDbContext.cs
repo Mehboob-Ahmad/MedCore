@@ -38,6 +38,8 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<PatientAllergy> PatientAllergies => Set<PatientAllergy>();
     public DbSet<PatientChronicCondition> PatientChronicConditions => Set<PatientChronicCondition>();
     public DbSet<PatientMedication> PatientMedications => Set<PatientMedication>();
+    public DbSet<PatientSurgery> PatientSurgeries => Set<PatientSurgery>();
+    public DbSet<PatientHospitalization> PatientHospitalizations => Set<PatientHospitalization>();
     public DbSet<DoctorProfile> DoctorProfiles => Set<DoctorProfile>();
     public DbSet<DoctorPaymentMethod> DoctorPaymentMethods => Set<DoctorPaymentMethod>();
     public DbSet<DoctorSpecialization> DoctorSpecializations => Set<DoctorSpecialization>();

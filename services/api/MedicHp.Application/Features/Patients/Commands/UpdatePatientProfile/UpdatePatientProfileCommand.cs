@@ -12,4 +12,12 @@ public class UpdatePatientProfileCommand : IRequest<bool>
     public Guid? CityId { get; set; }
     public string? Address { get; set; }
     public bool? DataSharingConsent { get; set; }
+    
+    public string? FamilyMedicalHistory { get; set; }
+    public string? MedicalHistory { get; set; }
+    public string? ImmunizationHistory { get; set; }
+    public string? LifestyleInformation { get; set; }
+
+    public List<MedicHp.Application.Features.Patients.DTOs.SurgeryDto> Surgeries { get; set; } = new();
+    public List<MedicHp.Application.Features.Patients.DTOs.HospitalizationDto> Hospitalizations { get; set; } = new();
 }

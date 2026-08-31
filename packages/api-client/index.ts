@@ -30,9 +30,27 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.data && error.response.data.message) {
-      // Backend returned a structured error message
-      return Promise.reject(new Error(error.response.data.message));
+    if (error.response) {
+      if (error.response.status === 401) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('medichp_token');
+          window.location.href = '/login';
+        }
+      }
+      
+      const data = error.response.data;
+      if (data && data.message) {
+        // Backend returned a structured error message
+        let errorMessage = data.message;
+        if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+           errorMessage += ": " + data.errors.map((e: any) => e.errorMessage || e).join(", ");
+        }
+        return Promise.reject(new Error(errorMessage));
+      }
+      
+      if (error.response.status >= 500) {
+        return Promise.reject(new Error("A server error occurred. Please try again later."));
+      }
     }
     return Promise.reject(error);
   }
@@ -137,6 +155,14 @@ export const DoctorService = {
     const response = await apiClient.get(`/doctors/search?${params.toString()}`);
     return response.data;
   },
+  getProfile: async () => {
+    const response = await apiClient.get('/doctors/profile');
+    return response.data;
+  },
+  updateProfile: async (data: any) => {
+    const response = await apiClient.patch('/doctors/profile', data);
+    return response.data;
+  },
   completeProfile: async (data: any) => {
     const response = await apiClient.put('/doctors/profile/complete', data);
     return response.data;
@@ -156,7 +182,23 @@ export const DoctorService = {
   getMessages: async () => {
     // Placeholder until backend implements /chat/threads
     return { success: true, data: [] };
-  }
+  },
+  getPatientClinicalSummary: async (patientId: string) => {
+    const response = await apiClient.get(`/patients/${patientId}/clinical-summary`);
+    return response.data;
+  },
+  addPatient: async (data: any) => {
+    const response = await apiClient.post('/doctors/patients', data);
+    return response.data;
+  },
+  getDoctor: async (id: string) => {
+    const response = await apiClient.get(`/doctors/${id}`);
+    return response.data;
+  },
+  getAvailableSlots: async (id: string, date: string) => {
+    const response = await apiClient.get(`/doctors/${id}/slots?date=${date}`);
+    return response.data;
+  },
 };
 
 export const AdminService = {

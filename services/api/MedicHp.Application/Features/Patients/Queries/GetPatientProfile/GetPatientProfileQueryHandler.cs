@@ -29,7 +29,9 @@ public class GetPatientProfileQueryHandler : IRequestHandler<GetPatientProfileQu
                 .Include(p => p.EmergencyContacts)
                 .Include(p => p.Allergies)
                 .Include(p => p.ChronicConditions)
-                .Include(p => p.Medications),
+                .Include(p => p.Medications)
+                .Include(p => p.Surgeries)
+                .Include(p => p.Hospitalizations),
             cancellationToken);
 
         if (profile == null)
@@ -83,7 +85,32 @@ public class GetPatientProfileQueryHandler : IRequestHandler<GetPatientProfileQu
                 MedicationName = m.MedicationName,
                 Dosage = m.Dosage,
                 Frequency = m.Frequency
-            }).ToList()
+            }).ToList(),
+
+            Surgeries = profile.Surgeries.Select(s => new SurgeryDto
+            {
+                Id = s.Id,
+                SurgeryName = s.SurgeryName,
+                SurgeryDate = s.SurgeryDate,
+                SurgeonName = s.SurgeonName,
+                HospitalName = s.HospitalName,
+                Notes = s.Notes
+            }).ToList(),
+
+            Hospitalizations = profile.Hospitalizations.Select(h => new HospitalizationDto
+            {
+                Id = h.Id,
+                Reason = h.Reason,
+                AdmissionDate = h.AdmissionDate,
+                DischargeDate = h.DischargeDate,
+                HospitalName = h.HospitalName,
+                Notes = h.Notes
+            }).ToList(),
+
+            FamilyMedicalHistory = profile.FamilyMedicalHistory,
+            MedicalHistory = profile.MedicalHistory,
+            ImmunizationHistory = profile.ImmunizationHistory,
+            LifestyleInformation = profile.LifestyleInformation
         };
     }
 }
