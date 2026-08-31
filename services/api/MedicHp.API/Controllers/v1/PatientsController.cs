@@ -11,7 +11,7 @@ namespace MedicHp.Api.Controllers.v1;
 
 [ApiController]
 [Route("api/v1/patients")]
-[Authorize(Roles = "Patient,SuperAdmin")] // Adjust as necessary
+[Authorize(Roles = "Patient,SystemAdmin")] // Adjust as necessary
 public class PatientsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -24,7 +24,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpGet("search")]
-    [Authorize(Roles = "Doctor,SuperAdmin")] // Only doctors/admins can search all patients
+    [Authorize(Roles = "Doctor,SystemAdmin")] // Only doctors/admins can search all patients
     public async Task<IActionResult> SearchPatients([FromQuery] string? searchTerm)
     {
         var query = new MedicHp.Application.Features.Patients.Queries.SearchMedicHpPatients.SearchMedicHpPatientsQuery(searchTerm);
@@ -33,7 +33,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpGet("{patientId}/summary")]
-    [Authorize(Roles = "Doctor,SuperAdmin")]
+    [Authorize(Roles = "Doctor,SystemAdmin")]
     public async Task<IActionResult> GetDoctorPatientSummary(Guid patientId)
     {
         var doctorId = _currentUserService.UserId;
@@ -45,7 +45,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpGet("{patientId}/clinical-summary")]
-    [Authorize(Roles = "Doctor,SuperAdmin")]
+    [Authorize(Roles = "Doctor,SystemAdmin")]
     public async Task<IActionResult> GetPatientClinicalSummary(Guid patientId)
     {
         var doctorId = _currentUserService.UserId;

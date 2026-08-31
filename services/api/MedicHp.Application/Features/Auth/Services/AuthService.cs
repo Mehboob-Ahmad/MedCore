@@ -284,8 +284,9 @@ public class AuthService : IAuthService
             IsActive = true
         };
 
-        // Hardcode password to admin123
-        user.PasswordHash = _passwordHasher.HashPassword(user, "admin123");
+        // Generate secure temporary password
+        var tempPassword = Guid.NewGuid().ToString("N").Substring(0, 8) + "A1!";
+        user.PasswordHash = _passwordHasher.HashPassword(user, tempPassword);
 
         await _userRepository.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
@@ -304,7 +305,7 @@ public class AuthService : IAuthService
         await _unitOfWork.SaveChangesAsync();
 
         // 4. Send Email Notification
-        await _emailService.SendWelcomeEmailAsync(user.Email, "System Admin");
+        await _emailService.SendWelcomeEmailAsync(user.Email, "System Admin", tempPassword);
 
         return await GetProfileAsync(user.Id);
     }

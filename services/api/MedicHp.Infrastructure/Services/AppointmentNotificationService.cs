@@ -61,7 +61,7 @@ public class AppointmentNotificationService : BackgroundService
 
         // 1. Appointment Reminders (24 hours before)
         var appointmentsToRemind = await appointmentRepo.GetQueryable()
-            .Where(a => a.Status == "Confirmed" && 
+            .Where(a => (a.Status == "Confirmed" || a.Status == "Rescheduled") && 
                         a.AppointmentReminderSentAt == null && 
                         a.ScheduledAt > now && 
                         a.ScheduledAt <= reminderThreshold)
@@ -83,7 +83,7 @@ public class AppointmentNotificationService : BackgroundService
 
         // 2. Payment Reminders (24 hours before)
         var paymentsToRemind = await appointmentRepo.GetQueryable()
-            .Where(a => a.Status == "Confirmed" && 
+            .Where(a => (a.Status == "Confirmed" || a.Status == "Rescheduled") && 
                         a.PaymentStatus == PaymentStatus.Pending.ToString() && 
                         a.PaymentReminderSentAt == null && 
                         a.ScheduledAt > now && 
@@ -114,7 +114,7 @@ public class AppointmentNotificationService : BackgroundService
         // Send it daily until resolved. We check if it hasn't been notified today.
         var todayStart = now.Date;
         var overduePayments = await appointmentRepo.GetQueryable()
-            .Where(a => a.Status == "Confirmed" && 
+            .Where(a => (a.Status == "Confirmed" || a.Status == "Rescheduled") && 
                         a.PaymentStatus == PaymentStatus.Pending.ToString() && 
                         a.ScheduledAt <= now &&
                         (a.PaymentOverdueNotifiedAt == null || a.PaymentOverdueNotifiedAt < todayStart))

@@ -122,8 +122,14 @@ public class UpdateAppointmentStatusCommandHandler : IRequestHandler<UpdateAppoi
         // WhatsApp trigger
         if (request.Status == "Confirmed")
         {
-            // Note: Sending WhatsApp messages should ideally be fire-and-forget or handled via an event bus 
-            // in a background task, but for now we execute it inline to fulfill the workflow.
+            if (appointment.PaymentStatus != MedicHp.Domain.Enums.PaymentStatus.Paid.ToString())
+            {
+                _ = _whatsAppNotificationService.SendPaymentReminderAsync(appointment.Id, 0m, CancellationToken.None);
+            }
+            else
+            {
+                _ = _whatsAppNotificationService.SendPaymentSuccessAsync(appointment.Id, 0m, CancellationToken.None);
+            }
             _ = _whatsAppNotificationService.SendAppointmentConfirmationAsync(appointment.Id, CancellationToken.None);
         }
 

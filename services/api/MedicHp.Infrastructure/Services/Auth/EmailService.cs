@@ -82,14 +82,14 @@ public class EmailService : IEmailService
         await SendEmailAsync(to, "MedicHp - Password Reset", $"Your password reset token is: <b>{resetToken}</b>");
     }
 
-    public async Task SendWelcomeEmailAsync(string to, string name)
+    public async Task SendWelcomeEmailAsync(string to, string name, string tempPassword)
     {
         _logger.LogInformation("[EmailService] Sending Welcome Email to {To} for {Name}", to, name);
         string body = $@"
             <h3>Welcome to MedicHp!</h3>
             <p>You have been invited as a {name}.</p>
-            <p>Your temporary password is: <b>admin123</b></p>
-            <p>Please log in at <a href='https://med-core-web.vercel.app'>MedicHp Portal</a> and change your password immediately.</p>
+            <p>Your temporary password is: <b>{tempPassword}</b></p>
+            <p>Please log in at <a href='https://app.medichp.com/login'>MedicHp Portal</a> and change your password immediately.</p>
         ";
         await SendEmailAsync(to, "You are invited to MedicHp", body);
     }

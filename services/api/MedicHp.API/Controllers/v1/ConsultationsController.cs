@@ -29,7 +29,7 @@ public class ConsultationsController : ControllerBase
     }
 
     [HttpPost("start")]
-    [Authorize(Roles = "Doctor,SuperAdmin")]
+    [Authorize(Roles = "Doctor,SystemAdmin")]
     public async Task<IActionResult> StartConsultation([FromBody] StartConsultationCommand command)
     {
         var doctorId = _currentUserService.UserId;
@@ -42,7 +42,7 @@ public class ConsultationsController : ControllerBase
     }
 
     [HttpPut("{id}/draft")]
-    [Authorize(Roles = "Doctor,SuperAdmin")]
+    [Authorize(Roles = "Doctor,SystemAdmin")]
     public async Task<IActionResult> SaveConsultationDraft(Guid id, [FromBody] SaveConsultationDraftCommand command)
     {
         var doctorId = _currentUserService.UserId;
@@ -56,7 +56,7 @@ public class ConsultationsController : ControllerBase
     }
 
     [HttpPut("{id}/prescription")]
-    [Authorize(Roles = "Doctor,SuperAdmin")]
+    [Authorize(Roles = "Doctor,SystemAdmin")]
     public async Task<IActionResult> SavePrescription(Guid id, [FromBody] SavePrescriptionCommand command)
     {
         var doctorId = _currentUserService.UserId;
@@ -70,7 +70,7 @@ public class ConsultationsController : ControllerBase
     }
 
     [HttpPost("{id}/finalize")]
-    [Authorize(Roles = "Doctor,SuperAdmin")]
+    [Authorize(Roles = "Doctor,SystemAdmin")]
     public async Task<IActionResult> FinalizeConsultation(Guid id)
     {
         var doctorId = _currentUserService.UserId;
@@ -92,7 +92,7 @@ public class ConsultationsController : ControllerBase
         var userId = _currentUserService.UserId;
         if (userId == null) return Unauthorized();
 
-        var isDoctor = User.IsInRole("Doctor") || User.IsInRole("SuperAdmin");
+        var isDoctor = User.IsInRole("Doctor") || User.IsInRole("SystemAdmin");
 
         var query = new GetConsultationDetailsQuery
         {
@@ -124,7 +124,7 @@ public class ConsultationsController : ControllerBase
     }
 
     [HttpGet("search")]
-    [Authorize(Roles = "Doctor,SuperAdmin")]
+    [Authorize(Roles = "Doctor,SystemAdmin")]
     public async Task<IActionResult> SearchConsultations([FromQuery] string? q, [FromQuery] DateTime? dateFrom, [FromQuery] DateTime? dateTo)
     {
         var doctorId = _currentUserService.UserId;

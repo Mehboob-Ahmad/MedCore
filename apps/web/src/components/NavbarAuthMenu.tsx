@@ -19,11 +19,20 @@ export function NavbarAuthMenu() {
   };
 
   if (user) {
+    const userRoles = user.roles || (user as any).Roles || [];
+    const primaryRole = userRoles.length > 0 ? userRoles[0] : user.role;
+    
+    let dashboardLink = "/";
+    if (primaryRole === "Doctor") dashboardLink = "/doctor/dashboard";
+    else if (primaryRole === "Patient") dashboardLink = "/patient/dashboard";
+    else if (primaryRole === "SystemAdmin" || primaryRole === "Admin") dashboardLink = "/admin/dashboard";
+
     return (
       <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Hi, {user.firstName}
-        </span>
+        <Link href={dashboardLink} className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary-600)] transition-colors">
+          <User className="w-4 h-4" />
+          <span>{user.firstName}</span>
+        </Link>
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"

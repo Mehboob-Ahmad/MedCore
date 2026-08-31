@@ -91,6 +91,11 @@ public class RescheduleAppointmentCommandHandler : IRequestHandler<RescheduleApp
         appointment.DurationMinutes = durationMinutes;
         appointment.Status = "Rescheduled";
 
+        // Reset notification flags to ensure they trigger for the new date
+        appointment.AppointmentReminderSentAt = null;
+        appointment.PaymentReminderSentAt = null;
+        appointment.PaymentOverdueNotifiedAt = null;
+
         await _appointmentRepository.UpdateAsync(appointment, cancellationToken);
 
         // Record status history
