@@ -138,7 +138,7 @@ public class AuthController : ControllerBase
                 return BadRequest(new { success = false, error = "SMTP_PASSWORD is NULL or EMPTY in environment variables!" });
             }
 
-            await _emailService.SendWelcomeEmailAsync(to, "Test Diagnostic");
+            await _emailService.SendWelcomeEmailAsync(to, "Test Diagnostic", "TestTempPass123!");
             return Ok(new { success = true, message = $"Email sent successfully! Password length: {pwd.Length}" });
         }
         catch (System.Exception ex)
