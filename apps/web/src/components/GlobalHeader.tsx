@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Stethoscope, Menu, X, LogOut, User } from "lucide-react";
@@ -14,7 +14,7 @@ export function GlobalHeader() {
   const pathname = usePathname();
 
   // Close menu when route changes
-  useState(() => {
+  useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
