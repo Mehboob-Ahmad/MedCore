@@ -1,16 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Stethoscope } from "lucide-react";
 import { NavbarAuthMenu } from "@/components/NavbarAuthMenu";
 
 export function GlobalHeader() {
-  const pathname = usePathname();
-  const isDashboard = pathname?.startsWith("/patient") || pathname?.startsWith("/doctor") || pathname?.startsWith("/admin");
-
-  if (isDashboard) return null;
-
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">

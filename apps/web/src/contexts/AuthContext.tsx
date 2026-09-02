@@ -4,18 +4,21 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { AuthService } from "@medichp/api-client";
 import { useRouter } from "next/navigation";
 
-interface User {
+export interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   roles?: string[];
   role?: string;
+  [key: string]: any;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAuthenticated: boolean;
+  role: string | null;
   login: (credentials: any) => Promise<void>;
   logout: () => Promise<void>;
   forgotPassword: (data: { email: string }) => Promise<void>;
@@ -32,17 +35,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    // Attempt to fetch profile on load if token exists
     const checkAuth = async () => {
       const token = localStorage.getItem("medichp_token");
       if (token) {
         try {
           const res = await AuthService.getProfile();
-          if (res.success) {
+          if (res.success && res.data) {
             setUser(res.data);
+          } else {
+            localStorage.removeItem("medichp_token");
+            localStorage.removeItem("medichp_refresh_token");
           }
         } catch (error) {
-          console.error("Session expired or invalid token");
+          console.error("Session expired or invalid token", error);
           localStorage.removeItem("medichp_token");
           localStorage.removeItem("medichp_refresh_token");
         }
@@ -60,11 +65,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
       setUser(res.data.user);
       
-      // Determine user role from the roles array (ASP.NET returns roles: ["RoleName"])
       const userRoles = res.data.user.roles || res.data.user.Roles || [];
       const primaryRole = userRoles.length > 0 ? userRoles[0] : res.data.user.role;
       
-      // Redirect based on role
       if (primaryRole === "Doctor") {
         router.push("/doctor/dashboard");
       } else if (primaryRole === "Patient") {
@@ -84,9 +87,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.success) {
       throw new Error(res.message || "Registration failed");
     }
-    // Often you want them to log in manually afterwards, or you can auto-login if the API returns a token
     if (res.data?.accessToken) {
       localStorage.setItem("medichp_token", res.data.accessToken);
+      if (res.data.refreshToken) {
+        localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
+      }
       setUser(res.data.user);
       router.push("/patient/dashboard");
     } else {
@@ -101,6 +106,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     if (res.data?.accessToken) {
       localStorage.setItem("medichp_token", res.data.accessToken);
+      if (res.data.refreshToken) {
+        localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
+      }
       setUser(res.data.user);
       router.push("/doctor/dashboard");
     } else {
@@ -113,11 +121,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await AuthService.logout();
     } catch (e) {
       console.error("Logout API failed", e);
+    } finally {
+      localStorage.removeItem("medichp_token");
+      localStorage.removeItem("medichp_refresh_token");
+      setUser(null);
+      router.push("/login");
     }
-    localStorage.removeItem("medichp_token");
-    localStorage.removeItem("medichp_refresh_token");
-    setUser(null);
-    router.push("/");
   };
 
   const forgotPassword = async (data: { email: string }) => {
@@ -128,8 +137,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await AuthService.resetPassword(data);
   };
 
+  const userRoles = user?.roles || (user as any)?.Roles || [];
+  const role = userRoles.length > 0 ? userRoles[0] : (user?.role || null);
+  const isAuthenticated = !!user;
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, forgotPassword, resetPassword, registerPatient, registerDoctor }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      isAuthenticated,
+      role,
+      login, 
+      logout, 
+      forgotPassword, 
+      resetPassword, 
+      registerPatient, 
+      registerDoctor 
+    }}>
       {children}
     </AuthContext.Provider>
   );

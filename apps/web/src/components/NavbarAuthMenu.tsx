@@ -6,13 +6,12 @@ import { LogOut, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function NavbarAuthMenu() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, isAuthenticated, role, logout } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
       await logout();
-      router.push("/login");
     } catch (e) {
       console.error(e);
     }
@@ -22,14 +21,11 @@ export function NavbarAuthMenu() {
     return <div className="w-24 h-8 animate-pulse bg-slate-200 dark:bg-slate-700 rounded-md"></div>;
   }
 
-  if (user) {
-    const userRoles = user.roles || (user as any).Roles || [];
-    const primaryRole = userRoles.length > 0 ? userRoles[0] : user.role;
-    
+  if (isAuthenticated && user) {
     let dashboardLink = "/";
-    if (primaryRole === "Doctor") dashboardLink = "/doctor/dashboard";
-    else if (primaryRole === "Patient") dashboardLink = "/patient/dashboard";
-    else if (primaryRole === "SystemAdmin" || primaryRole === "Admin") dashboardLink = "/admin/dashboard";
+    if (role === "Doctor") dashboardLink = "/doctor/dashboard";
+    else if (role === "Patient") dashboardLink = "/patient/dashboard";
+    else if (role === "SystemAdmin" || role === "Admin") dashboardLink = "/admin/dashboard";
 
     return (
       <div className="flex items-center gap-4">

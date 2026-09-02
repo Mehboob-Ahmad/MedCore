@@ -34,8 +34,20 @@ apiClient.interceptors.response.use(
       if (error.response.status === 401) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('medichp_token');
+          localStorage.removeItem('medichp_refresh_token');
           window.location.href = '/login';
         }
+      }
+
+      if (error.response.status === 403) {
+        // Handle 403 Forbidden without logging the user out.
+        // We throw an explicit error message. A global error boundary or component can catch it,
+        // or we can redirect to a generic unauthorized page.
+        if (typeof window !== 'undefined' && window.location.pathname.includes('/admin')) {
+             // If they are not an admin but trying to access admin, redirect out
+             window.location.href = '/';
+        }
+        return Promise.reject(new Error("Access Denied: You do not have permission to view this resource."));
       }
       
       const data = error.response.data;
