@@ -70,7 +70,15 @@ export default function DoctorMessages() {
             <Pressable 
               key={conv.id} 
               style={styles.chatCard}
-              onPress={() => router.push(`/chat/${conv.id}`)}
+              onPress={() => router.push({ 
+                pathname: '/chat/[id]', 
+                params: { 
+                  id: conv.id, 
+                  name: conv.otherParticipantName, 
+                  phone: conv.otherParticipantPhoneNumber || '',
+                  specialty: conv.otherParticipantSpecialty || ''
+                } 
+              })}
             >
               <View style={styles.avatarPlaceholder}>
                 <Text style={styles.avatarText}>{conv.otherParticipantName.substring(0, 1).toUpperCase()}</Text>

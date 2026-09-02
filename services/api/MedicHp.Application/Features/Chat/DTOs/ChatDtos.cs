@@ -7,8 +7,10 @@ public class ConversationDto
 {
     public Guid Id { get; set; }
     public Guid OtherParticipantId { get; set; }
-    public string OtherParticipantName { get; set; }
+    public string OtherParticipantName { get; set; } = string.Empty;
     public string? OtherParticipantPhotoUrl { get; set; }
+    public string? OtherParticipantPhoneNumber { get; set; }
+    public string? OtherParticipantSpecialty { get; set; }
     
     public ChatMessageDto? LastMessage { get; set; }
     public int UnreadCount { get; set; }
@@ -19,7 +21,10 @@ public class ChatMessageDto
     public Guid Id { get; set; }
     public Guid ConversationId { get; set; }
     public Guid SenderId { get; set; }
-    public string Content { get; set; }
+    public string? Content { get; set; }
+    public string MessageType { get; set; }
+    public Guid? AttachmentId { get; set; }
+    public string? AttachmentUrl { get; set; }
     public DateTime SentAt { get; set; }
     public bool IsRead { get; set; }
 }

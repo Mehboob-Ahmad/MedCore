@@ -41,6 +41,9 @@ public class GetMessagesQueryHandler : IRequestHandler<GetMessagesQuery, List<Ch
             ConversationId = m.ConversationId,
             SenderId = m.SenderId,
             Content = m.Content,
+            MessageType = m.MessageType,
+            AttachmentId = m.AttachmentId,
+            AttachmentUrl = m.AttachmentId.HasValue ? $"/api/v1/chat/attachments/{m.AttachmentId.Value}" : null,
             SentAt = m.SentAt,
             IsRead = m.IsRead
         }).ToList();

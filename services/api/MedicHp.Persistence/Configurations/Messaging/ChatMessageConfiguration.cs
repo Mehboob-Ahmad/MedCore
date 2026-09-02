@@ -13,6 +13,14 @@ public class ChatMessageConfiguration : IEntityTypeConfiguration<ChatMessage>
         builder.Property(x => x.Id).HasDefaultValueSql("gen_random_uuid()");
         builder.Property(x => x.CreatedAt).HasDefaultValueSql("NOW()");
         
+        builder.Property(x => x.MessageType).HasDefaultValue("TEXT").HasMaxLength(20);
+        builder.Property(x => x.Content).IsRequired(false);
+        
+        builder.HasOne(x => x.Attachment)
+               .WithMany()
+               .HasForeignKey(x => x.AttachmentId)
+               .OnDelete(DeleteBehavior.SetNull);
+               
         builder.HasIndex(x => new { x.ConversationId, x.SentAt });
         builder.HasIndex(x => new { x.ConversationId, x.IsRead });
         

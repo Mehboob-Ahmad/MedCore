@@ -1,11 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { StyleSheet, Text, View, TextInput, Pressable, ActivityIndicator, FlatList, KeyboardAvoidingView, Platform, Alert, Linking } from 'react-native';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { chatService } from '../../services/api';
 
 export default function ChatDetail() {
-  const { id } = useLocalSearchParams();
+  const { id, name, phone, specialty } = useLocalSearchParams();
   const router = useRouter();
+  
+  const handleCall = () => {
+    if (phone) {
+      Linking.openURL(`tel:${phone}`).catch(() => Alert.alert('Error', 'Could not open dialer'));
+    } else {
+      Alert.alert('Unavailable', 'Phone number is not available.');
+    }
+  };
   
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -103,6 +111,16 @@ export default function ChatDetail() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
+      <Stack.Screen 
+        options={{
+          title: (name as string) || 'Chat',
+          headerRight: () => (
+            <Pressable onPress={handleCall} style={styles.callButton}>
+              <Text style={styles.callButtonText}>Call</Text>
+            </Pressable>
+          )
+        }} 
+      />
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -142,6 +160,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+  },
+  callButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    marginRight: 5,
+  },
+  callButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   messageList: {
     padding: 15,

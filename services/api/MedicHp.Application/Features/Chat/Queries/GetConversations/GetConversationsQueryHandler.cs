@@ -1,3 +1,4 @@
+using System;
 using MedicHp.Application.Common;
 using MedicHp.Application.Features.Chat.DTOs;
 using MedicHp.Domain.Entities.Messaging;
@@ -21,37 +22,45 @@ public class GetConversationsQueryHandler : IRequestHandler<GetConversationsQuer
 
     public async Task<List<ConversationDto>> Handle(GetConversationsQuery request, CancellationToken cancellationToken)
     {
-        var conversations = await _conversationRepository.GetAsync(
-            c => c.PatientId == request.UserId || c.DoctorId == request.UserId,
-            include: q => q.Include(c => c.Messages.OrderByDescending(m => m.SentAt).Take(1)),
-            cancellationToken);
-
-        var result = new List<ConversationDto>();
-        foreach (var c in conversations)
-        {
-            var isPatient = c.PatientId == request.UserId;
-            var otherParticipantId = isPatient ? c.DoctorId : c.PatientId;
-
-            var lastMessage = c.Messages.FirstOrDefault();
-            
-            result.Add(new ConversationDto
+        var query = _conversationRepository.GetQueryable()
+            .Where(c => c.PatientId == request.UserId || c.DoctorId == request.UserId)
+            .Include(c => c.Patient)
+            .Include(c => c.Doctor)
+                .ThenInclude(d => d.DoctorProfile)
+                    .ThenInclude(dp => dp!.Specializations)
+                        .ThenInclude(s => s.Specialization)
+            .Select(c => new
             {
-                Id = c.Id,
-                OtherParticipantId = otherParticipantId,
-                OtherParticipantName = "Unknown", // Needs to be fetched via User repo
-                UnreadCount = 0, // Needs calculation
-                LastMessage = lastMessage != null ? new ChatMessageDto
-                {
-                    Id = lastMessage.Id,
-                    ConversationId = lastMessage.ConversationId,
-                    SenderId = lastMessage.SenderId,
-                    Content = lastMessage.Content,
-                    SentAt = lastMessage.SentAt,
-                    IsRead = lastMessage.IsRead
-                } : null
+                Conversation = c,
+                OtherUser = c.PatientId == request.UserId ? c.Doctor : c.Patient,
+                UnreadCount = c.Messages.Count(m => !m.IsRead && m.SenderId != request.UserId),
+                LastMessage = c.Messages.OrderByDescending(m => m.SentAt).FirstOrDefault()
             });
-        }
 
-        return result.OrderByDescending(c => c.LastMessage?.SentAt).ToList();
+        var data = await query.ToListAsync(cancellationToken);
+
+        var result = data.Select(d => new ConversationDto
+        {
+            Id = d.Conversation.Id,
+            OtherParticipantId = d.OtherUser.Id,
+            OtherParticipantName = $"{d.OtherUser.FirstName} {d.OtherUser.LastName}".Trim(),
+            OtherParticipantPhotoUrl = null,
+            OtherParticipantPhoneNumber = d.OtherUser.PhoneNumber,
+            OtherParticipantSpecialty = d.OtherUser.DoctorProfile?.Specializations.FirstOrDefault()?.Specialization.Name ?? d.OtherUser.DoctorProfile?.ProfessionalType,
+            UnreadCount = d.UnreadCount,
+            LastMessage = d.LastMessage != null ? new ChatMessageDto
+            {
+                Id = d.LastMessage.Id,
+                ConversationId = d.LastMessage.ConversationId,
+                SenderId = d.LastMessage.SenderId,
+                Content = d.LastMessage.Content,
+                MessageType = d.LastMessage.MessageType,
+                AttachmentId = d.LastMessage.AttachmentId,
+                SentAt = d.LastMessage.SentAt,
+                IsRead = d.LastMessage.IsRead
+            } : null
+        }).OrderByDescending(c => c.LastMessage?.SentAt ?? DateTime.MinValue).ToList();
+
+        return result;
     }
 }

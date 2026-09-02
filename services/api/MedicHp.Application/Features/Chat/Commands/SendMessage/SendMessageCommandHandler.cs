@@ -42,6 +42,8 @@ public class SendMessageCommandHandler : IRequestHandler<SendMessageCommand, Gui
             ConversationId = request.ConversationId,
             SenderId = request.UserId,
             Content = request.Content,
+            MessageType = request.MessageType,
+            AttachmentId = request.AttachmentId,
             SentAt = DateTime.UtcNow,
             IsRead = false
         };

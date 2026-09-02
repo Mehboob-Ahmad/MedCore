@@ -117,6 +117,40 @@ export const AuthService = {
   }
 };
 
+// Chat Service Endpoints
+export const ChatService = {
+  getConversations: async () => {
+    const response = await apiClient.get('/chat/conversations');
+    return response.data;
+  },
+  getMessages: async (conversationId: string) => {
+    const response = await apiClient.get(`/chat/conversations/${conversationId}/messages`);
+    return response.data;
+  },
+  sendMessage: async (conversationId: string, data: { content?: string; messageType: string; attachmentId?: string }) => {
+    const response = await apiClient.post(`/chat/conversations/${conversationId}/messages`, data);
+    return response.data;
+  },
+  startConversation: async (targetUserId: string) => {
+    const response = await apiClient.post(`/chat/conversations`, { targetUserId });
+    return response.data;
+  },
+  markAsRead: async (conversationId: string) => {
+    const response = await apiClient.post(`/chat/conversations/${conversationId}/read`);
+    return response.data;
+  },
+  uploadChatMedia: async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiClient.post('/chat/attachments', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  }
+};
+
 // Patient Service Endpoints
 export const PatientService = {
   getAppointments: async (filter?: string, status?: string) => {
