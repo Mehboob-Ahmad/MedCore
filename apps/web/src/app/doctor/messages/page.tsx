@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { Card } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 import { Button } from "@medichp/ui";
-import { Search, Send, Loader2, MessageSquare, Paperclip, Mic, Image as ImageIcon, Video, StopCircle } from "lucide-react";
+import { Search, Send, Loader2, MessageSquare, Paperclip, Mic, Image as ImageIcon, Video, StopCircle, ArrowLeft } from "lucide-react";
 import { ChatService, AuthService } from "@medichp/api-client";
 
 export default function DoctorMessages() {
@@ -193,7 +193,7 @@ export default function DoctorMessages() {
   return (
     <div className="h-[calc(100vh-120px)] md:h-full flex flex-col md:flex-row gap-4 pb-16 md:pb-0">
       {/* Threads List */}
-      <Card className="w-full md:w-80 flex flex-col flex-shrink-0 h-1/3 md:h-full">
+      <Card className={`w-full md:w-80 flex-col flex-shrink-0 h-full ${activeConversationId ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-4 border-b border-gray-100 dark:border-slate-800">
           <h2 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">Patient Messages</h2>
         </div>
@@ -240,7 +240,7 @@ export default function DoctorMessages() {
       </Card>
 
       {/* Active Chat Area */}
-      <Card className="flex-1 flex flex-col h-[60vh] md:h-full">
+      <Card className={`flex-1 flex-col h-full ${!activeConversationId ? 'hidden md:flex' : 'flex'}`}>
         {!activeConversationId ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
             <MessageSquare className="w-12 h-12 mb-4 opacity-20" />
@@ -249,7 +249,10 @@ export default function DoctorMessages() {
         ) : (
           <>
             <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 z-10 shadow-sm">
-              <div>
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" className="md:hidden mr-1" onClick={() => setActiveConversationId(null)}>
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
                 <h3 className="font-semibold text-gray-900 dark:text-white">{activeThread?.otherParticipantName}</h3>
               </div>
             </div>

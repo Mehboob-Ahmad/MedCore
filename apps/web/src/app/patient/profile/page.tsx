@@ -348,11 +348,11 @@ export default function PatientProfile() {
               {/* Surgeries Section */}
               <Card>
                 <CardContent className="p-6">
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       <Activity className="w-5 h-5 text-rose-500" /> Surgeries
                     </h3>
-                    <Button type="button" variant="outline" size="sm" onClick={addSurgery}>
+                    <Button type="button" variant="outline" size="sm" onClick={addSurgery} className="w-full sm:w-auto">
                       <CalendarPlus className="w-4 h-4 mr-2" /> Add Surgery
                     </Button>
                   </div>
@@ -394,11 +394,11 @@ export default function PatientProfile() {
               {/* Hospitalizations Section */}
               <Card>
                 <CardContent className="p-6">
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       <MapPin className="w-5 h-5 text-blue-500" /> Hospitalizations
                     </h3>
-                    <Button type="button" variant="outline" size="sm" onClick={addHospitalization}>
+                    <Button type="button" variant="outline" size="sm" onClick={addHospitalization} className="w-full sm:w-auto">
                       <CalendarPlus className="w-4 h-4 mr-2" /> Add Hospitalization
                     </Button>
                   </div>
@@ -443,11 +443,11 @@ export default function PatientProfile() {
             <motion.div key="reports" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
               <Card>
                 <CardContent className="p-6">
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                       <FileText className="w-5 h-5 text-[var(--color-primary-600)]" /> Uploaded Reports
                     </h3>
-                    <div className="relative">
+                    <div className="relative w-full sm:w-auto">
                       <input 
                         type="file" 
                         accept=".pdf,image/png,image/jpeg"
@@ -455,7 +455,7 @@ export default function PatientProfile() {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         disabled={uploadingReport}
                       />
-                      <Button type="button" variant="outline" size="sm" disabled={uploadingReport}>
+                      <Button type="button" variant="outline" size="sm" disabled={uploadingReport} className="w-full sm:w-auto">
                         <UploadCloud className="w-4 h-4 mr-2" /> 
                         {uploadingReport ? "Uploading..." : "Upload Report"}
                       </Button>
