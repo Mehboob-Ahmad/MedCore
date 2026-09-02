@@ -6,14 +6,15 @@ using MediatR;
 using MedicHp.Application.Common;
 using MedicHp.Application.Features.Files.DTOs;
 using MedicHp.Domain.Entities.Core;
+using DomainFile = MedicHp.Domain.Entities.Core.File;
 
 namespace MedicHp.Application.Features.Files.Queries.GetPatientFiles;
 
 public class GetPatientFilesQueryHandler : IRequestHandler<GetPatientFilesQuery, List<FileDto>>
 {
-    private readonly IGenericRepository<File> _fileRepository;
+    private readonly IGenericRepository<DomainFile> _fileRepository;
 
-    public GetPatientFilesQueryHandler(IGenericRepository<File> fileRepository)
+    public GetPatientFilesQueryHandler(IGenericRepository<DomainFile> fileRepository)
     {
         _fileRepository = fileRepository;
     }
