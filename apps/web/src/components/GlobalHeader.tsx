@@ -35,20 +35,12 @@ export function GlobalHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <a 
-          href="/" 
-          className="flex items-center space-x-2" 
-          onClick={(e) => {
-            e.preventDefault();
-            setMobileMenuOpen(false);
-            window.location.href = "/";
-          }}
-        >
+        <Link href="/" className="flex items-center space-x-2" onClick={() => setMobileMenuOpen(false)}>
           <Stethoscope className="w-6 h-6 text-[var(--color-primary-600)]" />
           <span className="font-bold text-xl tracking-tight text-[var(--color-primary-600)] dark:text-sky-400">
             MedicHp
           </span>
-        </a>
+        </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 font-medium text-sm">
