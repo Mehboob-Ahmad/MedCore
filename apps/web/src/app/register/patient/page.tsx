@@ -3,15 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Stethoscope, User, Mail, Lock, Upload, Eye, EyeOff } from "lucide-react";
+import { Stethoscope, User, Mail, Lock, Phone, Eye, EyeOff } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent, CardFooter } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 import { useAuth } from "@/contexts/AuthContext";
-import { AuthService } from "@medichp/api-client";
 
-export default function DoctorRegisterPage() {
-  const { registerDoctor } = useAuth();
+export default function PatientRegisterPage() {
+  const { registerPatient } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -20,28 +19,20 @@ export default function DoctorRegisterPage() {
     email: "",
     phoneNumber: "",
     password: "",
-    confirmPassword: "",
-    specialization: "",
+    confirmPassword: ""
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [degreeFile, setDegreeFile] = useState<File | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, setFile: React.Dispatch<React.SetStateAction<File | null>>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+    
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       setLoading(false);
@@ -49,23 +40,7 @@ export default function DoctorRegisterPage() {
     }
     
     try {
-      let degreeFileId = "00000000-0000-0000-0000-000000000000";
-      let licenseFileId = "00000000-0000-0000-0000-000000000000";
-
-      if (degreeFile) {
-        const degreeRes = await AuthService.uploadFile(degreeFile, "Degree");
-        if (degreeRes.success) degreeFileId = degreeRes.fileId;
-      }
-
-      const payload = {
-        ...formData,
-        confirmPassword: formData.confirmPassword,
-        acceptTerms: true,
-        mbbsDegreeFileId: degreeFileId,
-        specialization: formData.specialization
-      };
-
-      await registerDoctor(payload);
+      await registerPatient(formData);
     } catch (err: any) {
       setError(err.message || "An error occurred during registration");
     } finally {
@@ -74,7 +49,7 @@ export default function DoctorRegisterPage() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 bg-surface-50 dark:bg-slate-900 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/10">
+    <div className="flex-1 flex items-center justify-center p-4 bg-surface-50 dark:bg-slate-900 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-100/40 via-transparent to-transparent dark:from-sky-900/10">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -88,11 +63,11 @@ export default function DoctorRegisterPage() {
               MedicHp
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-6">Join MedicHp as a Doctor</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Upload your documents to get verified.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-6">Create your account</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Join MedicHp to manage your health seamlessly.</p>
         </div>
 
-        <Card className="border-0 shadow-xl shadow-blue-900/5 dark:shadow-none dark:bg-slate-800/80 border-t-4 border-t-[var(--color-secondary-500)]">
+        <Card className="border-0 shadow-xl shadow-sky-900/5 dark:shadow-none dark:bg-slate-800/80">
           <CardContent className="pt-6">
             {error && (
               <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
@@ -100,17 +75,17 @@ export default function DoctorRegisterPage() {
               </div>
             )}
             <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Jane" className="pl-10" required />
+                    <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Ahmad" className="pl-10" required />
                   </div>
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
-                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Smith" required />
+                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Khan" required />
                 </div>
               </div>
               
@@ -118,24 +93,15 @@ export default function DoctorRegisterPage() {
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="jane@clinic.com" className="pl-10" required />
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="ahmad@example.com" className="pl-10" required />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone number</label>
-                  <div className="relative">
-                    <Input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="+92 300 1234567" className="pl-3" required />
-                  </div>
-                </div>
-                
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Specialization</label>
-                  <div className="relative">
-                    <Stethoscope className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input name="specialization" value={formData.specialization} onChange={handleChange} placeholder="e.g. Cardiologist" className="pl-10" required />
-                  </div>
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone number</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="+92 300 1234567" className="pl-10" required />
                 </div>
               </div>
               
@@ -156,10 +122,12 @@ export default function DoctorRegisterPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
+                <p className="text-xs text-gray-500">Min 8 chars, 1 uppercase, 1 number, 1 special character.</p>
               </div>
 
               <div className="space-y-1">
@@ -179,29 +147,15 @@ export default function DoctorRegisterPage() {
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
 
-              <div className="pt-2">
-                <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3 border-b border-gray-100 dark:border-gray-700 pb-2">Verification Documents</h3>
-                
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Your Degree</label>
-                    <div className="relative flex items-center">
-                      <Input type="file" onChange={(e) => handleFileChange(e, setDegreeFile)} accept="image/*,.pdf" className="pl-10 py-1.5" required />
-                      <Upload className="absolute left-3 h-4 w-4 text-gray-400" />
-                    </div>
-                    <p className="text-xs text-gray-500">Image or PDF format</p>
-                  </div>
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full mt-6 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600" size="lg" disabled={loading}>
-                {loading ? "Registering..." : "Register & Continue"}
+              <Button type="submit" className="w-full mt-6" size="lg" disabled={loading}>
+                {loading ? "Creating..." : "Create Account"}
               </Button>
             </form>
           </CardContent>

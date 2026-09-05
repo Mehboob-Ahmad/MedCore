@@ -1,60 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Stethoscope, User, Mail, Lock, Phone, Eye, EyeOff } from "lucide-react";
-import { Button } from "@medichp/ui";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@medichp/ui";
-import { Input } from "@medichp/ui";
-import { useAuth } from "@/contexts/AuthContext";
+import { Stethoscope, UserRound, BriefcaseMedical, ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "@medichp/ui";
 
 export default function RegisterPage() {
-  const { registerPatient } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    password: "",
-    confirmPassword: ""
-  });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-    
-    try {
-      await registerPatient(formData);
-    } catch (err: any) {
-      setError(err.message || "An error occurred during registration");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="flex-1 flex items-center justify-center p-4 bg-surface-50 dark:bg-slate-900 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-100/40 via-transparent to-transparent dark:from-sky-900/10">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md my-12"
+        className="w-full max-w-lg my-12"
       >
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2">
@@ -63,108 +21,62 @@ export default function RegisterPage() {
               MedicHp
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-6">Create your account</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Join MedicHp to manage your health seamlessly.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-6">Create your MedicHp Account</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Choose how you want to use MedicHp.</p>
         </div>
 
-        <Card className="border-0 shadow-xl shadow-sky-900/5 dark:shadow-none dark:bg-slate-800/80">
-          <CardContent className="pt-6">
-            {error && (
-              <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
-                {error}
-              </div>
-            )}
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="John" className="pl-10" required />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Patient Card */}
+          <Link href="/register/patient">
+            <motion.div whileHover={{ y: -4 }} whileTap={{ scale: 0.98 }}>
+              <Card className="border-2 border-transparent hover:border-[var(--color-primary-600)] transition-all cursor-pointer h-full shadow-lg hover:shadow-xl">
+                <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+                    <UserRound className="w-8 h-8 text-[var(--color-primary-600)]" />
                   </div>
-                </div>
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
-                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Doe" required />
-                </div>
-              </div>
-              
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" className="pl-10" required />
-                </div>
-              </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Sign up as Patient</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Find doctors, book appointments, and manage your health.
+                    </p>
+                  </div>
+                  <span className="text-sm font-semibold text-[var(--color-primary-600)] mt-2">
+                    Continue →
+                  </span>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Link>
 
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone number</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} placeholder="+91 98765 43210" className="pl-10" required />
-                </div>
-              </div>
-              
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input 
-                    type={showPassword ? "text" : "password"} 
-                    name="password" 
-                    value={formData.password} 
-                    onChange={handleChange} 
-                    placeholder="••••••••" 
-                    className="pl-10 pr-10" 
-                    required 
-                  />
-                  <button 
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
+          {/* Doctor Card */}
+          <Link href="/doctor/register">
+            <motion.div whileHover={{ y: -4 }} whileTap={{ scale: 0.98 }}>
+              <Card className="border-2 border-transparent hover:border-slate-800 dark:hover:border-slate-400 transition-all cursor-pointer h-full shadow-lg hover:shadow-xl">
+                <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
+                  <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                    <BriefcaseMedical className="w-8 h-8 text-slate-700 dark:text-slate-300" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Sign up as Doctor</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Join MedicHp to grow your practice and connect with patients.
+                    </p>
+                  </div>
+                  <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-2">
+                    Continue →
+                  </span>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </Link>
+        </div>
 
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input 
-                    type={showConfirmPassword ? "text" : "password"} 
-                    name="confirmPassword" 
-                    value={formData.confirmPassword} 
-                    onChange={handleChange} 
-                    placeholder="••••••••" 
-                    className="pl-10 pr-10" 
-                    required 
-                  />
-                  <button 
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                  >
-                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full mt-6" size="lg" disabled={loading}>
-                {loading ? "Creating..." : "Create Account"}
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-center border-t border-gray-100 dark:border-slate-700/50 pt-6">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Already have an account?{" "}
-              <Link href="/login" className="font-semibold text-[var(--color-primary-600)] hover:underline">
-                Log in
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
+        <div className="text-center mt-8">
+          <Link href="/login" className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary-600)] transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Login
+          </Link>
+        </div>
       </motion.div>
     </div>
   );

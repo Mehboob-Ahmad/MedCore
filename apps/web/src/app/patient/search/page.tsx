@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Search, MapPin, Star, Clock } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, MapPin, Star, Clock, X, Check, ChevronDown } from "lucide-react";
 import { Input } from "@medichp/ui";
 import { Button } from "@medichp/ui";
 import { Card, CardContent } from "@medichp/ui";
@@ -16,14 +16,16 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cities, setCities] = useState<any[]>([]);
-  const [selectedCityId, setSelectedCityId] = useState<string>("");
+  const [selectedCityIds, setSelectedCityIds] = useState<string[]>([]);
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [citySearchQuery, setCitySearchQuery] = useState("");
   const [gender, setGender] = useState<string>("");
 
   const fetchDoctors = async () => {
     setLoading(true);
     setError("");
     try {
-      const cityIds = selectedCityId ? [selectedCityId] : undefined;
+      const cityIds = selectedCityIds.length > 0 ? selectedCityIds : undefined;
       const res = await DoctorService.searchDoctors(query, specialty, gender, cityIds);
       if (res.success) {
         // Data format differs depending on backend pagination implementation, check for data.doctors or data directly
@@ -55,7 +57,23 @@ export default function SearchPage() {
 
   useEffect(() => {
     fetchDoctors();
-  }, [specialty, selectedCityId, gender]);
+  }, [specialty, selectedCityIds, gender]);
+
+  const handleCitySelect = (cityId: string) => {
+    setSelectedCityIds(prev => 
+      prev.includes(cityId) 
+        ? prev.filter(id => id !== cityId)
+        : [...prev, cityId]
+    );
+  };
+
+  const removeCity = (cityId: string) => {
+    setSelectedCityIds(prev => prev.filter(id => id !== cityId));
+  };
+
+  const filteredCities = cities.filter(city => 
+    city.name.toLowerCase().includes(citySearchQuery.toLowerCase())
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,22 +98,85 @@ export default function SearchPage() {
                 onChange={(e) => setQuery(e.target.value)}
               />
             </div>
-            <div className="relative md:w-64">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <select 
-                className="pl-10 h-14 w-full border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-sm text-gray-700 dark:text-gray-200 focus:ring-[var(--color-primary-600)] focus:border-[var(--color-primary-600)]"
-                value={selectedCityId}
-                onChange={(e) => setSelectedCityId(e.target.value)}
+            <div className="relative md:w-72">
+              <div 
+                className="pl-10 pr-10 h-14 w-full border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg flex items-center cursor-pointer text-sm"
+                onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
               >
-                <option value="">All Cities</option>
-                {cities.map((city) => (
-                  <option key={city.id} value={city.id}>{city.name}</option>
-                ))}
-              </select>
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <span className="truncate text-gray-700 dark:text-gray-200">
+                  {selectedCityIds.length === 0 
+                    ? "All Cities" 
+                    : `${selectedCityIds.length} city${selectedCityIds.length > 1 ? 's' : ''} selected`}
+                </span>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              </div>
+
+              <AnimatePresence>
+                {isCityDropdownOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute z-20 w-full mt-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xl overflow-hidden"
+                  >
+                    <div className="p-2 border-b border-gray-100 dark:border-slate-700">
+                      <Input 
+                        placeholder="Search cities..."
+                        value={citySearchQuery}
+                        onChange={(e) => setCitySearchQuery(e.target.value)}
+                        className="h-9 text-sm"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    <div className="max-h-60 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-slate-700">
+                      {filteredCities.length === 0 ? (
+                        <div className="p-3 text-sm text-gray-500 text-center">No cities found</div>
+                      ) : (
+                        filteredCities.map((city) => (
+                          <div 
+                            key={city.id} 
+                            onClick={() => handleCitySelect(city.id)}
+                            className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded cursor-pointer"
+                          >
+                            <span className="text-sm text-gray-700 dark:text-gray-200">{city.name}</span>
+                            {selectedCityIds.includes(city.id) && (
+                              <Check className="h-4 w-4 text-[var(--color-primary-600)]" />
+                            )}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <Button type="submit" size="lg" className="h-14 px-8">Search</Button>
           </form>
           
+          {selectedCityIds.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {selectedCityIds.map(id => {
+                const city = cities.find(c => c.id === id);
+                if (!city) return null;
+                return (
+                  <span key={id} className="inline-flex items-center gap-1 bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-300 px-3 py-1 rounded-full text-sm font-medium">
+                    {city.name}
+                    <button onClick={() => removeCity(id)} className="hover:bg-sky-200 dark:hover:bg-sky-800/50 rounded-full p-0.5 transition-colors">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                );
+              })}
+              <button 
+                onClick={() => setSelectedCityIds([])}
+                className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 underline underline-offset-2 ml-2"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+
           <div className="flex gap-2 mt-6 overflow-x-auto pb-2 scrollbar-hide">
             {["Dermatology", "Cardiology", "Pediatrics", "Neurology", "Orthopedics"].map((spec) => (
               <button 
