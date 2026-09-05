@@ -177,7 +177,8 @@ export default function PatientRegisterPage() {
                   {loading ? "Creating..." : "Create Account"}
                 </Button>
               </form>
-            </>}
+            </>
+            )}
           </CardContent>
           <CardFooter className="flex justify-center border-t border-gray-100 dark:border-slate-700/50 pt-6">
             <p className="text-sm text-gray-600 dark:text-gray-400">
