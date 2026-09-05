@@ -260,5 +260,13 @@ export const AdminService = {
     const response = await apiClient.get('/system/specialties');
     return response.data;
   },
+  getUsers: async () => {
+    const response = await apiClient.get('/admin/users');
+    return response.data;
+  },
+  toggleUserStatus: async (id: string, isActive: boolean, reason?: string | null) => {
+    const response = await apiClient.post(`/admin/users/${id}/toggle-status`, { isActive, reason });
+    return response.data;
+  },
 };
 

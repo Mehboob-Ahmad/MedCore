@@ -33,4 +33,22 @@ public class AdminController : ControllerBase
 
         return Ok(new { success = true, data = result });
     }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetUsers()
+    {
+        var query = new MedicHp.Application.Features.Admin.Queries.GetUsers.GetUsersQuery();
+        var result = await _mediator.Send(query);
+
+        return Ok(new { success = true, data = result });
+    }
+
+    [HttpPost("users/{id}/toggle-status")]
+    public async Task<IActionResult> ToggleUserStatus(Guid id, [FromBody] MedicHp.Application.Features.Admin.Commands.ToggleUserStatus.ToggleUserStatusCommand command)
+    {
+        command.UserId = id;
+        var result = await _mediator.Send(command);
+
+        return Ok(new { success = true, data = result });
+    }
 }

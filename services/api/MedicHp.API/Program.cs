@@ -31,6 +31,7 @@ builder.Services.AddPersistence(builder.Configuration);
 
 // Add API Configuration
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
@@ -74,6 +75,23 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
         ValidAudience = builder.Configuration["JwtSettings:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Secret"] ?? string.Empty))
+    };
+    
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var userIdStr = context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(userIdStr, out var userId))
+            {
+                var dbContext = context.HttpContext.RequestServices.GetRequiredService<MedicHp.Persistence.ApplicationDbContext>();
+                var user = await dbContext.Users.FindAsync(userId);
+                if (user == null || !user.IsActive)
+                {
+                    context.Fail("Your account has been frozen. Please contact MedicHp administration.");
+                }
+            }
+        }
     };
 });
 
@@ -149,5 +167,6 @@ app.UseAuthorization();
 
 app.MapHealthChecks("/health");
 app.MapControllers();
+app.MapHub<MedicHp.API.Hubs.ChatHub>("/hubs/chat");
 
 app.Run();

@@ -11,6 +11,8 @@ public class PatientProfile : SoftDeleteEntity
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
     public DateOnly? DateOfBirth { get; set; }
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public int? Age => DateOfBirth.HasValue ? (DateTime.Today.Year - DateOfBirth.Value.Year - (DateOfBirth.Value.DayOfYear > DateTime.Today.DayOfYear ? 1 : 0)) : null;
     public string? Gender { get; set; }
     public string? BloodType { get; set; }
     public Guid? CityId { get; set; }
@@ -25,6 +27,7 @@ public class PatientProfile : SoftDeleteEntity
     public ICollection<PatientMedication> Medications { get; set; } = new List<PatientMedication>();
     public ICollection<PatientSurgery> Surgeries { get; set; } = new List<PatientSurgery>();
     public ICollection<PatientHospitalization> Hospitalizations { get; set; } = new List<PatientHospitalization>();
+    public ICollection<PatientMedicalReport> MedicalReports { get; set; } = new List<PatientMedicalReport>();
 
     public string? FamilyMedicalHistory { get; set; }
     public string? MedicalHistory { get; set; }

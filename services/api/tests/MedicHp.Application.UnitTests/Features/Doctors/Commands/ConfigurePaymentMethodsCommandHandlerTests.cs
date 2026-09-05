@@ -41,7 +41,7 @@ public class ConfigurePaymentMethodsCommandHandlerTests
 
         _mockProfileRepository.Setup(x => x.FirstOrDefaultAsync(
             It.IsAny<System.Linq.Expressions.Expression<Func<DoctorProfile, bool>>>(),
-            It.IsAny<Func<System.Linq.IQueryable<DoctorProfile>, Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<DoctorProfile, object>>>(),
+            It.IsAny<Func<System.Linq.IQueryable<DoctorProfile>, System.Linq.IQueryable<DoctorProfile>>>(),
             It.IsAny<CancellationToken>()))
             .ReturnsAsync(doctorProfile);
 
@@ -84,7 +84,7 @@ public class ConfigurePaymentMethodsCommandHandlerTests
 
         _mockProfileRepository.Setup(x => x.FirstOrDefaultAsync(
             It.IsAny<System.Linq.Expressions.Expression<Func<DoctorProfile, bool>>>(),
-            It.IsAny<Func<System.Linq.IQueryable<DoctorProfile>, Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<DoctorProfile, object>>>(),
+            It.IsAny<Func<System.Linq.IQueryable<DoctorProfile>, System.Linq.IQueryable<DoctorProfile>>>(),
             It.IsAny<CancellationToken>()))
             .ReturnsAsync((DoctorProfile)null);
 

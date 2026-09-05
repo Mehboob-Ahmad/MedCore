@@ -13,4 +13,7 @@ public class PatientSurgery : BaseEntity
     public string? SurgeonName { get; set; }
     public string? HospitalName { get; set; }
     public string? Notes { get; set; }
+    public bool HasNoDocuments { get; set; }
+    
+    public ICollection<PatientSurgeryDocument> SurgeryDocuments { get; set; } = new List<PatientSurgeryDocument>();
 }

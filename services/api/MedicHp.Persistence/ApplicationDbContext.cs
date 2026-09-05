@@ -39,7 +39,9 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<PatientChronicCondition> PatientChronicConditions => Set<PatientChronicCondition>();
     public DbSet<PatientMedication> PatientMedications => Set<PatientMedication>();
     public DbSet<PatientSurgery> PatientSurgeries => Set<PatientSurgery>();
+    public DbSet<PatientSurgeryDocument> PatientSurgeryDocuments => Set<PatientSurgeryDocument>();
     public DbSet<PatientHospitalization> PatientHospitalizations => Set<PatientHospitalization>();
+    public DbSet<PatientMedicalReport> PatientMedicalReports => Set<PatientMedicalReport>();
     public DbSet<DoctorProfile> DoctorProfiles => Set<DoctorProfile>();
     public DbSet<DoctorPaymentMethod> DoctorPaymentMethods => Set<DoctorPaymentMethod>();
     public DbSet<DoctorSpecialization> DoctorSpecializations => Set<DoctorSpecialization>();

@@ -19,8 +19,8 @@ public class RegisterDoctorValidator : AbstractValidator<RegisterDoctorDto>
             .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain at least one special character.");
             
         RuleFor(x => x.ConfirmPassword).Equal(x => x.Password).WithMessage("Passwords do not match.");
-        RuleFor(x => x.MbbsDegreeFileId).NotEmpty().WithMessage("MBBS Degree document is required.");
-        RuleFor(x => x.LicenseFileId).NotEmpty().WithMessage("Doctor's License document is required.");
+        RuleFor(x => x.DegreeFileId).NotEmpty().WithMessage("Degree document is required.");
+        RuleFor(x => x.Specialization).NotEmpty().WithMessage("Specialization is required.");
         RuleFor(x => x.AcceptTerms).Equal(true).WithMessage("You must accept the terms and conditions.");
     }
 }

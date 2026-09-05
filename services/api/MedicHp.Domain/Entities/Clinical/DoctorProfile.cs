@@ -13,7 +13,8 @@ public class DoctorProfile : SoftDeleteEntity
     public string ProfessionalType { get; set; } = "Medical Doctor"; // e.g., Medical Doctor, Dentist, Psychologist
     
     // Registration & Verification
-    public string RegistrationNumber { get; set; } = null!;
+    public string? RegistrationNumber { get; set; }
+    public string? Specialization { get; set; } // Doctor's typed specialization
     public string? RegulatoryBody { get; set; } // e.g., PM&DC, AHPC
     public string VerificationStatus { get; set; } = "Pending";
     public DateTime? VerificationDate { get; set; }

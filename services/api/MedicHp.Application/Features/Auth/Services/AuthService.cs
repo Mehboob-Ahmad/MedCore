@@ -105,7 +105,7 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException("Invalid email or password.");
 
         if (!user.IsActive)
-            throw new UnauthorizedAccessException("Account suspended.");
+            throw new UnauthorizedAccessException("Your account has been frozen. Please contact MedicHp administration.");
 
         if (!user.EmailConfirmed)
             throw new UnauthorizedAccessException("Email not verified.");
@@ -138,7 +138,7 @@ public class AuthService : IAuthService
         var refreshToken = new RefreshToken
         {
             Token = refreshTokenStr,
-            ExpiresAt = DateTime.UtcNow.AddDays(7),
+            ExpiresAt = request.RememberMe ? DateTime.UtcNow.AddDays(30) : DateTime.UtcNow.AddDays(7),
             DeviceInfo = request.DeviceInfo,
             UserId = user.Id
         };
@@ -241,7 +241,8 @@ public class AuthService : IAuthService
         {
             YearsOfExperience = 0,
             ConsultationFee = 0,
-            RegistrationNumber = "" // Will be updated in complete profile
+            RegistrationNumber = null, // No longer mandatory
+            Specialization = request.Specialization
         };
 
         // Note: For File linking, we would ideally resolve the Files by ID and set their UploadedByUserId to the new user.Id.

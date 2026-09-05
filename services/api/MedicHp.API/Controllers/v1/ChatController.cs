@@ -7,6 +7,7 @@ using MedicHp.Application.Features.Chat.Queries.GetMessages;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MedicHp.Api.Controllers.v1;
 
@@ -49,7 +50,7 @@ public class ChatController : ControllerBase
     }
 
     [HttpPost("conversations/{id}/messages")]
-    public async Task<IActionResult> SendMessage(Guid id, [FromBody] SendMessageCommand command)
+    public async Task<IActionResult> SendMessage(Guid id, [FromBody] SendMessageCommand command, [FromServices] Microsoft.AspNetCore.SignalR.IHubContext<MedicHp.API.Hubs.ChatHub> hubContext)
     {
         var userId = _currentUserService.UserId;
         if (userId == null) return Unauthorized();
@@ -58,6 +59,16 @@ public class ChatController : ControllerBase
         command.UserId = userId.Value;
         
         var result = await _mediator.Send(command);
+
+        await hubContext.Clients.Group($"Conversation_{id}").SendAsync("NewMessage", new {
+            Id = result,
+            ConversationId = id,
+            SenderId = userId.Value,
+            command.Content,
+            command.MessageType,
+            command.AttachmentId,
+            SentAt = DateTime.UtcNow
+        });
 
         return Created("", new { success = true, data = result });
     }

@@ -11,7 +11,8 @@ public class RegisterDoctorDto
     public string PhoneNumber { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string ConfirmPassword { get; set; } = string.Empty;
-    public Guid MbbsDegreeFileId { get; set; }
-    public Guid LicenseFileId { get; set; }
+    public Guid DegreeFileId { get; set; }
+    public Guid? LicenseFileId { get; set; }
+    public string Specialization { get; set; } = string.Empty;
     public bool AcceptTerms { get; set; }
 }
