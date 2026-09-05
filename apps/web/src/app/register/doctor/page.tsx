@@ -14,6 +14,7 @@ export default function DoctorRegisterPage() {
   const { registerDoctor } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -66,6 +67,7 @@ export default function DoctorRegisterPage() {
       };
 
       await registerDoctor(payload);
+      setSuccess(true);
     } catch (err: any) {
       setError(err.message || "An error occurred during registration");
     } finally {
@@ -94,12 +96,29 @@ export default function DoctorRegisterPage() {
 
         <Card className="border-0 shadow-xl shadow-blue-900/5 dark:shadow-none dark:bg-slate-800/80 border-t-4 border-t-[var(--color-secondary-500)]">
           <CardContent className="pt-6">
-            {error && (
-              <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
-                {error}
+            {success ? (
+              <div className="text-center space-y-6 py-8">
+                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto">
+                  <Stethoscope className="w-8 h-8" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Doctor account created successfully.</h2>
+                  <p className="text-gray-500 dark:text-gray-400 mt-2">You can now sign in to MedicHp.</p>
+                </div>
+                <Link href="/login" className="inline-block w-full">
+                  <Button className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600" size="lg">
+                    Go to Login
+                  </Button>
+                </Link>
               </div>
-            )}
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            ) : (
+              <>
+                {error && (
+                  <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
+                    {error}
+                  </div>
+                )}
+                <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
@@ -204,6 +223,7 @@ export default function DoctorRegisterPage() {
                 {loading ? "Registering..." : "Register & Continue"}
               </Button>
             </form>
+            </>}
           </CardContent>
           <CardFooter className="flex justify-center border-t border-gray-100 dark:border-slate-700/50 pt-6">
             <p className="text-sm text-gray-600 dark:text-gray-400">

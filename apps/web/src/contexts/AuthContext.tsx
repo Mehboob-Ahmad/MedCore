@@ -96,16 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.success) {
       throw new Error(res.message || "Registration failed");
     }
-    if (res.data?.accessToken) {
-      localStorage.setItem("medichp_token", res.data.accessToken);
-      if (res.data.refreshToken) {
-        localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
-      }
-      setUser(res.data.user);
-      router.push("/patient/dashboard");
-    } else {
-      router.push("/login");
-    }
+    // Return void to allow the component to handle the success UI.
   };
 
   const registerDoctor = async (data: any) => {
@@ -113,16 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.success) {
       throw new Error(res.message || "Registration failed");
     }
-    if (res.data?.accessToken) {
-      localStorage.setItem("medichp_token", res.data.accessToken);
-      if (res.data.refreshToken) {
-        localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
-      }
-      setUser(res.data.user);
-      router.push("/doctor/dashboard");
-    } else {
-      router.push("/login");
-    }
+    // Return void to allow the component to handle the success UI.
   };
 
   const logout = async () => {

@@ -49,7 +49,7 @@ export default function RegisterPage() {
           </Link>
 
           {/* Doctor Card */}
-          <Link href="/doctor/register">
+          <Link href="/register/doctor">
             <motion.div whileHover={{ y: -4 }} whileTap={{ scale: 0.98 }}>
               <Card className="border-2 border-transparent hover:border-slate-800 dark:hover:border-slate-400 transition-all cursor-pointer h-full shadow-lg hover:shadow-xl">
                 <CardContent className="pt-8 pb-8 flex flex-col items-center text-center gap-4">
