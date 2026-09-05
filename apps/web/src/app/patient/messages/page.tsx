@@ -48,7 +48,7 @@ function PatientMessagesContent() {
       // If a doctorId is passed, we want to start a chat with them
       if (doctorId) {
         try {
-          const res = await ChatService.createOrGetConversation(doctorId);
+          const res = await ChatService.startConversation(doctorId);
           if (res.success && res.data) {
             setActiveConversationId(res.data.id);
           }
