@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Stethoscope, Lock, ArrowLeft, CheckCircle } from "lucide-react";
+import { Stethoscope, Lock, ArrowLeft, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent, CardFooter } from "@medichp/ui";
 import { Input } from "@medichp/ui";
@@ -25,6 +25,8 @@ function ResetPasswordContent() {
     newPassword: "",
     confirmPassword: ""
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const tokenParam = searchParams.get("token");
@@ -117,15 +119,22 @@ function ResetPasswordContent() {
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <Input 
-                      type="password" 
+                      type={showPassword ? "text" : "password"} 
                       name="newPassword"
                       value={formData.newPassword} 
                       onChange={handleChange} 
                       placeholder="••••••••" 
-                      className="pl-10" 
+                      className="pl-10 pr-10" 
                       required 
                       minLength={8}
                     />
+                    <button 
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
                   </div>
                 </div>
 
@@ -134,15 +143,22 @@ function ResetPasswordContent() {
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <Input 
-                      type="password" 
+                      type={showConfirmPassword ? "text" : "password"} 
                       name="confirmPassword"
                       value={formData.confirmPassword} 
                       onChange={handleChange} 
                       placeholder="••••••••" 
-                      className="pl-10" 
+                      className="pl-10 pr-10" 
                       required 
                       minLength={8}
                     />
+                    <button 
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
                   </div>
                 </div>
 

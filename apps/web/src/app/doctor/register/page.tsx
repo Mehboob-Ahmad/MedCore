@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Stethoscope, User, Mail, Lock, Upload } from "lucide-react";
+import { Stethoscope, User, Mail, Lock, Upload, Eye, EyeOff } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent, CardFooter } from "@medichp/ui";
 import { Input } from "@medichp/ui";
@@ -20,7 +20,10 @@ export default function DoctorRegisterPage() {
     email: "",
     phoneNumber: "",
     password: "",
+    confirmPassword: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [degreeFile, setDegreeFile] = useState<File | null>(null);
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
 
@@ -38,14 +41,20 @@ export default function DoctorRegisterPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
     
     try {
-      let mbbsDegreeFileId = "00000000-0000-0000-0000-000000000000";
+      let degreeFileId = "00000000-0000-0000-0000-000000000000";
       let licenseFileId = "00000000-0000-0000-0000-000000000000";
 
       if (degreeFile) {
         const degreeRes = await AuthService.uploadFile(degreeFile, "Degree");
-        if (degreeRes.success) mbbsDegreeFileId = degreeRes.fileId;
+        if (degreeRes.success) degreeFileId = degreeRes.fileId;
       }
       if (licenseFile) {
         const licenseRes = await AuthService.uploadFile(licenseFile, "License");
@@ -54,9 +63,9 @@ export default function DoctorRegisterPage() {
 
       const payload = {
         ...formData,
-        confirmPassword: formData.password,
+        confirmPassword: formData.confirmPassword,
         acceptTerms: true,
-        mbbsDegreeFileId,
+        mbbsDegreeFileId: degreeFileId,
         licenseFileId
       };
 
@@ -128,7 +137,45 @@ export default function DoctorRegisterPage() {
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" className="pl-10" required />
+                  <Input 
+                    type={showPassword ? "text" : "password"} 
+                    name="password" 
+                    value={formData.password} 
+                    onChange={handleChange} 
+                    placeholder="••••••••" 
+                    className="pl-10 pr-10" 
+                    required 
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Input 
+                    type={showConfirmPassword ? "text" : "password"} 
+                    name="confirmPassword" 
+                    value={formData.confirmPassword} 
+                    onChange={handleChange} 
+                    placeholder="••••••••" 
+                    className="pl-10 pr-10" 
+                    required 
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
               </div>
 
@@ -137,7 +184,7 @@ export default function DoctorRegisterPage() {
                 
                 <div className="space-y-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload MBBS Degree</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Your Degree</label>
                     <div className="relative flex items-center">
                       <Input type="file" onChange={(e) => handleFileChange(e, setDegreeFile)} accept="image/*,.pdf" className="pl-10 py-1.5" required />
                       <Upload className="absolute left-3 h-4 w-4 text-gray-400" />
@@ -146,9 +193,9 @@ export default function DoctorRegisterPage() {
                   </div>
                   
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Doctor's License</label>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Doctor's License (Optional)</label>
                     <div className="relative flex items-center">
-                      <Input type="file" onChange={(e) => handleFileChange(e, setLicenseFile)} accept="image/*,.pdf" className="pl-10 py-1.5" required />
+                      <Input type="file" onChange={(e) => handleFileChange(e, setLicenseFile)} accept="image/*,.pdf" className="pl-10 py-1.5" />
                       <Upload className="absolute left-3 h-4 w-4 text-gray-400" />
                     </div>
                     <p className="text-xs text-gray-500">Image or PDF format</p>

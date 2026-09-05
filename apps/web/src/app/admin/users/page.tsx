@@ -65,25 +65,25 @@ export default function AdminUsersPage() {
       {loading ? (
         <div>Loading users...</div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-x-auto">
           <table className="w-full text-left whitespace-nowrap">
-            <thead className="bg-slate-50 border-b">
+            <thead className="bg-slate-50 dark:bg-slate-900/50 border-b dark:border-slate-700">
               <tr>
-                <th className="px-6 py-3 font-medium text-slate-500">Name</th>
-                <th className="px-6 py-3 font-medium text-slate-500">Email</th>
-                <th className="px-6 py-3 font-medium text-slate-500">Role</th>
-                <th className="px-6 py-3 font-medium text-slate-500">Status</th>
-                <th className="px-6 py-3 font-medium text-slate-500">Signup Date</th>
-                <th className="px-6 py-3 font-medium text-slate-500">Actions</th>
+                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Name</th>
+                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Email</th>
+                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Role</th>
+                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Status</th>
+                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Signup Date</th>
+                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y dark:divide-slate-700">
               {users.map((u) => (
-                <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-900">
+                <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                  <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-100">
                     {u.name || `${u.firstName || u.FirstName || ""} ${u.lastName || u.LastName || ""}`.trim() || "N/A"}
                   </td>
-                  <td className="px-6 py-4 text-gray-900 dark:text-gray-900 font-medium">
+                  <td className="px-6 py-4 text-gray-900 dark:text-gray-100 font-medium">
                     {u.email || u.Email || "N/A"}
                   </td>
                   <td className="px-6 py-4">
@@ -98,7 +98,7 @@ export default function AdminUsersPage() {
                       <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">Frozen</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-900 font-medium">
+                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 font-medium">
                     {new Date(u.createdAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </td>
                   <td className="px-6 py-4">

@@ -4,10 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import { Card } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 import { Button } from "@medichp/ui";
-import { Search, Send, Loader2, MessageSquare, Paperclip, Mic, Image as ImageIcon, Video, StopCircle, ArrowLeft } from "lucide-react";
+import { Search, Send, Loader2, MessageSquare, Paperclip, Mic, Image as ImageIcon, Video, StopCircle, ArrowLeft, Phone } from "lucide-react";
 import { ChatService, AuthService } from "@medichp/api-client";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function PatientMessages() {
+function PatientMessagesContent() {
   const [threads, setThreads] = useState<any[]>([]);
   const [loadingThreads, setLoadingThreads] = useState(true);
   
@@ -36,11 +38,29 @@ export default function PatientMessages() {
     fetchMe();
   }, []);
 
+  const searchParams = useSearchParams();
+  const doctorId = searchParams.get("doctorId");
+
   useEffect(() => {
-    fetchThreads();
+    const initData = async () => {
+      await fetchThreads();
+      
+      // If a doctorId is passed, we want to start a chat with them
+      if (doctorId) {
+        try {
+          const res = await ChatService.createOrGetConversation(doctorId);
+          if (res.success && res.data) {
+            setActiveConversationId(res.data.id);
+          }
+        } catch (err) {
+          console.error("Failed to start chat with doctor", err);
+        }
+      }
+    };
+    initData();
     const interval = setInterval(fetchThreads, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [doctorId]);
 
   useEffect(() => {
     if (activeConversationId) {
@@ -249,12 +269,25 @@ export default function PatientMessages() {
         ) : (
           <>
             <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 z-10 shadow-sm">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" className="md:hidden mr-1" onClick={() => setActiveConversationId(null)}>
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Dr. {activeThread?.otherParticipantName}</h3>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Dr. {activeThread?.otherParticipantName}</h3>
+                  {activeThread?.otherParticipantPhoneNumber && (
+                    <p className="text-xs text-gray-500 font-medium">
+                      {activeThread.otherParticipantPhoneNumber}
+                    </p>
+                  )}
+                </div>
               </div>
+              
+              {activeThread?.otherParticipantPhoneNumber && (
+                <a href={`tel:${activeThread.otherParticipantPhoneNumber}`} className="text-gray-400 hover:text-[var(--color-primary-600)] transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                  <Phone className="w-5 h-5" />
+                </a>
+              )}
             </div>
             
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col">
@@ -366,5 +399,13 @@ export default function PatientMessages() {
         )}
       </Card>
     </div>
+  );
+}
+
+export default function PatientMessages() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-[var(--color-primary-600)]" /></div>}>
+      <PatientMessagesContent />
+    </Suspense>
   );
 }

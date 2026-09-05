@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("medichp_token");
+      const token = localStorage.getItem("medichp_token") || sessionStorage.getItem("medichp_token");
       if (token) {
         try {
           const res = await AuthService.getProfile();
@@ -45,11 +45,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } else {
             localStorage.removeItem("medichp_token");
             localStorage.removeItem("medichp_refresh_token");
+            sessionStorage.removeItem("medichp_token");
+            sessionStorage.removeItem("medichp_refresh_token");
           }
         } catch (error) {
           console.error("Session expired or invalid token", error);
           localStorage.removeItem("medichp_token");
           localStorage.removeItem("medichp_refresh_token");
+          sessionStorage.removeItem("medichp_token");
+          sessionStorage.removeItem("medichp_refresh_token");
         }
       }
       setLoading(false);
@@ -61,8 +65,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (credentials: any) => {
     const res = await AuthService.login(credentials);
     if (res.success && res.data) {
-      localStorage.setItem("medichp_token", res.data.accessToken);
-      localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
+      if (credentials.rememberMe) {
+        localStorage.setItem("medichp_token", res.data.accessToken);
+        localStorage.setItem("medichp_refresh_token", res.data.refreshToken);
+      } else {
+        sessionStorage.setItem("medichp_token", res.data.accessToken);
+        sessionStorage.setItem("medichp_refresh_token", res.data.refreshToken);
+      }
       setUser(res.data.user);
       
       const userRoles = res.data.user.roles || res.data.user.Roles || [];
@@ -112,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(res.data.user);
       router.push("/doctor/dashboard");
     } else {
-      router.push("/doctor/login");
+      router.push("/login");
     }
   };
 
@@ -124,6 +133,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       localStorage.removeItem("medichp_token");
       localStorage.removeItem("medichp_refresh_token");
+      sessionStorage.removeItem("medichp_token");
+      sessionStorage.removeItem("medichp_refresh_token");
       setUser(null);
       window.location.href = "/login";
     }

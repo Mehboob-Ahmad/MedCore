@@ -28,6 +28,7 @@ public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, List<UserDto>
         return users.Select(u => new UserDto
         {
             Id = u.Id,
+            Name = $"{u.FirstName} {u.LastName}".Trim(),
             FirstName = u.FirstName,
             LastName = u.LastName,
             Email = u.Email,

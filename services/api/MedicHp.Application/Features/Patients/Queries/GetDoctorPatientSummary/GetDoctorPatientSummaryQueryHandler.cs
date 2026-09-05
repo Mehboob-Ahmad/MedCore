@@ -15,13 +15,16 @@ public class GetDoctorPatientSummaryQueryHandler : IRequestHandler<GetDoctorPati
 {
     private readonly IGenericRepository<PatientProfile> _patientProfileRepository;
     private readonly IGenericRepository<Consultation> _consultationRepository;
+    private readonly IGenericRepository<Appointment> _appointmentRepository;
 
     public GetDoctorPatientSummaryQueryHandler(
         IGenericRepository<PatientProfile> patientProfileRepository,
-        IGenericRepository<Consultation> consultationRepository)
+        IGenericRepository<Consultation> consultationRepository,
+        IGenericRepository<Appointment> appointmentRepository)
     {
         _patientProfileRepository = patientProfileRepository;
         _consultationRepository = consultationRepository;
+        _appointmentRepository = appointmentRepository;
     }
 
     public async Task<DoctorPatientSummaryDto> Handle(GetDoctorPatientSummaryQuery request, CancellationToken cancellationToken)
@@ -42,6 +45,15 @@ public class GetDoctorPatientSummaryQueryHandler : IRequestHandler<GetDoctorPati
         var consultations = await _consultationRepository.GetAsync(
             c => c.PatientId == request.PatientId && c.DoctorId == request.DoctorId,
             cancellationToken: cancellationToken);
+            
+        var appointments = await _appointmentRepository.GetAsync(
+            a => a.PatientId == request.PatientId && a.DoctorId == request.DoctorId,
+            cancellationToken: cancellationToken);
+
+        if (!consultations.Any() && !appointments.Any())
+        {
+            throw new UnauthorizedAccessException("You are not authorized to view this patient's profile. You must have an appointment or consultation with this patient.");
+        }
 
         return new DoctorPatientSummaryDto
         {

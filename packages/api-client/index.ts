@@ -14,9 +14,9 @@ export const apiClient = axios.create({
 // Interceptor to attach the JWT token to every request
 apiClient.interceptors.request.use(
   (config) => {
-    // In a browser environment, we retrieve the token from localStorage
+    // In a browser environment, we retrieve the token from localStorage or sessionStorage
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('medichp_token');
+      const token = localStorage.getItem('medichp_token') || sessionStorage.getItem('medichp_token');
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -191,6 +191,18 @@ export const PatientService = {
   },
   getReports: async () => {
     const response = await apiClient.get('/patients/reports');
+    return response.data;
+  },
+  addAllergy: async (data: any) => {
+    const response = await apiClient.post('/patients/allergies', data);
+    return response.data;
+  },
+  updateAllergy: async (id: string, data: any) => {
+    const response = await apiClient.put(`/patients/allergies/${id}`, data);
+    return response.data;
+  },
+  deleteAllergy: async (id: string) => {
+    const response = await apiClient.delete(`/patients/allergies/${id}`);
     return response.data;
   }
 };

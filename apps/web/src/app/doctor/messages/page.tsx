@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { Card } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 import { Button } from "@medichp/ui";
-import { Search, Send, Loader2, MessageSquare, Paperclip, Mic, Image as ImageIcon, Video, StopCircle, ArrowLeft } from "lucide-react";
+import { Search, Send, Loader2, MessageSquare, Paperclip, Mic, Image as ImageIcon, Video, StopCircle, ArrowLeft, Phone } from "lucide-react";
 import { ChatService, AuthService } from "@medichp/api-client";
 
 export default function DoctorMessages() {
@@ -249,12 +249,25 @@ export default function DoctorMessages() {
         ) : (
           <>
             <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-900 z-10 shadow-sm">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" className="md:hidden mr-1" onClick={() => setActiveConversationId(null)}>
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
-                <h3 className="font-semibold text-gray-900 dark:text-white">{activeThread?.otherParticipantName}</h3>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">{activeThread?.otherParticipantName}</h3>
+                  {activeThread?.otherParticipantPhoneNumber && (
+                    <p className="text-xs text-gray-500 font-medium">
+                      {activeThread.otherParticipantPhoneNumber}
+                    </p>
+                  )}
+                </div>
               </div>
+              
+              {activeThread?.otherParticipantPhoneNumber && (
+                <a href={`tel:${activeThread.otherParticipantPhoneNumber}`} className="text-gray-400 hover:text-[var(--color-primary-600)] transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                  <Phone className="w-5 h-5" />
+                </a>
+              )}
             </div>
             
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col">

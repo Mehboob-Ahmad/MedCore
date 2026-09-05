@@ -132,6 +132,18 @@ public class UpdateAppointmentStatusCommandHandler : IRequestHandler<UpdateAppoi
             }
             _ = _whatsAppNotificationService.SendAppointmentConfirmationAsync(appointment.Id, CancellationToken.None);
         }
+        else if (request.Status == "Rescheduled")
+        {
+            if (request.SuggestedNewTime.HasValue)
+            {
+                appointment.ScheduledAt = request.SuggestedNewTime.Value;
+                // Save the new time
+                await _appointmentRepository.UpdateAsync(appointment, cancellationToken);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+            }
+            // Send specific reminder/confirmation for the rescheduled appointment, bypass fee collection
+            _ = _whatsAppNotificationService.SendAppointmentReminderAsync(appointment.Id, CancellationToken.None);
+        }
 
         return true;
     }

@@ -16,13 +16,15 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cities, setCities] = useState<any[]>([]);
-  const [selectedCityIds, setSelectedCityIds] = useState<string[]>([]);
+  const [selectedCityId, setSelectedCityId] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
 
   const fetchDoctors = async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await DoctorService.searchDoctors(query, specialty, undefined, selectedCityIds);
+      const cityIds = selectedCityId ? [selectedCityId] : undefined;
+      const res = await DoctorService.searchDoctors(query, specialty, gender, cityIds);
       if (res.success) {
         // Data format differs depending on backend pagination implementation, check for data.doctors or data directly
         setDoctors(res.data.doctors || res.data || []);
@@ -53,7 +55,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     fetchDoctors();
-  }, [specialty, selectedCityIds]);
+  }, [specialty, selectedCityId, gender]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,21 +83,11 @@ export default function SearchPage() {
             <div className="relative md:w-64">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <select 
-                multiple
-                className="pl-10 h-24 w-full border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-sm text-gray-700 dark:text-gray-200 focus:ring-[var(--color-primary-600)] focus:border-[var(--color-primary-600)]"
-                value={selectedCityIds}
-                onChange={(e) => {
-                  const options = e.target.options;
-                  const selected = [];
-                  for (let i = 0; i < options.length; i++) {
-                    if (options[i].selected && options[i].value !== "") {
-                      selected.push(options[i].value);
-                    }
-                  }
-                  setSelectedCityIds(selected);
-                }}
+                className="pl-10 h-14 w-full border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-sm text-gray-700 dark:text-gray-200 focus:ring-[var(--color-primary-600)] focus:border-[var(--color-primary-600)]"
+                value={selectedCityId}
+                onChange={(e) => setSelectedCityId(e.target.value)}
               >
-                <option value="">All Cities (Click to deselect)</option>
+                <option value="">All Cities</option>
                 {cities.map((city) => (
                   <option key={city.id} value={city.id}>{city.name}</option>
                 ))}
@@ -148,6 +140,23 @@ export default function SearchPage() {
                     <span className="text-sm text-gray-600 dark:text-gray-400">{time}</span>
                   </label>
                 ))}
+              </div>
+            </div>
+            <div className="space-y-4 border-t border-gray-200 dark:border-slate-700 pt-4 mt-4">
+              <h4 className="font-medium text-sm text-gray-900 dark:text-gray-100">Gender</h4>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" checked={gender === ""} onChange={() => setGender("")} className="text-[var(--color-primary-600)] focus:ring-[var(--color-primary-600)]" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Any</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" checked={gender === "Male"} onChange={() => setGender("Male")} className="text-[var(--color-primary-600)] focus:ring-[var(--color-primary-600)]" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Male</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="gender" checked={gender === "Female"} onChange={() => setGender("Female")} className="text-[var(--color-primary-600)] focus:ring-[var(--color-primary-600)]" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Female</span>
+                </label>
               </div>
             </div>
           </div>
@@ -225,17 +234,27 @@ export default function SearchPage() {
                       </div>
                     </div>
                     
-                    <div className="p-6 sm:w-1/3 bg-gray-50 dark:bg-slate-800/50 flex flex-col justify-center">
-                      <div className="flex items-center gap-2 mb-2 text-sm text-[var(--color-success-600)] font-medium">
-                        <Clock className="w-4 h-4" />
-                        Next Available
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                    <div className="p-6 sm:w-1/3 bg-gray-50 dark:bg-slate-800/50 flex flex-col justify-center gap-3">
+                      <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                         Consultation Fee: <span className="font-bold text-gray-900 dark:text-white text-base">PKR {doc.consultationFee || 0}</span>
                       </div>
+                      
                       <Link href={`/book/${doc.id}`} className="w-full">
                         <Button className="w-full">Book Appointment</Button>
                       </Link>
+                      
+                      <div className="flex gap-2">
+                        <Link href={`/doctor/${doc.id}`} className="flex-1">
+                          <Button variant="outline" className="w-full text-xs">View Profile</Button>
+                        </Link>
+                        {/* 
+                          Since it's unauthenticated search too, 'Start Chat' might require auth,
+                          but we provide the link so AuthContext/ProtectedRoute can handle it if needed.
+                        */}
+                        <Link href={`/patient/messages?doctorId=${doc.id}`} className="flex-1">
+                          <Button variant="outline" className="w-full text-xs">Start Chat</Button>
+                        </Link>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

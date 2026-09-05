@@ -18,6 +18,8 @@ export default function PatientProfile() {
   const [message, setMessage] = useState("");
   const [reports, setReports] = useState<any[]>([]);
   const [uploadingReport, setUploadingReport] = useState(false);
+  const [allergies, setAllergies] = useState<any[]>([]);
+  const [newAllergyName, setNewAllergyName] = useState("");
   
   const [formData, setFormData] = useState({
     firstName: "",
@@ -60,6 +62,7 @@ export default function PatientProfile() {
           surgeries: p.surgeries || [],
           hospitalizations: p.hospitalizations || []
         });
+        setAllergies(p.allergies || []);
       }
       const reportsRes = await PatientService.getReports();
       if (reportsRes.success) {
@@ -160,6 +163,29 @@ export default function PatientProfile() {
       setMessage(err.message || "Failed to upload report.");
     } finally {
       setUploadingReport(false);
+  };
+
+  const handleAddAllergy = async () => {
+    if (!newAllergyName.trim()) return;
+    try {
+      const res = await PatientService.addAllergy({ allergyName: newAllergyName.trim() });
+      if (res.success) {
+        setNewAllergyName("");
+        fetchProfile(); // refresh to get the id
+      }
+    } catch (err: any) {
+      setMessage(err.message || "Failed to add allergy");
+    }
+  };
+
+  const handleDeleteAllergy = async (id: string) => {
+    try {
+      const res = await PatientService.deleteAllergy(id);
+      if (res.success) {
+        setAllergies(allergies.filter(a => a.id !== id));
+      }
+    } catch (err: any) {
+      setMessage(err.message || "Failed to delete allergy");
     }
   };
 
@@ -213,7 +239,7 @@ export default function PatientProfile() {
               : "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
-          <div className="flex items-center gap-2"><FileText className="w-4 h-4" /> Medical Reports</div>
+          <div className="flex items-center gap-2"><FileText className="w-4 h-4" /> Medical Documents</div>
         </button>
       </div>
 
@@ -313,6 +339,38 @@ export default function PatientProfile() {
                       value={formData.medicalHistory}
                       onChange={e => setFormData({...formData, medicalHistory: e.target.value})}
                     />
+                  </div>
+
+                  <div className="space-y-4 pt-4 border-t border-gray-100 dark:border-slate-800">
+                    <label className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <HeartPulse className="w-5 h-5 text-red-500" /> Known Allergies
+                    </label>
+                    <div className="flex gap-2">
+                      <Input 
+                        value={newAllergyName} 
+                        onChange={e => setNewAllergyName(e.target.value)} 
+                        placeholder="e.g. Penicillin, Peanuts..." 
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddAllergy();
+                          }
+                        }}
+                      />
+                      <Button type="button" onClick={handleAddAllergy}>Add</Button>
+                    </div>
+                    {allergies.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {allergies.map(a => (
+                          <div key={a.id} className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-100 dark:border-red-900/50 rounded-full text-sm font-medium flex items-center gap-2">
+                            {a.allergyName} 
+                            <button type="button" onClick={() => handleDeleteAllergy(a.id)} className="hover:text-red-900 dark:hover:text-red-300">
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
