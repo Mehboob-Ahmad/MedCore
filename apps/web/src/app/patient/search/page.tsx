@@ -6,7 +6,7 @@ import { Search, MapPin, Star, Clock } from "lucide-react";
 import { Input } from "@medichp/ui";
 import { Button } from "@medichp/ui";
 import { Card, CardContent } from "@medichp/ui";
-import { DoctorService } from "@medichp/api-client";
+import { DoctorService, SystemService } from "@medichp/api-client";
 import Link from "next/link";
 
 export default function SearchPage() {
