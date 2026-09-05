@@ -1,12 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Users, UserPlus, Settings, ShieldAlert, LogOut } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { LayoutDashboard, Users, UserPlus, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
+  const pathname = usePathname();
+
+  const isActive = (path: string) => {
+    if (path === "/admin/dashboard" && pathname === "/admin/dashboard") return true;
+    if (path !== "/admin/dashboard" && pathname.startsWith(path)) return true;
+    return false;
+  };
+  
+  const baseDesktopLinkClass = "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200";
+  const inactiveDesktopClass = "text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800";
+  const activeDesktopClass = "bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-400 font-semibold ring-1 ring-red-200 dark:ring-red-900/50";
+
+  const getDesktopLinkClass = (path: string) => {
+    return `${baseDesktopLinkClass} ${isActive(path) ? activeDesktopClass : inactiveDesktopClass}`;
+  };
+
+  const baseMobileLinkClass = "flex flex-col items-center transition-colors duration-200 px-3 py-2 rounded-lg";
+  const inactiveMobileClass = "text-gray-500 hover:text-red-600 dark:hover:text-red-400";
+  const activeMobileClass = "text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/10";
+
+  const getMobileLinkClass = (path: string) => {
+    return `${baseMobileLinkClass} ${isActive(path) ? activeMobileClass : inactiveMobileClass}`;
+  };
 
   return (
     <ProtectedRoute allowedRoles={["Admin", "SystemAdmin"]}>
@@ -17,21 +41,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <h2 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Super Admin</h2>
           </div>
           <nav className="px-4 space-y-2 flex-1">
-            <Link href="/admin/dashboard" className="flex items-center space-x-3 px-4 py-3 bg-red-50 dark:bg-red-900/10 text-red-700 dark:text-red-400 rounded-lg">
+            <Link href="/admin/dashboard" className={getDesktopLinkClass("/admin/dashboard")}>
               <LayoutDashboard className="w-5 h-5" />
-              <span className="font-medium">Overview</span>
+              <span>Overview</span>
             </Link>
-            <Link href="/admin/users" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+            <Link href="/admin/users" className={getDesktopLinkClass("/admin/users")}>
               <Users className="w-5 h-5" />
-              <span className="font-medium">Users</span>
+              <span>Users</span>
             </Link>
-            <Link href="/admin/invite" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+            <Link href="/admin/invite" className={getDesktopLinkClass("/admin/invite")}>
               <UserPlus className="w-5 h-5" />
-              <span className="font-medium">Invite Admin</span>
+              <span>Invite Admin</span>
             </Link>
-            <Link href="/admin/settings" className="flex items-center space-x-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+            <Link href="/admin/settings" className={getDesktopLinkClass("/admin/settings")}>
               <Settings className="w-5 h-5" />
-              <span className="font-medium">Settings</span>
+              <span>Settings</span>
             </Link>
           </nav>
           
@@ -56,16 +80,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         
         {/* Mobile Bottom Tab Navigation */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 pb-safe z-50">
-          <nav className="flex justify-around p-3">
-            <Link href="/admin/dashboard" className="flex flex-col items-center text-red-600">
+          <nav className="flex justify-around p-2">
+            <Link href="/admin/dashboard" className={getMobileLinkClass("/admin/dashboard")}>
               <LayoutDashboard className="w-6 h-6" />
               <span className="text-[10px] mt-1 font-medium">Overview</span>
             </Link>
-            <Link href="/admin/users" className="flex flex-col items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <Link href="/admin/users" className={getMobileLinkClass("/admin/users")}>
               <Users className="w-6 h-6" />
               <span className="text-[10px] mt-1 font-medium">Users</span>
             </Link>
-            <Link href="/admin/settings" className="flex flex-col items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <Link href="/admin/settings" className={getMobileLinkClass("/admin/settings")}>
               <Settings className="w-6 h-6" />
               <span className="text-[10px] mt-1 font-medium">Settings</span>
             </Link>

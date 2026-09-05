@@ -44,7 +44,6 @@ export function GlobalHeader() {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6 font-medium text-sm">
-          <Link href="/patient/search" className="hover:text-[var(--color-primary-600)] transition-colors">Find a Doctor</Link>
           <NavbarAuthMenu />
         </nav>
 
@@ -68,15 +67,6 @@ export function GlobalHeader() {
             className="md:hidden border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-lg"
           >
             <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-              <Link 
-                href="/patient/search" 
-                className="font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary-600)] py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Find a Doctor
-              </Link>
-              
-              <div className="h-px bg-gray-200 dark:bg-slate-800 my-2"></div>
               
               {isAuthenticated && user ? (
                 <>

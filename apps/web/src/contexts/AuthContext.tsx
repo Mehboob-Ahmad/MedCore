@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem("medichp_token");
       localStorage.removeItem("medichp_refresh_token");
       setUser(null);
-      router.push("/login");
+      window.location.href = "/login";
     }
   };
 
