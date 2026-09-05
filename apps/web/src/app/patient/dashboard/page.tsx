@@ -79,12 +79,14 @@ export default function PatientDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <Card className="bg-[var(--color-primary-600)] text-white border-none shadow-lg shadow-sky-900/10 h-full">
-            <CardContent className="p-6">
-              <h3 className="font-semibold text-sky-100 mb-1">Upcoming Appointments</h3>
-              <div className="text-3xl font-bold mb-4">{stats?.upcomingAppointments || 0}</div>
-              <Link href="/patient/appointments">
-                <Button variant="outline" className="w-full text-[var(--color-primary-600)] border-white hover:bg-sky-50">View Schedule</Button>
+          <Card className="h-full">
+            <CardContent className="p-6 flex flex-col h-full justify-between">
+              <div>
+                <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">Upcoming Appointments</h3>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{stats?.upcomingAppointments || 0}</div>
+              </div>
+              <Link href="/patient/appointments" className="mt-auto">
+                <Button className="w-full">View Schedule</Button>
               </Link>
             </CardContent>
           </Card>
@@ -92,11 +94,13 @@ export default function PatientDashboard() {
         
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <Card className="h-full">
-            <CardContent className="p-6">
-              <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">New Messages</h3>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats?.newMessages || 0}</div>
-              <Link href="/patient/messages">
-                <Button variant="outline" size="sm" className="w-full">Open Inbox</Button>
+            <CardContent className="p-6 flex flex-col h-full justify-between">
+              <div>
+                <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">New Messages</h3>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{stats?.newMessages || 0}</div>
+              </div>
+              <Link href="/patient/messages" className="mt-auto">
+                <Button className="w-full">Open Inbox</Button>
               </Link>
             </CardContent>
           </Card>
@@ -104,10 +108,14 @@ export default function PatientDashboard() {
         
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
           <Card className="h-full">
-            <CardContent className="p-6">
-              <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">Unread Notifications</h3>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{stats?.unreadNotifications || 0}</div>
-              <Button variant="outline" size="sm" className="w-full">View Alerts</Button>
+            <CardContent className="p-6 flex flex-col h-full justify-between">
+              <div>
+                <h3 className="font-medium text-gray-500 dark:text-gray-400 mb-1">Unread Notifications</h3>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{stats?.unreadNotifications || 0}</div>
+              </div>
+              <Link href="/patient/notifications" className="mt-auto">
+                <Button className="w-full">View Alerts</Button>
+              </Link>
             </CardContent>
           </Card>
         </motion.div>
