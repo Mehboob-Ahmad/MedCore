@@ -163,6 +163,7 @@ export default function PatientProfile() {
       setMessage(err.message || "Failed to upload report.");
     } finally {
       setUploadingReport(false);
+    }
   };
 
   const handleAddAllergy = async () => {
