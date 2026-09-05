@@ -70,7 +70,7 @@ export default function DoctorProfilePublic() {
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">Video Consultation</p>
                       <p className="text-sm text-gray-500">Available Today</p>
-                      <p className="text-sm font-semibold text-[var(--color-primary-600)] mt-1">$150 / session</p>
+                      <p className="text-sm font-semibold text-[var(--color-primary-600)] mt-1">PKR 1,500 / session</p>
                     </div>
                   </div>
                   
@@ -78,8 +78,8 @@ export default function DoctorProfilePublic() {
                     <MapPin className="w-5 h-5 text-[var(--color-primary-600)] mt-0.5 shrink-0" />
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">In-Person Visit</p>
-                      <p className="text-sm text-gray-500">123 Health Ave, NY</p>
-                      <p className="text-sm font-semibold text-[var(--color-primary-600)] mt-1">$200 / visit</p>
+                      <p className="text-sm text-gray-500">123 Health Ave, Lahore</p>
+                      <p className="text-sm font-semibold text-[var(--color-primary-600)] mt-1">PKR 2,000 / visit</p>
                     </div>
                   </div>
                 </div>

@@ -42,6 +42,7 @@ public class UpdateDoctorProfileCommandHandler : IRequestHandler<UpdateDoctorPro
         profile.WhatsAppEnabled = request.WhatsAppEnabled;
         profile.ClinicName = request.ClinicName;
         profile.Address = request.ClinicAddress;
+        profile.CityId = request.CityId;
 
         // Clear existing qualifications and map new ones
         profile.Qualifications.Clear();

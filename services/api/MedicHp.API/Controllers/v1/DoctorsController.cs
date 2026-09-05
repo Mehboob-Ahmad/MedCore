@@ -6,7 +6,7 @@ using MedicHp.Application.Features.Doctors.Commands.UpdateDoctorProfile;
 using MedicHp.Application.Features.Doctors.Queries.GetAvailableSlots;
 using MedicHp.Application.Features.Doctors.Queries.GetDoctorDashboard;
 using MedicHp.Application.Features.Doctors.Queries.GetDoctorProfile;
-using MedicHp.Application.Features.Doctors.Queries.SearchDoctors;
+using MedicHp.Application.Features.DoctorSearch.Queries.SearchDoctors;
 using MedicHp.Application.Features.Doctors.Commands.AddPatient;
 using MedicHp.Application.Features.DoctorSearch.Queries.GetPublicDoctorProfile;
 using MedicHp.Application.Features.DoctorSearch.Queries.GetRelatedDoctors;
@@ -97,13 +97,14 @@ public class DoctorsController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("search")]
-    public async Task<IActionResult> SearchDoctors([FromQuery] string? searchTerm, [FromQuery] string? specialty, [FromQuery] string? gender)
+    public async Task<IActionResult> SearchDoctors([FromQuery] string? searchTerm, [FromQuery] string? specialty, [FromQuery] string? gender, [FromQuery] System.Collections.Generic.List<Guid>? cityIds)
     {
         var query = new SearchDoctorsQuery
         {
             SearchTerm = searchTerm,
-            Specialty = specialty,
-            Gender = gender
+            Specialization = specialty, // Note: The previous code mapped specialty to Specialization. I should use Specialization = specialty
+            Gender = gender,
+            CityIds = cityIds
         };
         var result = await _mediator.Send(query);
 

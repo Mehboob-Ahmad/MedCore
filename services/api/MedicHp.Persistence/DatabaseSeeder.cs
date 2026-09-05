@@ -74,9 +74,13 @@ public static class DatabaseSeeder
         {
             var cities = new List<City>
             {
-                new City { Name = "New York", StateOrProvince = "NY", Country = "USA" },
-                new City { Name = "London", StateOrProvince = "ENG", Country = "UK" },
-                new City { Name = "Toronto", StateOrProvince = "ON", Country = "Canada" }
+                new City { Name = "Lahore", StateOrProvince = "Punjab", Country = "Pakistan" },
+                new City { Name = "Karachi", StateOrProvince = "Sindh", Country = "Pakistan" },
+                new City { Name = "Islamabad", StateOrProvince = "ICT", Country = "Pakistan" },
+                new City { Name = "Faisalabad", StateOrProvince = "Punjab", Country = "Pakistan" },
+                new City { Name = "Rawalpindi", StateOrProvince = "Punjab", Country = "Pakistan" },
+                new City { Name = "Multan", StateOrProvince = "Punjab", Country = "Pakistan" },
+                new City { Name = "Sahiwal", StateOrProvince = "Punjab", Country = "Pakistan" }
             };
 
             await context.Cities.AddRangeAsync(cities);

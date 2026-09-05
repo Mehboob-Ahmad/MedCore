@@ -45,9 +45,9 @@ public class SearchDoctorsQueryHandler : IRequestHandler<SearchDoctorsQuery, Doc
         }
 
         // 2. City
-        if (request.CityId.HasValue)
+        if (request.CityIds != null && request.CityIds.Any())
         {
-            query = query.Where(d => d.CityId == request.CityId.Value);
+            query = query.Where(d => d.CityId.HasValue && request.CityIds.Contains(d.CityId.Value));
         }
 
         // 3. Specialization Filter

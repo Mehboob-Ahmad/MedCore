@@ -24,6 +24,7 @@ public class GetDoctorProfileQueryHandler : IRequestHandler<GetDoctorProfileQuer
         var profile = await _doctorProfileRepository.FirstOrDefaultAsync(
             p => p.UserId == request.UserId,
             include: q => q.Include(p => p.User)
+                           .Include(p => p.City)
                            .Include(p => p.Specializations).ThenInclude(s => s.Specialization)
                            .Include(p => p.Qualifications)
                            .Include(p => p.Certifications)
@@ -44,6 +45,8 @@ public class GetDoctorProfileQueryHandler : IRequestHandler<GetDoctorProfileQuer
             Email = profile.User?.Email ?? string.Empty,
             PhoneNumber = profile.User?.PhoneNumber ?? string.Empty,
             Bio = profile.Bio ?? string.Empty,
+            CityId = profile.CityId,
+            ClinicCity = profile.City?.Name ?? string.Empty,
             ConsultationFee = profile.ConsultationFee,
             RegistrationNumber = profile.RegistrationNumber,
             ProfessionalType = profile.ProfessionalType,

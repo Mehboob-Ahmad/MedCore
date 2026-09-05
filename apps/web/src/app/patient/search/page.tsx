@@ -15,14 +15,17 @@ export default function SearchPage() {
   const [doctors, setDoctors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [cities, setCities] = useState<any[]>([]);
+  const [selectedCityIds, setSelectedCityIds] = useState<string[]>([]);
 
   const fetchDoctors = async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await DoctorService.searchDoctors(query, specialty);
+      const res = await DoctorService.searchDoctors(query, specialty, undefined, selectedCityIds);
       if (res.success) {
-        setDoctors(res.data);
+        // Data format differs depending on backend pagination implementation, check for data.doctors or data directly
+        setDoctors(res.data.doctors || res.data || []);
       } else {
         setError("Failed to fetch doctors");
       }
@@ -33,9 +36,24 @@ export default function SearchPage() {
     }
   };
 
+  const fetchCities = async () => {
+    try {
+      const res = await SystemService.getCities();
+      if (res.success) {
+        setCities(res.data || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch cities", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCities();
+  }, []);
+
   useEffect(() => {
     fetchDoctors();
-  }, [specialty]);
+  }, [specialty, selectedCityIds]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,10 +80,26 @@ export default function SearchPage() {
             </div>
             <div className="relative md:w-64">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input 
-                placeholder="City or location" 
-                className="pl-10 h-14"
-              />
+              <select 
+                multiple
+                className="pl-10 h-24 w-full border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-sm text-gray-700 dark:text-gray-200 focus:ring-[var(--color-primary-600)] focus:border-[var(--color-primary-600)]"
+                value={selectedCityIds}
+                onChange={(e) => {
+                  const options = e.target.options;
+                  const selected = [];
+                  for (let i = 0; i < options.length; i++) {
+                    if (options[i].selected && options[i].value !== "") {
+                      selected.push(options[i].value);
+                    }
+                  }
+                  setSelectedCityIds(selected);
+                }}
+              >
+                <option value="">All Cities (Click to deselect)</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>{city.name}</option>
+                ))}
+              </select>
             </div>
             <Button type="submit" size="lg" className="h-14 px-8">Search</Button>
           </form>
@@ -97,7 +131,7 @@ export default function SearchPage() {
             <div className="space-y-4 border-t border-gray-200 dark:border-slate-700 pt-4">
               <h4 className="font-medium text-sm text-gray-900 dark:text-gray-100">Consultation Fee</h4>
               <div className="space-y-2">
-                {["Under $50", "$50 - $100", "Above $100"].map((fee) => (
+                {["Under PKR 1,000", "PKR 1,000 - PKR 3,000", "Above PKR 3,000"].map((fee) => (
                   <label key={fee} className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" className="rounded border-gray-300 text-[var(--color-primary-600)] focus:ring-[var(--color-primary-600)]" />
                     <span className="text-sm text-gray-600 dark:text-gray-400">{fee}</span>
@@ -185,7 +219,7 @@ export default function SearchPage() {
                           
                           <div className="flex items-center gap-1 mt-2 text-sm text-gray-600 dark:text-gray-400">
                             <MapPin className="w-4 h-4" />
-                            {doc.clinicName || doc.address || "Location not specified"}
+                            {doc.clinicName || doc.address || "Location not specified"} {doc.cityName ? `• ${doc.cityName}` : ""}
                           </div>
                         </div>
                       </div>
@@ -197,7 +231,7 @@ export default function SearchPage() {
                         Next Available
                       </div>
                       <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Consultation Fee: <span className="font-bold text-gray-900 dark:text-white text-base">${doc.consultationFee || 0}</span>
+                        Consultation Fee: <span className="font-bold text-gray-900 dark:text-white text-base">PKR {doc.consultationFee || 0}</span>
                       </div>
                       <Link href={`/book/${doc.id}`} className="w-full">
                         <Button className="w-full">Book Appointment</Button>

@@ -34,6 +34,7 @@ public class DoctorProfileDto
     // Clinic Information
     public string ClinicName { get; set; } = string.Empty;
     public string ClinicAddress { get; set; } = string.Empty;
+    public Guid? CityId { get; set; }
     public string ClinicCity { get; set; } = string.Empty;
     public string ClinicPhoneNumber { get; set; } = string.Empty;
     public string GoogleMapsUrl { get; set; } = string.Empty;

@@ -23,6 +23,7 @@ public class CompleteDoctorProfileCommand : IRequest<bool>
     public decimal ConsultationFee { get; set; }
     public int YearsOfExperience { get; set; }
     public string AvailabilityHours { get; set; } = string.Empty;
+    public Guid? CityId { get; set; }
 }
 
 public class CompleteDoctorProfileCommandHandler : IRequestHandler<CompleteDoctorProfileCommand, bool>
@@ -72,6 +73,10 @@ public class CompleteDoctorProfileCommandHandler : IRequestHandler<CompleteDocto
         profile.ConsultationFee = request.ConsultationFee;
         profile.YearsOfExperience = request.YearsOfExperience;
         profile.RegistrationNumber = request.RegistrationNumber; // if they provide it
+        if (request.CityId.HasValue) 
+        {
+            profile.CityId = request.CityId;
+        }
         // We might want to store LicenseAuthority as well, assuming it's added to DoctorProfile entity or just ignoring it for now if it's not in the entity.
         // There is no LicenseAuthority in DoctorProfile currently, we will just set what we can.
 

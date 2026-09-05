@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { UserCircle, BriefcaseMedical, Phone, Building2, Clock, DollarSign, FileBadge } from "lucide-react";
+import { UserCircle, BriefcaseMedical, Phone, Building2, Clock, DollarSign, FileBadge, MapPin } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@medichp/ui";
 import { Input } from "@medichp/ui";
 import { useRouter } from "next/navigation";
-import { DoctorService } from "@medichp/api-client";
+import { DoctorService, SystemService } from "@medichp/api-client";
+import { useEffect } from "react";
 
 export default function CompleteProfilePage() {
   const router = useRouter();
@@ -19,10 +20,26 @@ export default function CompleteProfilePage() {
     registrationNumber: "123456", // Default placeholder
     clinicName: "",
     address: "Not specified",
-    consultationFee: 100,
+    consultationFee: 1000,
     yearsOfExperience: 5, // Default placeholder
     availabilityHours: "",
+    cityId: "",
   });
+  const [cities, setCities] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const res = await SystemService.getCities();
+        if (res.success) {
+          setCities(res.data || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch cities", err);
+      }
+    };
+    fetchCities();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,7 +53,8 @@ export default function CompleteProfilePage() {
       const payload = {
         ...formData,
         specializationIds: [],
-        consultationFee: Number(formData.consultationFee)
+        consultationFee: Number(formData.consultationFee),
+        cityId: formData.cityId ? formData.cityId : undefined
       };
       await DoctorService.completeProfile(payload);
       router.push("/doctor/dashboard");
@@ -107,6 +125,25 @@ export default function CompleteProfilePage() {
                 </div>
 
                 <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">City</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <select 
+                      name="cityId"
+                      value={formData.cityId}
+                      onChange={(e) => setFormData({...formData, cityId: e.target.value})}
+                      className="pl-10 h-10 w-full border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-md text-sm text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[var(--color-primary-600)] focus:border-transparent transition-shadow outline-none"
+                      required
+                    >
+                      <option value="">Select a City</option>
+                      {cities.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Availability Hours</label>
                   <div className="relative">
                     <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -115,10 +152,10 @@ export default function CompleteProfilePage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Consultation Fee ($)</label>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Consultation Fee (PKR)</label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input type="number" name="consultationFee" value={formData.consultationFee} onChange={handleChange} placeholder="100" className="pl-10" required />
+                    <Input type="number" name="consultationFee" value={formData.consultationFee} onChange={handleChange} placeholder="1000" className="pl-10" required />
                   </div>
                 </div>
               </div>

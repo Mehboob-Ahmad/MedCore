@@ -195,12 +195,22 @@ export const PatientService = {
   }
 };
 
+export const SystemService = {
+  getCities: async () => {
+    const response = await apiClient.get('/system/cities');
+    return response.data;
+  },
+};
+
 export const DoctorService = {
-  searchDoctors: async (searchTerm?: string, specialty?: string, gender?: string) => {
+  searchDoctors: async (searchTerm?: string, specialty?: string, gender?: string, cityIds?: string[]) => {
     const params = new URLSearchParams();
     if (searchTerm) params.append('searchTerm', searchTerm);
     if (specialty) params.append('specialty', specialty);
     if (gender) params.append('gender', gender);
+    if (cityIds && cityIds.length > 0) {
+      cityIds.forEach(id => params.append('cityIds', id));
+    }
     
     const response = await apiClient.get(`/doctors/search?${params.toString()}`);
     return response.data;

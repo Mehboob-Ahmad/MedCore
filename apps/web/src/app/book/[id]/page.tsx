@@ -231,7 +231,7 @@ export default function BookingFlow() {
                 <Button variant="outline" onClick={() => setStep(1)} disabled={booking}>Back</Button>
                 <Button onClick={handleBook} disabled={booking}>
                   {booking ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                  Confirm & Pay ${doctor.consultationFee || 150}
+                  Confirm & Pay PKR {doctor.consultationFee || 1500}
                 </Button>
               </div>
             </motion.div>

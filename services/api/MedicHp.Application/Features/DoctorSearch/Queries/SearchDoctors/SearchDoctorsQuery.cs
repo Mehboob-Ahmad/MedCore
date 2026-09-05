@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MedicHp.Application.Features.DoctorSearch.DTOs;
 using MediatR;
 
@@ -10,7 +11,7 @@ public class SearchDoctorsQuery : IRequest<DoctorSearchResponseDto>
     public string? Disease { get; set; }
     public string? Symptom { get; set; }
     public string? Specialization { get; set; }
-    public Guid? CityId { get; set; }
+    public List<Guid>? CityIds { get; set; }
     public string? ClinicName { get; set; }
     public string? Language { get; set; }
     public decimal? MaxFee { get; set; }
