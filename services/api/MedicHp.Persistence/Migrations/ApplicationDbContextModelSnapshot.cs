@@ -144,6 +144,75 @@ namespace MedicHp.Persistence.Migrations
                     b.ToTable("AuditLogs", "admin");
                 });
 
+            modelBuilder.Entity("MedicHp.Domain.Entities.Admin.DemoRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AdditionalInformation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClinicOrHospital")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DegreeImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LicenseImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProfessionalQualification")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Specialization")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("YearsOfExperience")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DemoRequests");
+                });
+
             modelBuilder.Entity("MedicHp.Domain.Entities.Admin.SystemSetting", b =>
                 {
                     b.Property<Guid>("Id")
@@ -196,6 +265,42 @@ namespace MedicHp.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SystemSettings", "admin");
+                });
+
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.AiChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AiChatMessages");
                 });
 
             modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.Appointment", b =>
@@ -830,6 +935,9 @@ namespace MedicHp.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDemoAccount")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Languages")
@@ -2079,6 +2187,9 @@ namespace MedicHp.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
 
+                    b.Property<int>("AccountStatus")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -2118,9 +2229,6 @@ namespace MedicHp.Persistence.Migrations
 
                     b.Property<Guid?>("InvitedByUserId")
                         .HasColumnType("uuid");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -2173,9 +2281,9 @@ namespace MedicHp.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InvitedByUserId");
+                    b.HasIndex("AccountStatus");
 
-                    b.HasIndex("IsActive");
+                    b.HasIndex("InvitedByUserId");
 
                     b.HasIndex("NormalizedEmail")
                         .IsUnique()
@@ -2744,6 +2852,17 @@ namespace MedicHp.Persistence.Migrations
                     b.HasOne("MedicHp.Domain.Entities.Core.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MedicHp.Domain.Entities.Clinical.AiChatMessage", b =>
+                {
+                    b.HasOne("MedicHp.Domain.Entities.Core.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

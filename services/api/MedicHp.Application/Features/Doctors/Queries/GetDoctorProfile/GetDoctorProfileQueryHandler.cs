@@ -55,7 +55,9 @@ public class GetDoctorProfileQueryHandler : IRequestHandler<GetDoctorProfileQuer
             WhatsAppNumber = profile.WhatsAppNumber ?? string.Empty,
             WhatsAppEnabled = profile.WhatsAppEnabled,
             ExperienceYears = profile.YearsOfExperience,
-            Specializations = profile.Specializations.Select(s => s.Specialization?.Name ?? string.Empty).ToList(),
+            Specializations = string.IsNullOrEmpty(profile.Specialization) 
+                ? profile.Specializations.Select(s => s.Specialization?.Name ?? string.Empty).ToList()
+                : profile.Specializations.Select(s => s.Specialization?.Name ?? string.Empty).Concat(new[] { profile.Specialization }).ToList(),
             Qualifications = profile.Qualifications.Select(q => new DoctorQualificationDto 
             { 
                 Degree = q.Degree, 

@@ -11,6 +11,7 @@ export interface User {
   lastName: string;
   roles?: string[];
   role?: string;
+  isDemoAccount?: boolean;
   [key: string]: any;
 }
 

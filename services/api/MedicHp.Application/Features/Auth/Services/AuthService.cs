@@ -76,7 +76,7 @@ public class AuthService : IAuthService
                 Email = adminEmail,
                 FirstName = "Primary",
                 LastName = "Admin",
-                IsActive = true,
+                AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active,
                 EmailConfirmed = true,
                 UserRoles = new List<UserRole> 
                 { 
@@ -99,12 +99,13 @@ public class AuthService : IAuthService
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var user = await _userRepository.FirstOrDefaultAsync(
             u => u.NormalizedEmail == normalizedEmail,
-            include: q => q.Include(u => u.UserRoles).ThenInclude(ur => ur.Role));
+            include: q => q.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                           .Include(u => u.DoctorProfile));
 
         if (user == null)
             throw new UnauthorizedAccessException("Invalid email or password.");
 
-        if (!user.IsActive)
+        if (user.AccountStatus != MedicHp.Domain.Enums.AccountStatus.Active)
             throw new UnauthorizedAccessException("Your account has been frozen. Please contact MedicHp administration.");
 
         if (!user.EmailConfirmed)
@@ -176,7 +177,7 @@ public class AuthService : IAuthService
             Email = request.Email?.Trim() ?? string.Empty,
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber,
-            IsActive = true,
+            AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active,
             EmailConfirmed = true // Auto-confirm during development until OTP UI is built
         };
 
@@ -224,7 +225,7 @@ public class AuthService : IAuthService
             Email = request.Email?.Trim() ?? string.Empty,
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber, // Might be empty now, will update in profile
-            IsActive = true,
+            AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active,
             EmailConfirmed = true // Auto-confirm during development until OTP UI is built
         };
 
@@ -293,7 +294,7 @@ public class AuthService : IAuthService
             EmailConfirmed = false, // Must verify their email
             PhoneNumber = request.PhoneNumber?.Trim() ?? string.Empty,
             PhoneNumberConfirmed = false,
-            IsActive = true
+            AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active
         };
 
         // Generate secure temporary password
@@ -326,7 +327,8 @@ public class AuthService : IAuthService
     {
         var tokenRecord = await _refreshTokenRepository.FirstOrDefaultAsync(
             rt => rt.Token == request.RefreshToken,
-            include: q => q.Include(rt => rt.User).ThenInclude(u => u.UserRoles).ThenInclude(ur => ur.Role));
+            include: q => q.Include(rt => rt.User).ThenInclude(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                           .Include(rt => rt.User).ThenInclude(u => u.DoctorProfile));
 
         if (tokenRecord == null || tokenRecord.IsRevoked)
             throw new UnauthorizedAccessException("Invalid refresh token.");
@@ -509,7 +511,8 @@ public class AuthService : IAuthService
     {
         var user = await _userRepository.FirstOrDefaultAsync(
             u => u.Id == userId,
-            include: q => q.Include(u => u.UserRoles).ThenInclude(ur => ur.Role));
+            include: q => q.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                           .Include(u => u.DoctorProfile));
 
         if (user == null) throw new UnauthorizedAccessException();
         return MapToDto(user);
@@ -524,7 +527,8 @@ public class AuthService : IAuthService
             LastName = user.LastName,
             Email = user.Email,
             EmailConfirmed = user.EmailConfirmed,
-            Roles = user.UserRoles.Select(ur => ur.Role.Name).ToList()
+            Roles = user.UserRoles.Select(ur => ur.Role.Name).ToList(),
+            IsDemoAccount = user.DoctorProfile?.IsDemoAccount
         };
     }
 }

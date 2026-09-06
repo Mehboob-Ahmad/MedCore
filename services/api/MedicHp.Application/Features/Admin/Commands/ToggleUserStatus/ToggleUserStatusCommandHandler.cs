@@ -24,8 +24,8 @@ public class ToggleUserStatusCommandHandler : IRequestHandler<ToggleUserStatusCo
         if (user == null)
             throw new NotFoundException(nameof(User), request.UserId);
 
-        user.IsActive = request.IsActive;
-        user.SuspensionReason = request.IsActive ? null : request.Reason;
+        user.AccountStatus = request.AccountStatus;
+        user.SuspensionReason = request.AccountStatus == MedicHp.Domain.Enums.AccountStatus.Frozen ? request.Reason : null;
         user.UpdatedAt = System.DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user, cancellationToken);

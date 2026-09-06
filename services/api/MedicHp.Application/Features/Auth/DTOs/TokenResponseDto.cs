@@ -20,4 +20,5 @@ public class UserDto
     public List<string> Roles { get; set; } = new();
     public string? ProfilePhotoUrl { get; set; }
     public bool EmailConfirmed { get; set; }
+    public bool? IsDemoAccount { get; set; }
 }

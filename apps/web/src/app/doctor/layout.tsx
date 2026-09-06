@@ -4,9 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Calendar, MessageSquare, User, Clock } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function DoctorLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const isActive = (path: string) => {
     if (path === "/doctor/dashboard" && pathname === "/doctor/dashboard") return true;
@@ -32,10 +34,16 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
 
   return (
     <ProtectedRoute allowedRoles={["Doctor"]}>
-      <div className="flex h-full bg-slate-50 dark:bg-slate-900">
-        {/* Sidebar Navigation */}
-        <aside className="w-64 border-r border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 hidden md:block">
-          <div className="p-6">
+      <div className="flex flex-col h-screen overflow-hidden">
+        {user?.isDemoAccount && (
+          <div className="bg-amber-500 text-white text-center py-1.5 font-bold text-sm z-50">
+            DEMO MODE - Data is isolated. Not for real patients.
+          </div>
+        )}
+        <div className="flex flex-1 overflow-hidden bg-slate-50 dark:bg-slate-900">
+          {/* Sidebar Navigation */}
+          <aside className="w-64 border-r border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 hidden md:block overflow-y-auto">
+            <div className="p-6">
             <h2 className="text-xs uppercase font-bold text-gray-500 tracking-wider">Doctor Portal</h2>
           </div>
           <nav className="px-4 space-y-2">
@@ -90,6 +98,7 @@ export default function DoctorLayout({ children }: { children: React.ReactNode }
             </Link>
           </nav>
         </div>
+      </div>
       </div>
     </ProtectedRoute>
   );

@@ -27,7 +27,7 @@ public class GetPublicDoctorProfileQueryHandler : IRequestHandler<GetPublicDocto
                 .ThenInclude(s => s.Specialization)
             .Include(d => d.Availabilities)
             .Include(d => d.Qualifications)
-            .Where(d => d.VerificationStatus == "Verified" && d.User.IsActive)
+            .Where(d => d.VerificationStatus == "Verified" && d.User.AccountStatus == MedicHp.Domain.Enums.AccountStatus.Active)
             .FirstOrDefaultAsync(d => d.UserId == request.DoctorId, cancellationToken);
 
         if (doctor == null) return null;

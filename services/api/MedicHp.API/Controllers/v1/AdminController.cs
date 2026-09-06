@@ -35,9 +35,8 @@ public class AdminController : ControllerBase
     }
 
     [HttpGet("users")]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers([FromQuery] MedicHp.Application.Features.Admin.Queries.GetUsers.GetUsersQuery query)
     {
-        var query = new MedicHp.Application.Features.Admin.Queries.GetUsers.GetUsersQuery();
         var result = await _mediator.Send(query);
 
         return Ok(new { success = true, data = result });
@@ -49,6 +48,21 @@ public class AdminController : ControllerBase
         command.UserId = id;
         var result = await _mediator.Send(command);
 
+        return Ok(new { success = true, data = result });
+    }
+
+    [HttpGet("demo-requests")]
+    public async Task<IActionResult> GetDemoRequests([FromQuery] MedicHp.Application.Features.Admin.Queries.GetDemoRequests.GetDemoRequestsQuery query)
+    {
+        var result = await _mediator.Send(query);
+        return Ok(new { success = true, data = result });
+    }
+
+    [HttpPost("demo-requests/{id}/status")]
+    public async Task<IActionResult> UpdateDemoRequestStatus(Guid id, [FromBody] MedicHp.Application.Features.Admin.Commands.UpdateDemoRequestStatus.UpdateDemoRequestStatusCommand command)
+    {
+        command.RequestId = id;
+        var result = await _mediator.Send(command);
         return Ok(new { success = true, data = result });
     }
 }

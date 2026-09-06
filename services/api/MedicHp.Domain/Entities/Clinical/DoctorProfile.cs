@@ -12,6 +12,10 @@ public class DoctorProfile : SoftDeleteEntity
     public User User { get; set; } = null!;
     public string ProfessionalType { get; set; } = "Medical Doctor"; // e.g., Medical Doctor, Dentist, Psychologist
     
+    // Demo Account logic
+    public bool IsDemoAccount { get; set; } = false;
+    public bool IsPaymentMocked => IsDemoAccount;
+
     // Registration & Verification
     public string? RegistrationNumber { get; set; }
     public string? Specialization { get; set; } // Doctor's typed specialization

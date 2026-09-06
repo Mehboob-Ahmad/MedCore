@@ -36,6 +36,10 @@ public class UpdateDoctorProfileCommandHandler : IRequestHandler<UpdateDoctorPro
         profile.YearsOfExperience = request.ExperienceYears;
         
         profile.ProfessionalType = request.ProfessionalType;
+        if (!string.IsNullOrEmpty(request.Specialization))
+        {
+            profile.Specialization = request.Specialization;
+        }
         profile.RegistrationNumber = request.RegistrationNumber;
         profile.RegulatoryBody = request.RegulatoryBody;
         profile.WhatsAppNumber = request.WhatsAppNumber;

@@ -16,7 +16,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         
         builder.HasIndex(x => x.NormalizedEmail).IsUnique().HasFilter("\"IsDeleted\" = false");
         builder.HasIndex(x => x.PhoneNumber).IsUnique().HasFilter("\"IsDeleted\" = false");
-        builder.HasIndex(x => x.IsActive);
+        builder.HasIndex(x => x.AccountStatus);
         
         builder.HasOne(x => x.PatientProfile)
             .WithOne(p => p.User)

@@ -1,6 +1,7 @@
 using System;
 using MedicHp.Domain.Common;
 using MedicHp.Domain.Entities.Clinical;
+using MedicHp.Domain.Enums;
 
 namespace MedicHp.Domain.Entities.Core;
 
@@ -17,7 +18,7 @@ public class User : SoftDeleteEntity
     public string PasswordHash { get; set; } = null!;
     public Guid? ProfilePhotoFileId { get; set; }
     public File? ProfilePhotoFile { get; set; }
-    public bool IsActive { get; set; } = true;
+    public AccountStatus AccountStatus { get; set; } = AccountStatus.Active;
     public string? SuspensionReason { get; set; }
     public int FailedLoginAttempts { get; set; } = 0;
     public DateTime? LockoutEnd { get; set; }

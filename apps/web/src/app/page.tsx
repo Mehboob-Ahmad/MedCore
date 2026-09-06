@@ -51,9 +51,9 @@ export default function Home() {
             variants={FADE_UP_ANIMATION_VARIANTS}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto"
           >
-            <Link href="#join">
+            <Link href="/request-demo">
               <Button size="lg" className="w-full sm:w-auto h-14 px-12 text-lg shadow-md shadow-blue-500/20">
-                Let's Get Started
+                Request a Demo
               </Button>
             </Link>
           </motion.div>
@@ -132,9 +132,9 @@ export default function Home() {
                 Create Patient Account
               </Button>
             </Link>
-            <Link href="/doctor/register">
+            <Link href="/request-demo">
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 dark:hover:bg-white/10">
-                Join as a Doctor
+                Request a Demo
               </Button>
             </Link>
           </div>

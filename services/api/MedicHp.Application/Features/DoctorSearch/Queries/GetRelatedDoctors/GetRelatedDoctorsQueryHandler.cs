@@ -37,7 +37,7 @@ public class GetRelatedDoctorsQueryHandler : IRequestHandler<GetRelatedDoctorsQu
             .Include(d => d.Specializations)
                 .ThenInclude(s => s.Specialization)
             .AsNoTracking()
-            .Where(d => d.UserId != request.DoctorId && d.VerificationStatus == "Verified" && d.User.IsActive);
+            .Where(d => d.UserId != request.DoctorId && d.VerificationStatus == "Verified" && d.User.AccountStatus == MedicHp.Domain.Enums.AccountStatus.Active);
 
         // Find doctors with matching specializations
         if (specializationIds.Any())

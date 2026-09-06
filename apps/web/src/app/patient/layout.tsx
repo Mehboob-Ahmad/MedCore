@@ -55,6 +55,10 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
               <MessageSquare className="w-5 h-5" />
               <span>Messages</span>
             </Link>
+            <Link href="/patient/ai" className={getDesktopLinkClass("/patient/ai")}>
+              <Sparkles className="w-5 h-5" />
+              <span>AI Assistant</span>
+            </Link>
             <Link href="/patient/profile" className={getDesktopLinkClass("/patient/profile")}>
               <User className="w-5 h-5" />
               <span>My Profile</span>
@@ -84,9 +88,9 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
               <Calendar className="w-6 h-6" />
               <span className="text-[10px] mt-1 font-medium">Bookings</span>
             </Link>
-            <Link href="/patient/messages" className={getMobileLinkClass("/patient/messages")}>
-              <MessageSquare className="w-6 h-6" />
-              <span className="text-[10px] mt-1 font-medium">Inbox</span>
+            <Link href="/patient/ai" className={getMobileLinkClass("/patient/ai")}>
+              <Sparkles className="w-6 h-6" />
+              <span className="text-[10px] mt-1 font-medium">AI Chat</span>
             </Link>
             <Link href="/patient/profile" className={getMobileLinkClass("/patient/profile")}>
               <User className="w-6 h-6" />

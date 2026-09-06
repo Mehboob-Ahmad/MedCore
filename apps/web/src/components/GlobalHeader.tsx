@@ -43,7 +43,18 @@ export function GlobalHeader() {
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6 font-medium text-sm">
+        <nav className="hidden lg:flex items-center gap-6 font-medium text-sm">
+          <Link href="/" className="hover:text-[var(--color-primary-600)] transition-colors">Home</Link>
+          <Link href="/about" className="hover:text-[var(--color-primary-600)] transition-colors">About</Link>
+          <Link href="/features" className="hover:text-[var(--color-primary-600)] transition-colors">Features</Link>
+          <Link href="/for-doctors" className="hover:text-[var(--color-primary-600)] transition-colors">For Doctors</Link>
+          <Link href="/for-patients" className="hover:text-[var(--color-primary-600)] transition-colors">For Patients</Link>
+          <Link 
+            href="/request-demo" 
+            className="text-[var(--color-primary-600)] dark:text-sky-400 font-bold hover:opacity-80 transition-opacity"
+          >
+            Request a Demo
+          </Link>
           <NavbarAuthMenu />
         </nav>
 
@@ -67,6 +78,19 @@ export function GlobalHeader() {
             className="md:hidden border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-lg"
           >
             <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+              
+              <Link href="/" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+              <Link href="/about" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>About</Link>
+              <Link href="/features" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>Features</Link>
+              <Link href="/for-doctors" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>For Doctors</Link>
+              <Link href="/for-patients" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>For Patients</Link>
+              <Link 
+                href="/request-demo" 
+                className="font-bold text-[var(--color-primary-600)] py-2 border-b border-gray-100 dark:border-slate-800"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Request a Demo
+              </Link>
               
               {isAuthenticated && user ? (
                 <>

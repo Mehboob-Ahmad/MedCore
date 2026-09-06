@@ -69,6 +69,7 @@ export default function DoctorProfile() {
         WhatsAppEnabled: true,
         ClinicName: formData.clinicName,
         ClinicAddress: formData.clinicAddress,
+        Specialization: formData.specializations[0] || "",
         Qualifications: [],
         Certifications: []
       });
@@ -160,6 +161,11 @@ export default function DoctorProfile() {
                     <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input type="number" value={formData.consultationFee} onChange={e => setFormData({...formData, consultationFee: Number(e.target.value)})} className="pl-9" />
                   </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Specialization</label>
+                  <Input value={formData.specializations[0] || ""} onChange={e => setFormData({...formData, specializations: [e.target.value]})} placeholder="e.g. Cardiologist" />
                 </div>
               </div>
 

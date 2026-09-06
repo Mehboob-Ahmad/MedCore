@@ -33,7 +33,7 @@ public class SearchDoctorsQueryHandler : IRequestHandler<SearchDoctorsQuery, Doc
                 .ThenInclude(s => s.Specialization)
                     .ThenInclude(s => s.SymptomSpecializations)
                         .ThenInclude(ss => ss.Symptom)
-            .Where(d => d.VerificationStatus == "Verified" && d.User.IsActive);
+            .Where(d => d.VerificationStatus == "Verified" && d.User.AccountStatus == MedicHp.Domain.Enums.AccountStatus.Active);
 
         // 1. Text Search (Doctor Name or Bio)
         if (!string.IsNullOrWhiteSpace(request.SearchTerm))

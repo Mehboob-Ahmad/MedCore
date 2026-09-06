@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, UserPlus, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, UserPlus, Settings, LogOut, ClipboardList } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
@@ -44,6 +44,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/admin/dashboard" className={getDesktopLinkClass("/admin/dashboard")}>
               <LayoutDashboard className="w-5 h-5" />
               <span>Overview</span>
+            </Link>
+            <Link href="/admin/demo-requests" className={getDesktopLinkClass("/admin/demo-requests")}>
+              <ClipboardList className="w-5 h-5" />
+              <span>Demo Requests</span>
             </Link>
             <Link href="/admin/users" className={getDesktopLinkClass("/admin/users")}>
               <Users className="w-5 h-5" />

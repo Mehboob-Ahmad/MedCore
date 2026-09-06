@@ -57,6 +57,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<PatientFavoriteDoctor> PatientFavoriteDoctors => Set<PatientFavoriteDoctor>();
     public DbSet<DoctorQualification> DoctorQualifications => Set<DoctorQualification>();
     public DbSet<DoctorCertification> DoctorCertifications => Set<DoctorCertification>();
+    public DbSet<AiChatMessage> AiChatMessages => Set<AiChatMessage>();
     // Clinical Productivity
     public DbSet<ConsultationTemplate> ConsultationTemplates => Set<ConsultationTemplate>();
     public DbSet<PrescriptionTemplate> PrescriptionTemplates => Set<PrescriptionTemplate>();
@@ -72,6 +73,7 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
     public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
+    public DbSet<DemoRequest> DemoRequests => Set<DemoRequest>();
 
     // Lookup
     public DbSet<City> Cities => Set<City>();

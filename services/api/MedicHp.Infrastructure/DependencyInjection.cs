@@ -28,6 +28,9 @@ public static class DependencyInjection
         services.AddHttpClient<MedicHp.Application.Features.Auth.Interfaces.IEmailService, MedicHp.Infrastructure.Services.Auth.EmailService>();
         services.AddHttpClient<IWhatsAppService, WhatsAppService>();
         services.AddScoped<IWhatsAppNotificationService, WhatsAppNotificationService>();
+        
+        // Register HttpClient for AI Service
+        services.AddHttpClient<MedicHp.Application.Features.AI.Interfaces.IAIAssistant, MedicHp.Infrastructure.Services.AI.GemmaAIService>();
 
         // Background Services
         services.AddHostedService<WhatsAppWebhookProcessor>();

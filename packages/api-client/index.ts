@@ -129,6 +129,13 @@ export const AuthService = {
   }
 };
 
+export const PublicService = {
+  submitDemoRequest: async (data: any) => {
+    const response = await apiClient.post('/public/demo-requests', data);
+    return response.data;
+  }
+};
+
 // Chat Service Endpoints
 export const ChatService = {
   getConversations: async () => {
@@ -214,6 +221,17 @@ export const SystemService = {
   },
 };
 
+export const AiService = {
+  getHistory: async () => {
+    const response = await apiClient.get('/ai/history');
+    return response.data;
+  },
+  ask: async (prompt: string) => {
+    const response = await apiClient.post('/ai/ask', { prompt });
+    return response.data;
+  }
+};
+
 export const DoctorService = {
   searchDoctors: async (searchTerm?: string, specialty?: string, gender?: string, cityIds?: string[]) => {
     const params = new URLSearchParams();
@@ -290,5 +308,13 @@ export const AdminService = {
     const response = await apiClient.post(`/admin/users/${id}/toggle-status`, { isActive, reason });
     return response.data;
   },
+  getDemoRequests: async () => {
+    const response = await apiClient.get('/admin/demo-requests');
+    return response.data;
+  },
+  updateDemoRequestStatus: async (id: string, data: { status: number; notes?: string }) => {
+    const response = await apiClient.put(`/admin/demo-requests/${id}/status`, data);
+    return response.data;
+  }
 };
 

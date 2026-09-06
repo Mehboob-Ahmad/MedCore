@@ -45,13 +45,16 @@ export function NavbarAuthMenu() {
   }
 
   return (
-    <div className="flex items-center gap-4">
-      <Link href="/login" className="text-sm font-medium hover:text-[var(--color-primary-600)]">
+    <div className="flex items-center gap-3">
+      <Link 
+        href="/login" 
+        className="text-sm font-semibold border-2 border-[var(--color-primary-600)] text-[var(--color-primary-600)] px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors"
+      >
         Log in
       </Link>
       <Link
         href="/register"
-        className="text-sm font-medium bg-[var(--color-primary-600)] text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+        className="text-sm font-semibold bg-[var(--color-primary-600)] text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity"
       >
         Sign up
       </Link>

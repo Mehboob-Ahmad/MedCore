@@ -86,7 +86,7 @@ builder.Services.AddAuthentication(options =>
             {
                 var dbContext = context.HttpContext.RequestServices.GetRequiredService<MedicHp.Persistence.ApplicationDbContext>();
                 var user = await dbContext.Users.FindAsync(userId);
-                if (user == null || !user.IsActive)
+                if (user == null || user.AccountStatus != MedicHp.Domain.Enums.AccountStatus.Active)
                 {
                     context.Fail("Your account has been frozen. Please contact MedicHp administration.");
                 }

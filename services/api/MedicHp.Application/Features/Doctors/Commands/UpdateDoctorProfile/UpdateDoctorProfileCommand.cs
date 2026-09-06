@@ -25,6 +25,8 @@ public class UpdateDoctorProfileCommand : IRequest<bool>
     public string ClinicName { get; set; } = string.Empty;
     public string ClinicAddress { get; set; } = string.Empty;
     public Guid? CityId { get; set; }
+    
+    public string Specialization { get; set; } = string.Empty;
 
     public List<DoctorQualificationDto> Qualifications { get; set; } = new();
     public List<DoctorCertificationDto> Certifications { get; set; } = new();

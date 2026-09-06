@@ -20,38 +20,55 @@ public static class DatabaseSeeder
             await context.SaveChangesAsync();
         }
 
-        // 2. Admin User
-        if (!await context.Users.AnyAsync(u => u.NormalizedEmail == "MEHBOOBAHMAD122005@GMAIL.COM"))
+        // 2. Admin Users
+        var sysAdminRole = await context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == "SYSTEMADMIN");
+
+        if (sysAdminRole != null)
         {
-            var adminUser = new User
-            {
-                FirstName = "Mehboob",
-                LastName = "Ahmad",
-                Email = "mehboobahmad122005@gmail.com",
-                NormalizedEmail = "MEHBOOBAHMAD122005@GMAIL.COM",
-                EmailConfirmed = true,
-                PhoneNumber = "+10000000000",
-                PhoneNumberConfirmed = true,
-                IsActive = true
-            };
-
             var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<User>();
-            adminUser.PasswordHash = hasher.HashPassword(adminUser, "admin123");
 
-            await context.Users.AddAsync(adminUser);
-            await context.SaveChangesAsync();
-
-            var adminRole = await context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == "SYSTEMADMIN");
-            if (adminRole != null)
+            // Admin 1: Tuseef
+            if (!await context.Users.AnyAsync(u => u.NormalizedEmail == "TUSEEFAHMAD1995@GMAIL.COM"))
             {
-                await context.UserRoles.AddAsync(new UserRole
+                var admin1 = new User
                 {
-                    UserId = adminUser.Id,
-                    RoleId = adminRole.Id,
-                    AssignedAt = DateTime.UtcNow
-                });
+                    FirstName = "Tuseef",
+                    LastName = "Ahmad",
+                    Email = "Tuseefahmad1995@gmail.com",
+                    NormalizedEmail = "TUSEEFAHMAD1995@GMAIL.COM",
+                    EmailConfirmed = true,
+                    PhoneNumber = "+923000000001",
+                    PhoneNumberConfirmed = true,
+                    AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active
+                };
+                admin1.PasswordHash = hasher.HashPassword(admin1, "tuseef123");
+                await context.Users.AddAsync(admin1);
                 await context.SaveChangesAsync();
+                
+                await context.UserRoles.AddAsync(new UserRole { UserId = admin1.Id, RoleId = sysAdminRole.Id, AssignedAt = DateTime.UtcNow });
             }
+
+            // Admin 2: Mehboob
+            if (!await context.Users.AnyAsync(u => u.NormalizedEmail == "MEHBOOBAHMAD122005@GMAIL.COM"))
+            {
+                var admin2 = new User
+                {
+                    FirstName = "Mehboob",
+                    LastName = "Ahmad",
+                    Email = "mehboobahmad122005@gmail.com",
+                    NormalizedEmail = "MEHBOOBAHMAD122005@GMAIL.COM",
+                    EmailConfirmed = true,
+                    PhoneNumber = "+923000000002",
+                    PhoneNumberConfirmed = true,
+                    AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active
+                };
+                admin2.PasswordHash = hasher.HashPassword(admin2, "admin123");
+                await context.Users.AddAsync(admin2);
+                await context.SaveChangesAsync();
+
+                await context.UserRoles.AddAsync(new UserRole { UserId = admin2.Id, RoleId = sysAdminRole.Id, AssignedAt = DateTime.UtcNow });
+            }
+            await context.SaveChangesAsync();
         }
 
         // 3. Specializations
