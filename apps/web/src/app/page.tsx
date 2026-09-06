@@ -116,30 +116,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section id="join" className="w-full py-24 bg-[var(--color-primary-600)] text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-32 opacity-10">
-          <Activity className="w-96 h-96" />
-        </div>
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to prioritize your health?</h2>
-          <p className="text-blue-100 mb-10 max-w-2xl mx-auto text-lg">
-            Join thousands of patients who have already switched to MedicHp for a better healthcare experience.
-          </p>
-          <div className="flex justify-center gap-4">
-            <Link href="/register">
-              <Button size="lg" className="bg-white text-[var(--color-primary-600)] hover:bg-gray-100 hover:text-[var(--color-primary-600)]">
-                Create Patient Account
-              </Button>
-            </Link>
-            <Link href="/request-demo">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 dark:hover:bg-white/10">
-                Request a Demo
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

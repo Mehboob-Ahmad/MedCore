@@ -17,6 +17,7 @@ interface UserDto {
   isActive: boolean;
   role: string;
   createdAt: string;
+  lastLoginAt?: string;
 }
 
 export default function AdminUsersPage() {
@@ -29,7 +30,8 @@ export default function AdminUsersPage() {
       setLoading(true);
       const res = await AdminService.getUsers();
       if (res?.success) {
-        setUsers(res.data?.items || res.data || []);
+        const allUsers = res.data?.items || res.data || [];
+        setUsers(allUsers.filter((u: any) => u.role?.toLowerCase().includes("admin")));
       }
     } catch (err) {
       console.error(err);
@@ -42,19 +44,8 @@ export default function AdminUsersPage() {
     loadUsers();
   }, []);
 
-  const toggleStatus = async (id: string, isActive: boolean) => {
-    try {
-      setActionLoading(id);
-      const res = await AdminService.toggleUserStatus(id, isActive, isActive ? null : "Admin frozen");
-      if (res?.success) {
-        setUsers(users.map((u) => (u.id === id ? { ...u, isActive } : u)));
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setActionLoading(null);
-    }
-  };
+  // Removed toggleStatus since admins cannot be frozen
+
 
   return (
     <div className="p-6">
@@ -74,7 +65,7 @@ export default function AdminUsersPage() {
                 <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Role</th>
                 <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Status</th>
                 <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Signup Date</th>
-                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+                <th className="px-6 py-3 font-medium text-slate-500 dark:text-slate-400">Last Login</th>
               </tr>
             </thead>
             <tbody className="divide-y dark:divide-slate-700">
@@ -92,31 +83,13 @@ export default function AdminUsersPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    {u.isActive ? (
-                      <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">Active</span>
-                    ) : (
-                      <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">Frozen</span>
-                    )}
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">Active</span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 font-medium">
                     {new Date(u.createdAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </td>
-                  <td className="px-6 py-4">
-                    {u.role !== "SystemAdmin" ? (
-                      <button
-                        disabled={actionLoading === u.id}
-                        onClick={() => toggleStatus(u.id, !u.isActive)}
-                        className={`px-3 py-1 text-sm font-medium rounded ${
-                          u.isActive
-                            ? "bg-red-50 text-red-600 hover:bg-red-100"
-                            : "bg-green-50 text-green-600 hover:bg-green-100"
-                        } ${actionLoading === u.id ? "opacity-50 cursor-not-allowed" : ""}`}
-                      >
-                        {actionLoading === u.id ? "Saving..." : u.isActive ? "Freeze" : "Unfreeze"}
-                      </button>
-                    ) : (
-                      <span className="text-xs text-gray-400 italic">Protected</span>
-                    )}
+                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 font-medium">
+                    {u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : "Never"}
                   </td>
                 </tr>
               ))}
