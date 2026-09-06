@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Calendar, MessageSquare, User, Search } from "lucide-react";
+import { LayoutDashboard, Calendar, MessageSquare, User, Search, Sparkles } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export default function PatientLayout({ children }: { children: React.ReactNode }) {

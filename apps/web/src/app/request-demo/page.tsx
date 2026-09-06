@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PublicService, AuthService } from "@medichp/api-client";
 import { Card, CardContent } from "@medichp/ui";
 import { Button } from "@medichp/ui";
-import { Input, Textarea } from "@medichp/ui";
+import { Input } from "@medichp/ui";
 import { FileUp, Loader2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
