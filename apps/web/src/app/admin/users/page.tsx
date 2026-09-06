@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
       setLoading(true);
       const res = await AdminService.getUsers();
       if (res?.success) {
-        setUsers(res.data);
+        setUsers(res.data?.items || res.data || []);
       }
     } catch (err) {
       console.error(err);
