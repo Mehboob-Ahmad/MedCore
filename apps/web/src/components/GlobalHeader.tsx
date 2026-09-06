@@ -35,37 +35,34 @@ export function GlobalHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href={dashboardLink} className="flex items-center space-x-2" onClick={() => setMobileMenuOpen(false)}>
-          <Stethoscope className="w-6 h-6 text-[var(--color-primary-600)]" />
-          <span className="font-bold text-xl tracking-tight text-[var(--color-primary-600)] dark:text-sky-400">
-            MedicHp
-          </span>
-        </Link>
+        <div className="flex-1 flex justify-start">
+          <Link href={dashboardLink} className="flex items-center space-x-2" onClick={() => setMobileMenuOpen(false)}>
+            <Stethoscope className="w-6 h-6 text-[var(--color-primary-600)]" />
+            <span className="font-bold text-xl tracking-tight text-[var(--color-primary-600)] dark:text-sky-400">
+              MedicHp
+            </span>
+          </Link>
+        </div>
         
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6 font-medium text-sm">
-          <Link href="/" className="hover:text-[var(--color-primary-600)] transition-colors">Home</Link>
-          <Link href="/about" className="hover:text-[var(--color-primary-600)] transition-colors">About</Link>
+        <nav className="hidden lg:flex flex-1 items-center justify-center gap-6 font-medium text-sm">
           <Link href="/features" className="hover:text-[var(--color-primary-600)] transition-colors">Features</Link>
           <Link href="/for-doctors" className="hover:text-[var(--color-primary-600)] transition-colors">For Doctors</Link>
-          <Link href="/for-patients" className="hover:text-[var(--color-primary-600)] transition-colors">For Patients</Link>
-          <Link 
-            href="/request-demo" 
-            className="text-[var(--color-primary-600)] dark:text-sky-400 font-bold hover:opacity-80 transition-opacity"
-          >
-            Request a Demo
-          </Link>
-          <NavbarAuthMenu />
         </nav>
 
-        {/* Mobile Menu Toggle */}
-        <button 
-          className="md:hidden p-2 -mr-2 text-gray-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle Menu"
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex-1 flex justify-end items-center">
+          <div className="hidden lg:block">
+            <NavbarAuthMenu />
+          </div>
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden p-2 -mr-2 text-gray-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation Dropdown */}
@@ -78,20 +75,8 @@ export function GlobalHeader() {
             className="md:hidden border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-lg"
           >
             <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-              
-              <Link href="/" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-              <Link href="/about" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>About</Link>
               <Link href="/features" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>Features</Link>
               <Link href="/for-doctors" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>For Doctors</Link>
-              <Link href="/for-patients" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>For Patients</Link>
-              <Link 
-                href="/request-demo" 
-                className="font-bold text-[var(--color-primary-600)] py-2 border-b border-gray-100 dark:border-slate-800"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Request a Demo
-              </Link>
-              
               {isAuthenticated && user ? (
                 <>
                   <Link 
@@ -114,17 +99,10 @@ export function GlobalHeader() {
                 <div className="flex flex-col space-y-3 pt-2">
                   <Link 
                     href="/login" 
-                    className="font-medium text-center py-2 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-slate-700 rounded-lg"
+                    className="font-medium text-center py-2 border border-gray-300 dark:border-slate-700 rounded-lg text-[var(--color-primary-600)] font-semibold"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Log in
-                  </Link>
-                  <Link 
-                    href="/register" 
-                    className="font-medium text-center py-2 bg-[var(--color-primary-600)] text-white rounded-lg"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Sign up
                   </Link>
                 </div>
               )}
