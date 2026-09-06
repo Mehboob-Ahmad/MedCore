@@ -25,7 +25,7 @@ public static class DependencyInjection
         services.Configure<MedicHp.Infrastructure.Settings.WhatsAppTemplateSettings>(configuration.GetSection("WhatsAppTemplates"));
         services.AddSingleton<IWhatsAppEventQueue, WhatsAppEventQueue>();
         // Register HttpClient for EmailService
-        services.AddHttpClient<MedicHp.Application.Features.Auth.Interfaces.IEmailService, MedicHp.Infrastructure.Services.Auth.EmailService>();
+        services.AddScoped<MedicHp.Application.Features.Auth.Interfaces.IEmailService, MedicHp.Infrastructure.Services.Auth.EmailService>();
         services.AddHttpClient<IWhatsAppService, WhatsAppService>();
         services.AddScoped<IWhatsAppNotificationService, WhatsAppNotificationService>();
         

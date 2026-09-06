@@ -1,7 +1,5 @@
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using MedicHp.Application.Features.Auth.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -13,59 +11,48 @@ public class EmailService : IEmailService
 {
     private readonly ILogger<EmailService> _logger;
     private readonly IConfiguration _configuration;
-    private readonly HttpClient _httpClient;
 
-    public EmailService(ILogger<EmailService> logger, IConfiguration configuration, HttpClient httpClient)
+    public EmailService(ILogger<EmailService> logger, IConfiguration configuration)
     {
         _logger = logger;
         _configuration = configuration;
-        _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("https://api.resend.com/");
     }
 
     private async Task SendEmailAsync(string to, string subject, string body)
     {
-        var apiKey = _configuration["RESEND_API_KEY"];
-        var fromEmail = _configuration["RESEND_FROM_EMAIL"] ?? "onboarding@resend.dev"; // Default for unverified domains
+        // Try to read SMTP_EMAIL, fallback to RESEND_FROM_EMAIL to preserve old config if they didn't update it yet
+        var fromEmail = _configuration["SMTP_EMAIL"] ?? _configuration["RESEND_FROM_EMAIL"];
+        var password = _configuration["SMTP_PASSWORD"]; // Google App Password
 
-        if (string.IsNullOrEmpty(apiKey))
+        if (string.IsNullOrEmpty(fromEmail) || string.IsNullOrEmpty(password))
         {
-            _logger.LogWarning("[EmailService] RESEND_API_KEY is not configured. Email to {To} was not sent.", to);
+            _logger.LogWarning("[EmailService] SMTP_EMAIL or SMTP_PASSWORD is not configured. Email to {To} was not sent.", to);
             return;
         }
 
         try
         {
-            var payload = new
+            var message = new MailMessage
             {
-                from = $"MedicHp Admin <{fromEmail}>",
-                to = new[] { to },
-                subject = subject,
-                html = body
+                From = new MailAddress(fromEmail, "MedicHp Admin"),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+            message.To.Add(to);
+
+            using var smtpClient = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential(fromEmail, password),
+                EnableSsl = true
             };
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "emails")
-            {
-                Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
-            };
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-
-            var response = await _httpClient.SendAsync(request);
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-                _logger.LogInformation("[EmailService] Email sent successfully via Resend to {To}", to);
-            }
-            else
-            {
-                _logger.LogError("[EmailService] Resend API failed: {StatusCode} - {Body}", response.StatusCode, responseBody);
-                throw new Exception($"Resend API error: {responseBody}");
-            }
+            await smtpClient.SendMailAsync(message);
+            _logger.LogInformation("[EmailService] Email sent successfully via Gmail SMTP to {To}", to);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "[EmailService] Failed to send email to {To}", to);
+            _logger.LogError(ex, "[EmailService] Failed to send email to {To} via Gmail SMTP", to);
             throw; // Rethrow to surface exact error to diagnostic endpoint
         }
     }
