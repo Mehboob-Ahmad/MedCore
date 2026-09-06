@@ -58,6 +58,22 @@ export default function AdminDemoRequestsPage() {
     }
   };
 
+  const createDoctor = async (id: string) => {
+    try {
+      setActionLoading(id);
+      const res = await AdminService.createDoctorFromDemo(id);
+      if (res?.success) {
+        setRequests(requests.map((r) => (r.id === id ? { ...r, status: 5 } : r)));
+        alert("Doctor account created successfully! The credentials have been emailed to the doctor.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.message || "Failed to create doctor account");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const getStatusBadge = (status: number) => {
     switch (status) {
       case 0:
@@ -154,6 +170,17 @@ export default function AdminDemoRequestsPage() {
                         className="flex-1 border-red-200 text-red-600 hover:bg-red-50"
                       >
                         {actionLoading === req.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><X className="w-4 h-4 mr-1" /> Reject</>}
+                      </Button>
+                    </div>
+                  )}
+                  {req.status === 2 && (
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        onClick={() => createDoctor(req.id)}
+                        disabled={actionLoading === req.id}
+                        className="flex-1 bg-[var(--color-primary-600)] hover:opacity-90 text-white"
+                      >
+                        {actionLoading === req.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-4 h-4 mr-1" /> Create Doctor Account</>}
                       </Button>
                     </div>
                   )}

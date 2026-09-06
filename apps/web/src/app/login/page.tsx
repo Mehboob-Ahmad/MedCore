@@ -118,14 +118,6 @@ export default function LoginPage() {
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-center border-t border-gray-100 dark:border-slate-700/50 pt-6">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Don't have an account?{" "}
-              <Link href="/register" className="font-semibold text-[var(--color-primary-600)] hover:underline">
-                Sign up
-              </Link>
-            </p>
-          </CardFooter>
         </Card>
       </motion.div>
     </div>

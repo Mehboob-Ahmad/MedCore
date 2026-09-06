@@ -65,4 +65,11 @@ public class AdminController : ControllerBase
         var result = await _mediator.Send(command);
         return Ok(new { success = true, data = result });
     }
+    [HttpPost("demo-requests/{id}/create-doctor")]
+    public async Task<IActionResult> CreateDoctorFromDemo(Guid id)
+    {
+        var command = new MedicHp.Application.Features.Admin.Commands.CreateDoctorFromDemo.CreateDoctorFromDemoCommand { RequestId = id };
+        var result = await _mediator.Send(command);
+        return Ok(new { success = true, data = result });
+    }
 }

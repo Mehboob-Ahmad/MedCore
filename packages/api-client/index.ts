@@ -315,6 +315,10 @@ export const AdminService = {
   updateDemoRequestStatus: async (id: string, data: { status: number; notes?: string }) => {
     const response = await apiClient.put(`/admin/demo-requests/${id}/status`, data);
     return response.data;
+  },
+  createDoctorFromDemo: async (id: string) => {
+    const response = await apiClient.post(`/admin/demo-requests/${id}/create-doctor`);
+    return response.data;
   }
 };
 
