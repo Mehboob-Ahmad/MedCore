@@ -47,7 +47,7 @@ export function GlobalHeader() {
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex flex-1 items-center justify-center gap-6 font-medium text-sm">
           <Link href="/features" className="hover:text-[var(--color-primary-600)] transition-colors">Features</Link>
-          <Link href="/for-doctors" className="hover:text-[var(--color-primary-600)] transition-colors">For Doctors</Link>
+          <Link href="#contacts" className="hover:text-[var(--color-primary-600)] transition-colors">Contacts</Link>
         </nav>
 
         <div className="flex-1 flex justify-end items-center">
@@ -76,7 +76,7 @@ export function GlobalHeader() {
           >
             <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
               <Link href="/features" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>Features</Link>
-              <Link href="/for-doctors" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>For Doctors</Link>
+              <Link href="#contacts" className="font-medium text-gray-700 dark:text-gray-300 py-2 border-b border-gray-100 dark:border-slate-800" onClick={() => setMobileMenuOpen(false)}>Contacts</Link>
               {isAuthenticated && user ? (
                 <>
                   <Link 

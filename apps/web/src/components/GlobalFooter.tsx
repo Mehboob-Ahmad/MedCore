@@ -29,7 +29,7 @@ export function GlobalFooter() {
   if (isDashboard) return null;
 
   return (
-    <footer className="border-t border-gray-200 dark:border-slate-800 py-8 bg-white dark:bg-slate-900 mt-auto">
+    <footer id="contacts" className="border-t border-gray-200 dark:border-slate-800 py-8 bg-white dark:bg-slate-900 mt-auto">
       <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-4">
         <div className="flex space-x-6">
           <a href="https://www.instagram.com/medichp_com/?hl=en" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-pink-600 transition-colors flex items-center gap-2">
