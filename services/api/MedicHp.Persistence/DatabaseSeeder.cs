@@ -48,15 +48,26 @@ public static class DatabaseSeeder
                 await context.UserRoles.AddAsync(new UserRole { UserId = admin1.Id, RoleId = sysAdminRole.Id, AssignedAt = DateTime.UtcNow });
             }
 
-            // Admin 2: Mehboob
-            if (!await context.Users.AnyAsync(u => u.NormalizedEmail == "MEHBOOBAHMAD122005@GMAIL.COM"))
+            // Rename old admin if exists
+            var oldAdmin = await context.Users.FirstOrDefaultAsync(u => u.NormalizedEmail == "MEHBOOBAHMAD122005@GMAIL.COM");
+            if (oldAdmin != null)
+            {
+                oldAdmin.Email = "medcore.pk.official@gmail.com";
+                oldAdmin.NormalizedEmail = "MEDCORE.PK.OFFICIAL@GMAIL.COM";
+                oldAdmin.FirstName = "Medic";
+                oldAdmin.LastName = "Hp";
+                await context.SaveChangesAsync();
+            }
+
+            // Admin 2: Medic Hp
+            if (!await context.Users.AnyAsync(u => u.NormalizedEmail == "MEDCORE.PK.OFFICIAL@GMAIL.COM"))
             {
                 var admin2 = new User
                 {
-                    FirstName = "Mehboob",
-                    LastName = "Ahmad",
-                    Email = "mehboobahmad122005@gmail.com",
-                    NormalizedEmail = "MEHBOOBAHMAD122005@GMAIL.COM",
+                    FirstName = "Medic",
+                    LastName = "Hp",
+                    Email = "medcore.pk.official@gmail.com",
+                    NormalizedEmail = "MEDCORE.PK.OFFICIAL@GMAIL.COM",
                     EmailConfirmed = true,
                     PhoneNumber = "+923000000002",
                     PhoneNumberConfirmed = true,
