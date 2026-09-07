@@ -8,6 +8,9 @@ public static class DatabaseSeeder
 {
     public static async Task SeedAsync(ApplicationDbContext context)
     {
+        // 0. Clean up stale test data — remove non-admin users and their profiles
+        await CleanupTestDataAsync(context);
+
         // 1. Roles
         if (!await context.Roles.AnyAsync())
         {
@@ -294,5 +297,69 @@ public static class DatabaseSeeder
             await context.Cities.AddRangeAsync(citiesToAdd);
             await context.SaveChangesAsync();
         }
+    }
+
+    /// <summary>
+    /// Remove all non-admin users and their related profiles so that
+    /// dashboard stats reflect real data only.
+    /// </summary>
+    private static async Task CleanupTestDataAsync(ApplicationDbContext context)
+    {
+        var adminRoleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "SYSTEMADMIN", "ADMIN" };
+
+        // Find admin user IDs (users who have an admin role)
+        var adminUserIds = await context.UserRoles
+            .Include(ur => ur.Role)
+            .Where(ur => adminRoleNames.Contains(ur.Role.NormalizedName))
+            .Select(ur => ur.UserId)
+            .Distinct()
+            .ToListAsync();
+
+        // Find non-admin users
+        var nonAdminUsers = await context.Users
+            .IgnoreQueryFilters()
+            .Where(u => !adminUserIds.Contains(u.Id))
+            .ToListAsync();
+
+        if (nonAdminUsers.Count == 0) return;
+
+        var nonAdminUserIds = nonAdminUsers.Select(u => u.Id).ToList();
+
+        // Remove related patient profiles
+        var patientProfiles = await context.PatientProfiles
+            .IgnoreQueryFilters()
+            .Where(p => nonAdminUserIds.Contains(p.UserId))
+            .ToListAsync();
+        if (patientProfiles.Count > 0)
+            context.PatientProfiles.RemoveRange(patientProfiles);
+
+        // Remove related doctor profiles
+        var doctorProfiles = await context.DoctorProfiles
+            .IgnoreQueryFilters()
+            .Where(d => nonAdminUserIds.Contains(d.UserId))
+            .ToListAsync();
+        if (doctorProfiles.Count > 0)
+            context.DoctorProfiles.RemoveRange(doctorProfiles);
+
+        // Remove user roles for non-admin users
+        var nonAdminUserRoles = await context.UserRoles
+            .IgnoreQueryFilters()
+            .Where(ur => nonAdminUserIds.Contains(ur.UserId))
+            .ToListAsync();
+        if (nonAdminUserRoles.Count > 0)
+            context.UserRoles.RemoveRange(nonAdminUserRoles);
+
+        // Remove refresh tokens for non-admin users
+        var refreshTokens = await context.RefreshTokens
+            .IgnoreQueryFilters()
+            .Where(rt => nonAdminUserIds.Contains(rt.UserId))
+            .ToListAsync();
+        if (refreshTokens.Count > 0)
+            context.RefreshTokens.RemoveRange(refreshTokens);
+
+        // Finally remove the non-admin users themselves
+        context.Users.RemoveRange(nonAdminUsers);
+
+        await context.SaveChangesAsync();
     }
 }
