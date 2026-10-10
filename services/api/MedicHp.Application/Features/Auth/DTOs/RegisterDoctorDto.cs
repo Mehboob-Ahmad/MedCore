@@ -14,5 +14,6 @@ public class RegisterDoctorDto
     public Guid DegreeFileId { get; set; }
     public Guid? LicenseFileId { get; set; }
     public string Specialization { get; set; } = string.Empty;
+    public string ProfessionalType { get; set; } = "Medical Doctor"; // Defaults to Medical Doctor, but can be Dentist, Psychologist, etc.
     public bool AcceptTerms { get; set; }
 }

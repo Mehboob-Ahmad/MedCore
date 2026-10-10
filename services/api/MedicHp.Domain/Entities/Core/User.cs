@@ -23,6 +23,13 @@ public class User : SoftDeleteEntity
     public int FailedLoginAttempts { get; set; } = 0;
     public DateTime? LockoutEnd { get; set; }
     public DateTime? LastLoginAt { get; set; }
+    
+    // Email Verification OTP
+    public string? VerificationOtp { get; set; }
+    public DateTime? VerificationOtpExpiry { get; set; }
+    public DateTime? LastVerificationOtpRequestAt { get; set; }
+    public int VerificationOtpAttempts { get; set; }
+    
     public Guid? InvitedByUserId { get; set; }
     public User? InvitedByUser { get; set; }
     public string? InvitationToken { get; set; }

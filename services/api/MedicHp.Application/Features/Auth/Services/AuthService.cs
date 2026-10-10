@@ -178,7 +178,7 @@ public class AuthService : IAuthService
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber,
             AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active,
-            EmailConfirmed = true // Auto-confirm during development until OTP UI is built
+            EmailConfirmed = false
         };
 
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
@@ -198,8 +198,17 @@ public class AuthService : IAuthService
         await _userRepository.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
 
-        // Generate OTP and send (Mock)
-        await _emailService.SendVerificationEmailAsync(user.Email, "123456");
+        // Generate OTP and send
+        var otp = GenerateSecureOtp();
+        user.VerificationOtp = HashOtp(otp);
+        user.VerificationOtpExpiry = DateTime.UtcNow.AddMinutes(15);
+        user.LastVerificationOtpRequestAt = DateTime.UtcNow;
+        user.VerificationOtpAttempts = 0;
+
+        await _userRepository.UpdateAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        await _emailService.SendVerificationEmailAsync(user.Email, otp);
 
         return MapToDto(user);
     }
@@ -226,7 +235,7 @@ public class AuthService : IAuthService
             NormalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty,
             PhoneNumber = request.PhoneNumber, // Might be empty now, will update in profile
             AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active,
-            EmailConfirmed = true // Auto-confirm during development until OTP UI is built
+            EmailConfirmed = false
         };
 
         user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
@@ -243,7 +252,8 @@ public class AuthService : IAuthService
             YearsOfExperience = 0,
             ConsultationFee = 0,
             RegistrationNumber = null, // No longer mandatory
-            Specialization = request.Specialization
+            Specialization = request.Specialization,
+            ProfessionalType = request.ProfessionalType
         };
 
         // Note: For File linking, we would ideally resolve the Files by ID and set their UploadedByUserId to the new user.Id.
@@ -253,7 +263,17 @@ public class AuthService : IAuthService
         await _userRepository.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
 
-        await _emailService.SendVerificationEmailAsync(user.Email, "123456");
+        // Generate OTP and send
+        var otp = GenerateSecureOtp();
+        user.VerificationOtp = HashOtp(otp);
+        user.VerificationOtpExpiry = DateTime.UtcNow.AddMinutes(15);
+        user.LastVerificationOtpRequestAt = DateTime.UtcNow;
+        user.VerificationOtpAttempts = 0;
+
+        await _userRepository.UpdateAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        await _emailService.SendVerificationEmailAsync(user.Email, otp);
 
         return MapToDto(user);
     }
@@ -481,19 +501,42 @@ public class AuthService : IAuthService
     {
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
-        if (user != null && !user.EmailConfirmed)
+        
+        if (user == null)
+            throw new UnauthorizedAccessException("User not found.");
+
+        if (user.EmailConfirmed)
+            return; // Already confirmed
+
+        if (string.IsNullOrEmpty(user.VerificationOtp) || user.VerificationOtpExpiry < DateTime.UtcNow)
+            throw new UnauthorizedAccessException("OTP is expired or invalid. Please request a new one.");
+
+        if (user.VerificationOtpAttempts >= 5)
         {
-            // Assume OTP "123456" is always valid for now
-            if (request.OtpCode == "123456")
-            {
-                user.EmailConfirmed = true;
-                await _userRepository.UpdateAsync(user);
-                await _unitOfWork.SaveChangesAsync();
-            }
-            else
-            {
-                throw new UnauthorizedAccessException("Invalid OTP.");
-            }
+            user.VerificationOtp = null;
+            user.VerificationOtpExpiry = null;
+            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+            throw new UnauthorizedAccessException("Too many invalid attempts. Please request a new OTP.");
+        }
+
+        var hashedInputOtp = HashOtp(request.OtpCode);
+        if (user.VerificationOtp == hashedInputOtp)
+        {
+            user.EmailConfirmed = true;
+            user.VerificationOtp = null;
+            user.VerificationOtpExpiry = null;
+            user.VerificationOtpAttempts = 0;
+            
+            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        else
+        {
+            user.VerificationOtpAttempts++;
+            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+            throw new UnauthorizedAccessException("Invalid OTP.");
         }
     }
 
@@ -501,10 +544,26 @@ public class AuthService : IAuthService
     {
         var normalizedEmail = request.Email?.Trim().ToUpper() ?? string.Empty;
         var user = await _userRepository.FirstOrDefaultAsync(u => u.NormalizedEmail == normalizedEmail);
-        if (user != null && !user.EmailConfirmed)
+        
+        if (user == null || user.EmailConfirmed)
+            return; // Don't leak existence or resend if already confirmed
+
+        // Rate limiting: 1 request per minute
+        if (user.LastVerificationOtpRequestAt.HasValue && (DateTime.UtcNow - user.LastVerificationOtpRequestAt.Value).TotalMinutes < 1)
         {
-            await _emailService.SendVerificationEmailAsync(user.Email, "123456");
+            throw new UnauthorizedAccessException("Please wait at least 1 minute before requesting a new OTP.");
         }
+
+        var otp = GenerateSecureOtp();
+        user.VerificationOtp = HashOtp(otp);
+        user.VerificationOtpExpiry = DateTime.UtcNow.AddMinutes(15);
+        user.LastVerificationOtpRequestAt = DateTime.UtcNow;
+        user.VerificationOtpAttempts = 0;
+
+        await _userRepository.UpdateAsync(user);
+        await _unitOfWork.SaveChangesAsync();
+
+        await _emailService.SendVerificationEmailAsync(user.Email, otp);
     }
 
     public async Task<UserDto> GetProfileAsync(Guid userId)
@@ -530,5 +589,17 @@ public class AuthService : IAuthService
             Roles = user.UserRoles.Select(ur => ur.Role.Name).ToList(),
             IsDemoAccount = user.DoctorProfile?.IsDemoAccount
         };
+    }
+
+    private string GenerateSecureOtp()
+    {
+        return RandomNumberGenerator.GetInt32(1000, 10000).ToString();
+    }
+
+    private string HashOtp(string otp)
+    {
+        using var sha256 = SHA256.Create();
+        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(otp));
+        return Convert.ToBase64String(hashedBytes);
     }
 }

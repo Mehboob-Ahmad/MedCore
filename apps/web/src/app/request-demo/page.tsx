@@ -22,9 +22,10 @@ export default function RequestDemoPage() {
     clinicOrHospital: "",
     yearsOfExperience: 0,
     specialization: "",
+    professionalType: "Medical Doctor",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -113,6 +114,23 @@ export default function RequestDemoPage() {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Contact Number</label>
                   <Input name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required placeholder="+92 300 0000000" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Professional Type</label>
+                  <select
+                    name="professionalType"
+                    value={formData.professionalType}
+                    onChange={handleChange}
+                    required
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="Medical Doctor">Medical Doctor</option>
+                    <option value="Dentist">Dentist</option>
+                    <option value="Psychologist">Psychologist</option>
+                    <option value="Speech & Language Therapist">Speech & Language Therapist</option>
+                    <option value="Physiotherapist">Physiotherapist</option>
+                    <option value="Other Healthcare Professional">Other Healthcare Professional</option>
+                  </select>
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Specialization</label>

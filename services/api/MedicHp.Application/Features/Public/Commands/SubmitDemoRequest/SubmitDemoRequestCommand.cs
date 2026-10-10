@@ -8,6 +8,7 @@ public class SubmitDemoRequestCommand : IRequest<Guid>
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
+    public string ProfessionalType { get; set; } = "Medical Doctor";
     public string Specialization { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string ClinicOrHospital { get; set; } = string.Empty;

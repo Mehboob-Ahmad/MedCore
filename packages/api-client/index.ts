@@ -126,6 +126,14 @@ export const AuthService = {
       }
     });
     return response.data;
+  },
+  verifyEmail: async (data: { email: string; otpCode: string }) => {
+    const response = await apiClient.post('/auth/verify-email', data);
+    return response.data;
+  },
+  resendVerification: async (data: { email: string }) => {
+    const response = await apiClient.post('/auth/resend-verification', data);
+    return response.data;
   }
 };
 

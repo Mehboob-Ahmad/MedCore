@@ -106,4 +106,35 @@ public class EmailService : IEmailService
         ";
         await SendEmailAsync(to, "MedicHp - Appointment Rescheduled", body);
     }
+
+    public async Task SendDemoRequestAdminNotificationAsync(string adminEmail, string applicantName, string specialization, string email, string phone, string clinic)
+    {
+        _logger.LogInformation("[EmailService] Sending Demo Request Admin Notification to {To}", adminEmail);
+        string body = $@"
+            <h3>New MedicHp Doctor Demo Request</h3>
+            <p>A new demo request has been submitted:</p>
+            <ul>
+                <li><b>Name:</b> {applicantName}</li>
+                <li><b>Specialization:</b> {specialization}</li>
+                <li><b>Email:</b> {email}</li>
+                <li><b>Phone:</b> {phone}</li>
+                <li><b>Clinic/Hospital:</b> {clinic}</li>
+            </ul>
+            <p>Please review it in the Admin Portal.</p>
+        ";
+        await SendEmailAsync(adminEmail, "New MedicHp Doctor Demo Request", body);
+    }
+
+    public async Task SendDemoRequestApplicantConfirmationAsync(string to, string applicantName)
+    {
+        _logger.LogInformation("[EmailService] Sending Demo Request Confirmation to {To}", to);
+        string body = $@"
+            <h3>Demo Request Received</h3>
+            <p>Dear {applicantName},</p>
+            <p>Thank you for your interest in MedicHp. We have received your demo request.</p>
+            <p>Our team will review your application and contact you soon.</p>
+            <p>Regards,<br>MedicHp Team</p>
+        ";
+        await SendEmailAsync(to, "MedicHp - Demo Request Received", body);
+    }
 }

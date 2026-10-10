@@ -22,6 +22,10 @@ public static class DependencyInjection
 
         services.AddScoped<MedicHp.Application.Features.Auth.Interfaces.IAuthService, MedicHp.Application.Features.Auth.Services.AuthService>();
         services.AddScoped<Microsoft.AspNetCore.Identity.IPasswordHasher<MedicHp.Domain.Entities.Core.User>, Microsoft.AspNetCore.Identity.PasswordHasher<MedicHp.Domain.Entities.Core.User>>();
+        services.Configure<Microsoft.AspNetCore.Identity.PasswordHasherOptions>(options =>
+        {
+            options.IterationCount = 10000;
+        });
 
         return services;
     }

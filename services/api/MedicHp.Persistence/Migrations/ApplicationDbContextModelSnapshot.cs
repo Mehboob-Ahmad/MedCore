@@ -192,6 +192,10 @@ namespace MedicHp.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ProfessionalType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Specialization")
                         .IsRequired()
                         .HasColumnType("text");
@@ -2240,6 +2244,9 @@ namespace MedicHp.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("LastVerificationOtpRequestAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
@@ -2278,6 +2285,15 @@ namespace MedicHp.Persistence.Migrations
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("VerificationOtp")
+                        .HasColumnType("text");
+
+                    b.Property<int>("VerificationOtpAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("VerificationOtpExpiry")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 

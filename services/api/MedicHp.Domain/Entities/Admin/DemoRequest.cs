@@ -8,6 +8,7 @@ public class DemoRequest : AuditableEntity
     public string Email { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
     public string Specialization { get; set; } = null!;
+    public string ProfessionalType { get; set; } = "Medical Doctor";
     public string City { get; set; } = null!;
     public string ClinicOrHospital { get; set; } = null!;
     public int YearsOfExperience { get; set; }
