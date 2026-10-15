@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Rounded squircle background in official deep navy brand color -->
+  <rect width="100" height="100" rx="22" fill="#2A2E75" />
+  
+  <!-- White stylized 'M' -->
+  <path 
+    fill="#FFFFFF" 
+    fill-rule="evenodd"
+    d="M 23 35 L 34.5 35 L 50 63.5 L 63.5 44 L 63.5 78 L 74.5 78 L 74.5 48.5 L 61 48.5 L 50 67 L 34.5 39 L 34.5 78 L 23 78 Z" 
+  />
+
+  <!-- Emerald Green Medical Plus '+' over upper right stem -->
+  <rect x="63" y="22" width="9" height="26" rx="1.5" fill="#25A654" />
+  <rect x="54.5" y="30.5" width="26" height="9" rx="1.5" fill="#25A654" />
+</svg>

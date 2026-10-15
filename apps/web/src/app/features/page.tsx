@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function FeaturesPage() {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full overflow-x-hidden">
       {/* Hero Section */}
       <section className="w-full py-20 bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 text-center">
         <div className="container mx-auto px-4 max-w-4xl">

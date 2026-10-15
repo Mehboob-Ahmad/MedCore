@@ -10,6 +10,8 @@ import { Input } from "@medichp/ui";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthService } from "@medichp/api-client";
 
+import { Logo } from "@/components/Logo";
+
 export default function DoctorRegisterPage() {
   const { registerDoctor } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -83,13 +85,8 @@ export default function DoctorRegisterPage() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md my-12"
       >
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2">
-            <Stethoscope className="w-8 h-8 text-[var(--color-primary-600)]" />
-            <span className="font-bold text-2xl tracking-tight text-[var(--color-primary-600)] dark:text-sky-400">
-              MedicHp
-            </span>
-          </Link>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Logo href="/" size={44} textSize="text-2xl" />
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-6">Join MedicHp as a Doctor</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">Upload your documents to get verified.</p>
         </div>
@@ -102,42 +99,51 @@ export default function DoctorRegisterPage() {
                   <Stethoscope className="w-8 h-8" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Doctor account created successfully.</h2>
-                  <p className="text-gray-500 dark:text-gray-400 mt-2">You can now sign in to MedicHp.</p>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Doctor Account Created!</h2>
+                  <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
+                    We sent a 4-digit verification code to <span className="font-semibold text-gray-700 dark:text-gray-300">{formData.email}</span>. Please verify your email to activate your account.
+                  </p>
                 </div>
-                <Link href="/login" className="inline-block w-full">
-                  <Button className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600" size="lg">
-                    Go to Login
-                  </Button>
-                </Link>
+                <div className="flex flex-col gap-3">
+                  <Link href={`/verify-email?email=${encodeURIComponent(formData.email)}`} className="inline-block w-full">
+                    <Button className="w-full bg-[var(--color-primary-600)] hover:bg-blue-700 text-white" size="lg">
+                      Verify Email with Code &rarr;
+                    </Button>
+                  </Link>
+                  <Link href="/login" className="inline-block w-full">
+                    <Button variant="outline" className="w-full" size="sm">
+                      Go to Login
+                    </Button>
+                  </Link>
+                </div>
               </div>
             ) : (
               <>
                 {error && (
-                  <div className="mb-4 p-3 rounded bg-red-50 text-red-600 text-sm border border-red-200">
+                  <div className="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm border border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800">
                     {error}
                   </div>
                 )}
                 <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Jane" className="pl-10" required />
+                    <Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Ayesha" className="pl-10" required />
                   </div>
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
-                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Smith" required />
+                  <Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Malik" required />
                 </div>
               </div>
               
               <div className="space-y-1">
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="jane@clinic.com" className="pl-10" required />
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="ayesha@clinic.com" className="pl-10" required />
                 </div>
               </div>
 

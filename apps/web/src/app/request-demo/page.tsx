@@ -11,6 +11,7 @@ import Link from "next/link";
 export default function RequestDemoPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const [degreeFile, setDegreeFile] = useState<File | null>(null);
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
 
@@ -42,8 +43,10 @@ export default function RequestDemoPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
     if (!degreeFile || !licenseFile) {
-      alert("Please upload both your Degree and License images.");
+      setError("Please upload both your Degree and License documents for verification.");
       return;
     }
 
@@ -57,14 +60,14 @@ export default function RequestDemoPage() {
       await PublicService.submitDemoRequest({
         ...formData,
         professionalQualification: "See Attached",
-        degreeImageUrl: degreeRes.url || degreeRes.data?.url || "", // Adjust based on your API response
+        degreeImageUrl: degreeRes.url || degreeRes.data?.url || "",
         licenseImageUrl: licenseRes.url || licenseRes.data?.url || "", 
       });
 
       setSuccess(true);
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "An error occurred while submitting your request.");
+      setError(err.message || "An error occurred while submitting your request. Please check your network connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -72,17 +75,25 @@ export default function RequestDemoPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 p-4">
-        <Card className="max-w-md w-full text-center">
+      <div className="min-h-[75vh] flex items-center justify-center bg-surface-50 dark:bg-slate-900 p-4">
+        <Card className="max-w-md w-full text-center border-0 shadow-xl dark:bg-slate-800">
           <CardContent className="p-8 space-y-6">
             <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Request Submitted!</h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              Thank you for your interest in MediCore. Our team will review your application and contact you soon to set up your production doctor account.
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Demo Request Submitted!</h1>
+            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+              Thank you for your interest in MedicHp. Our clinical onboarding team will review your application and contact you within 24 hours to set up your practice portal.
             </p>
-            <Link href="/">
-              <Button className="w-full bg-[var(--color-primary-600)]">Return to Homepage</Button>
-            </Link>
+            <div className="pt-2 flex flex-col gap-3">
+              <Link href="/">
+                <Button className="w-full bg-[var(--color-primary-600)] hover:bg-blue-700">Return to Homepage</Button>
+              </Link>
+              <a 
+                href="mailto:medcore.pk.official@gmail.com"
+                className="text-xs text-gray-500 hover:text-[var(--color-primary-600)] dark:text-gray-400"
+              >
+                Questions? Email us at medcore.pk.official@gmail.com
+              </a>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -90,26 +101,33 @@ export default function RequestDemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Request a Demo</h1>
-          <p className="mt-4 text-lg text-gray-500 dark:text-gray-400">
-            Join MediCore to manage your practice digitally. Please fill out the form below to get started.
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Request a Doctor Demo</h1>
+          <p className="mt-2 text-base text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+            Experience our intelligent clinical workflow, AI-assisted summaries, and private patient management.
           </p>
         </div>
 
-        <Card>
-          <CardContent className="p-8">
+        <Card className="border-0 shadow-xl dark:bg-slate-800">
+          <CardContent className="p-6 sm:p-8">
+            {error && (
+              <div className="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm border border-red-200 dark:border-red-800">
+                <p className="font-semibold">Unable to submit request</p>
+                <p className="mt-1">{error}</p>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
-                  <Input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Dr. Jane Doe" />
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                  <Input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Dr. Ayesha Malik" />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                  <Input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="doctor@example.com" />
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                  <Input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="doctor@clinic.com" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Contact Number</label>

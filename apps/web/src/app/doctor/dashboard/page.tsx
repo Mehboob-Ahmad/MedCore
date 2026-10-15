@@ -41,8 +41,10 @@ export default function DoctorDashboard() {
   return (
     <div className="space-y-6 pb-20 md:pb-0">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dr. {user?.lastName || "Smith"}'s Dashboard</h1>
-        <p className="text-gray-500 dark:text-gray-400">Here's your practice overview for today.</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Dr. {user?.lastName || user?.firstName || "Doctor"}&apos;s Dashboard
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400">Here&apos;s your practice overview for today.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

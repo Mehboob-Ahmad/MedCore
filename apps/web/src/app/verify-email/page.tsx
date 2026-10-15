@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -8,8 +8,9 @@ import { Stethoscope, Mail, ShieldCheck, RefreshCw } from "lucide-react";
 import { Button } from "@medichp/ui";
 import { Card, CardContent } from "@medichp/ui";
 import { AuthService } from "@medichp/api-client";
+import { Logo } from "@/components/Logo";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
   
@@ -62,6 +63,9 @@ export default function VerifyEmailPage() {
     inputRefs.current[focusIndex]?.focus();
   };
 
+  const [customEmail, setCustomEmail] = useState("");
+  const activeEmail = email || customEmail;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpCode = otp.join("");
@@ -74,11 +78,11 @@ export default function VerifyEmailPage() {
     setError("");
 
     try {
-      const res = await AuthService.verifyEmail({ email, otpCode });
+      const res = await AuthService.verifyEmail({ email: activeEmail, otpCode });
       if (res.success) {
         setSuccess(true);
       } else {
-        setError(res.message || "Verification failed.");
+        setError(res.message || "Verification failed. Please check the code and try again.");
       }
     } catch (err: any) {
       setError(err.message || "Verification failed. Please try again.");
@@ -88,12 +92,12 @@ export default function VerifyEmailPage() {
   };
 
   const handleResend = async () => {
-    if (resendCooldown > 0 || !email) return;
+    if (resendCooldown > 0 || !activeEmail) return;
     setResending(true);
     setError("");
 
     try {
-      await AuthService.resendVerification({ email });
+      await AuthService.resendVerification({ email: activeEmail });
       setResendCooldown(60); // 60 second cooldown
     } catch (err: any) {
       setError(err.message || "Could not resend code. Please try again.");
@@ -102,17 +106,43 @@ export default function VerifyEmailPage() {
     }
   };
 
-  if (!email) {
+  if (!email && !customEmail) {
     return (
       <div className="flex-1 flex items-center justify-center p-4 bg-surface-50 dark:bg-slate-900">
         <Card className="w-full max-w-md border-0 shadow-xl dark:bg-slate-800/80">
-          <CardContent className="pt-6 text-center space-y-4">
-            <Mail className="w-12 h-12 text-gray-400 mx-auto" />
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">No email provided</h2>
-            <p className="text-gray-500 dark:text-gray-400">Please register or log in first.</p>
-            <Link href="/login">
-              <Button className="w-full" size="lg">Go to Login</Button>
-            </Link>
+          <CardContent className="pt-6 space-y-4">
+            <div className="w-12 h-12 bg-sky-50 dark:bg-sky-950/40 text-[var(--color-primary-600)] rounded-xl flex items-center justify-center mx-auto">
+              <Mail className="w-6 h-6" />
+            </div>
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Verify Your Email</h2>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                Enter your account email to enter your 4-digit verification code.
+              </p>
+            </div>
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const input = (e.currentTarget.elements.namedItem("inputEmail") as HTMLInputElement)?.value;
+              if (input) setCustomEmail(input);
+            }} className="space-y-4 pt-2">
+              <input
+                name="inputEmail"
+                type="email"
+                required
+                placeholder="doctor@example.com"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-600)]"
+              />
+              <Button type="submit" className="w-full bg-[var(--color-primary-600)] hover:bg-blue-700" size="lg">
+                Continue to Code Entry &rarr;
+              </Button>
+            </form>
+
+            <div className="pt-2 text-center">
+              <Link href="/login" className="text-xs text-[var(--color-primary-600)] dark:text-sky-400 hover:underline">
+                Return to Login
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -127,16 +157,11 @@ export default function VerifyEmailPage() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md my-12"
       >
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2">
-            <Stethoscope className="w-8 h-8 text-[var(--color-primary-600)]" />
-            <span className="font-bold text-2xl tracking-tight text-[var(--color-primary-600)] dark:text-sky-400">
-              MedicHp
-            </span>
-          </Link>
+        <div className="text-center mb-8 flex flex-col items-center">
+          <Logo href="/" size={44} textSize="text-2xl" />
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white mt-6">Verify Your Email</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
-            We sent a 4-digit code to <span className="font-medium text-gray-700 dark:text-gray-300">{email}</span>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
+            We sent a 4-digit code to <span className="font-semibold text-gray-800 dark:text-gray-200">{activeEmail}</span>
           </p>
         </div>
 
@@ -212,5 +237,17 @@ export default function VerifyEmailPage() {
         </Card>
       </motion.div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex-1 min-h-[60vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

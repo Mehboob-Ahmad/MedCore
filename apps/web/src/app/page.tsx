@@ -15,9 +15,9 @@ const FADE_UP_ANIMATION_VARIANTS: Variants = {
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative w-full min-h-[600px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-800">
+      <section className="relative w-full min-h-[540px] sm:min-h-[620px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-blue-50 to-white dark:from-slate-900 dark:to-slate-800 py-16 sm:py-24">
         <div className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-200/40 via-transparent to-transparent dark:from-sky-900/20" />
         
         <motion.div
@@ -34,26 +34,31 @@ export default function Home() {
         >
           <motion.h1 
             variants={FADE_UP_ANIMATION_VARIANTS}
-            className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 dark:text-white mb-6"
+            className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight"
           >
-            Digital healthcare, <br className="hidden md:block" />
+            Digital healthcare, <br className="hidden sm:block" />
             <span className="text-[var(--color-primary-600)] dark:text-sky-400">simplified.</span>
           </motion.h1>
           
           <motion.p 
             variants={FADE_UP_ANIMATION_VARIANTS}
-            className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto"
+            className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 max-w-2xl mx-auto px-2"
           >
-            Find the right doctor, book appointments seamlessly, and manage your health records in one secure platform.
+            Find the right doctor, book appointments seamlessly, and manage your clinical workflows in one secure, unified platform.
           </motion.p>
           
           <motion.div 
             variants={FADE_UP_ANIMATION_VARIANTS}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-xl mx-auto w-full px-4"
           >
-            <Link href="/request-demo">
-              <Button size="lg" className="w-full sm:w-auto h-14 px-12 text-lg shadow-md shadow-blue-500/20">
+            <Link href="/request-demo" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto h-12 sm:h-14 px-8 text-base sm:text-lg bg-[var(--color-primary-600)] hover:bg-blue-700 shadow-md shadow-blue-500/20">
                 Request a Demo
+              </Button>
+            </Link>
+            <Link href="/features" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto h-12 sm:h-14 px-8 text-base sm:text-lg border-2">
+                Explore Features
               </Button>
             </Link>
           </motion.div>
