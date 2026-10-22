@@ -128,18 +128,32 @@ public class AuthController : ControllerBase
 
     [HttpGet("test-email")]
     [AllowAnonymous]
-    public async Task<IActionResult> TestEmail([FromQuery] string to, [FromServices] Microsoft.Extensions.Configuration.IConfiguration configuration)
+    public async Task<IActionResult> TestEmail(
+        [FromQuery] string? to, 
+        [FromQuery] string? type,
+        [FromServices] Microsoft.Extensions.Configuration.IConfiguration configuration)
     {
         try
         {
+            var recipient = string.IsNullOrWhiteSpace(to) ? "medcore.pk.official@gmail.com" : to.Trim();
             var pwd = configuration["SMTP_PASSWORD"];
             if (string.IsNullOrEmpty(pwd))
             {
-                return BadRequest(new { success = false, error = "SMTP_PASSWORD is NULL or EMPTY in environment variables!" });
+                return BadRequest(new { 
+                    success = false, 
+                    error = "SMTP_PASSWORD is NULL or EMPTY in environment variables (.env). Please provide a 16-character Google App Password for medcore.pk.official@gmail.com." 
+                });
             }
 
-            await _emailService.SendWelcomeEmailAsync(to, "Test Diagnostic", "TestTempPass123!");
-            return Ok(new { success = true, message = $"Email sent successfully! Password length: {pwd.Length}" });
+            if (type?.ToLowerInvariant() == "otp")
+            {
+                var randomOtp = new Random().Next(100000, 999999).ToString();
+                await _emailService.SendVerificationEmailAsync(recipient, randomOtp);
+                return Ok(new { success = true, message = $"OTP verification test email dispatched to {recipient}", otp = randomOtp });
+            }
+
+            await _emailService.SendWelcomeEmailAsync(recipient, "Test Practitioner", "MediCoreTemp123!");
+            return Ok(new { success = true, message = $"Diagnostic test email dispatched to {recipient} from medcore.pk.official@gmail.com." });
         }
         catch (System.Exception ex)
         {

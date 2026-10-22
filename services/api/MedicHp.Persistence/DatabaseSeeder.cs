@@ -8,9 +8,6 @@ public static class DatabaseSeeder
 {
     public static async Task SeedAsync(ApplicationDbContext context)
     {
-        // 0. Clean up stale test data — remove non-admin users and their profiles
-        await CleanupTestDataAsync(context);
-
         // 1. Roles
         if (!await context.Roles.AnyAsync())
         {
@@ -83,6 +80,93 @@ public static class DatabaseSeeder
                 await context.UserRoles.AddAsync(new UserRole { UserId = admin2.Id, RoleId = sysAdminRole.Id, AssignedAt = DateTime.UtcNow });
             }
             await context.SaveChangesAsync();
+
+            // 2b. Seed Doctor: Mehboob Ahmad (mehboob.lover@gmail.com / Mehboobdr-12)
+            var doctorRole = await context.Roles.FirstOrDefaultAsync(r => r.NormalizedName == "DOCTOR");
+            if (doctorRole != null)
+            {
+                const string doctorEmail = "mehboob.lover@gmail.com";
+                var doctorNormalizedEmail = doctorEmail.ToUpper();
+
+                var doctorUser = await context.Users
+                    .Include(u => u.UserRoles)
+                    .Include(u => u.DoctorProfile)
+                    .FirstOrDefaultAsync(u => u.NormalizedEmail == doctorNormalizedEmail);
+
+                if (doctorUser == null)
+                {
+                    doctorUser = new User
+                    {
+                        FirstName = "Mehboob",
+                        LastName = "Ahmad",
+                        Email = doctorEmail,
+                        NormalizedEmail = doctorNormalizedEmail,
+                        EmailConfirmed = true,
+                        PhoneNumber = "+923000000003",
+                        PhoneNumberConfirmed = true,
+                        AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    doctorUser.PasswordHash = hasher.HashPassword(doctorUser, "Mehboobdr-12");
+                    await context.Users.AddAsync(doctorUser);
+                    await context.SaveChangesAsync();
+
+                    await context.UserRoles.AddAsync(new UserRole
+                    {
+                        UserId = doctorUser.Id,
+                        RoleId = doctorRole.Id,
+                        AssignedAt = DateTime.UtcNow
+                    });
+
+                    await context.DoctorProfiles.AddAsync(new MedicHp.Domain.Entities.Clinical.DoctorProfile
+                    {
+                        UserId = doctorUser.Id,
+                        Specialization = "General Practice",
+                        ProfessionalType = "Medical Doctor",
+                        YearsOfExperience = 5,
+                        ConsultationFee = 1500,
+                        RegistrationNumber = "PMC-78601-D",
+                        VerificationStatus = "Approved"
+                    });
+                    await context.SaveChangesAsync();
+                }
+                else
+                {
+                    // Update password and active status
+                    doctorUser.PasswordHash = hasher.HashPassword(doctorUser, "Mehboobdr-12");
+                    doctorUser.EmailConfirmed = true;
+                    doctorUser.AccountStatus = MedicHp.Domain.Enums.AccountStatus.Active;
+
+                    if (!doctorUser.UserRoles.Any(ur => ur.RoleId == doctorRole.Id))
+                    {
+                        doctorUser.UserRoles.Add(new UserRole
+                        {
+                            UserId = doctorUser.Id,
+                            RoleId = doctorRole.Id,
+                            AssignedAt = DateTime.UtcNow
+                        });
+                    }
+
+                    if (doctorUser.DoctorProfile == null)
+                    {
+                        await context.DoctorProfiles.AddAsync(new MedicHp.Domain.Entities.Clinical.DoctorProfile
+                        {
+                            UserId = doctorUser.Id,
+                            Specialization = "General Practice",
+                            ProfessionalType = "Medical Doctor",
+                            YearsOfExperience = 5,
+                            ConsultationFee = 1500,
+                            RegistrationNumber = "PMC-78601-D",
+                            VerificationStatus = "Approved"
+                        });
+                    }
+                    else
+                    {
+                        doctorUser.DoctorProfile.VerificationStatus = "Approved";
+                    }
+                    await context.SaveChangesAsync();
+                }
+            }
         }
 
         // 3. Specializations
